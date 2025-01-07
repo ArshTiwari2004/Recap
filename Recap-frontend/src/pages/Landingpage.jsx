@@ -37,7 +37,7 @@ const LandingPage = () => {
               </button>
               <button
                 onClick={() => setSignupOpen(true)}
-                className="border-2 border-purple-500 text-purple-400 bg-purple-500 text-white mr-4 px-6 py-2 rounded-lg"
+                className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white mr-4 px-6 py-2 rounded-lg"
               >
                 Signup
               </button>
