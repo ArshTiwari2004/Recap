@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import LandingPage from './pages/Landingpage'
+import { Toaster } from 'react-hot-toast';
 import Premium from './pages/Premium'
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard/Uploadnotes';
@@ -10,6 +11,8 @@ import Flashcards from './components/Flashcards/Flashcards';
 
 const App = () => {
   return (
+    <>
+    <Toaster />
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -20,6 +23,7 @@ const App = () => {
         <Route path="/flashcards" element={<Flashcards />} />
         </Routes>
     </Router>
+    </>
   )
 }
 
