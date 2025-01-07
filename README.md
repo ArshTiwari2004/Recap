@@ -1,4 +1,4 @@
-# Cognify
+# Recap
 
 ## Team Synapse
 
