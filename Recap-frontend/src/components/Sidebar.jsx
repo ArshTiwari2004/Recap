@@ -19,7 +19,7 @@ const Sidebar = () => {
 
   const navigationLinks = [
     { to: '/upload-note', icon: PlusCircle, label: 'Upload Notes', category: 'main' },
-    { to: '/view-notes', icon: Eye, label: 'View Notes', category: 'main' },
+    { to: '/my-notes', icon: Eye, label: 'View Notes', category: 'main' },
     { to: '/flashcards', icon: IconCards, label: 'Flashcards', category: 'main' },
     { to: '/quizzes', icon: Calculator, label: 'Quiz Results', category: 'main' },
     { to: '/collaboration', icon: Users, label: 'Collaboration', category: 'main' },
