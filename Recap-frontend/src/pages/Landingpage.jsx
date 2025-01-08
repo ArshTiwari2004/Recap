@@ -3,7 +3,7 @@ import { ArrowRight, BookOpen, Users, Brain, Mic, Scan, Clipboard } from 'lucide
 import { ButtonsCard } from '../components/ui/tailwindcss-buttons';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
-import Footer from './Footer'; 
+import Footer from '../components/Footer';
 
 
 const LandingPage = () => {
