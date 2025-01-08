@@ -13,6 +13,7 @@ import Quizzes from './components/Quiz/Quiz';
 import AIInsights from './components/AISuggestions/AIinsights';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import NotificationDrop from './pages/NotificationDrop';
 
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/ai-insights" element={<AIInsights />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/notification" element={<NotificationDrop />} />
         
         </Routes>
     </Router>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import { useCallback } from 'react';
 import Profile from '../Profile';
+import NotificationDrop from '../NotificationDrop';
 
 
 const Dashboard = () => {
@@ -77,13 +78,12 @@ const Dashboard = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               Feedback
             </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Help
-            </button>
+          
             <button className="text-gray-300 hover:text-white transition-colors">
               Docs
             </button>
-            <button className="relative text-gray-300 hover:text-white transition-colors">
+            <button className="relative text-gray-300 hover:text-white transition-colors"
+              onclick ={() => navigate("/notificationdrop")}>
               <Bell className="w-5 h-5" />             
                <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button>
