@@ -5,6 +5,7 @@ import Sidebar from '../../components/Sidebar';
 import { useCallback } from 'react';
 import Profile from '../Profile';
 
+
 const Dashboard = () => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,6 +57,7 @@ const Dashboard = () => {
         };
         input.click();
       };
+      
 
 
   return (
@@ -77,7 +79,7 @@ const Dashboard = () => {
             </button>
             <button className="text-gray-300 hover:text-white transition-colors">
               Help
-            </button>z
+            </button>
             <button className="text-gray-300 hover:text-white transition-colors">
               Docs
             </button>
