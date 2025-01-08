@@ -6,6 +6,9 @@ import { Toaster } from 'react-hot-toast';
 import Premium from './pages/Premium'
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard/Uploadnotes';
+import MyNotes from './pages/Dashboard/Mynotes';
+import Flashcards from './components/Flashcards/Flashcards';
+import CollaborativeNotes from './components/Collaboration/Collaborations';
 
 const App = () => {
   return (
@@ -17,6 +20,9 @@ const App = () => {
         <Route path="/premium" element={<Premium />} />
         <Route path="/sidebar" element={<Sidebar />} />
         <Route path="/upload-note" element={<Dashboard />} />
+        <Route path="/my-notes" element={<MyNotes />} />
+        <Route path="/flashcards" element={<Flashcards />} />
+        <Route path="/collaboration" element={<CollaborativeNotes />} />
         </Routes>
     </Router>
     </>
