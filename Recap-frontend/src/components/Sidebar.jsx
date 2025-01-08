@@ -13,6 +13,24 @@ import {
   BarChart
 } from 'lucide-react';
 import { IconCards } from '@tabler/icons-react';
+import { signOut } from "firebase/auth";
+import { auth } from "../config/Firebaseconfig";
+import toast from 'react-hot-toast';
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    toast.success("You have been logged out!");
+    // Clear user data from localStorage if stored
+    localStorage.removeItem("user");
+    // redirect to "/" route 
+    window.location.href = "/";
+  } catch (error) {
+    console.error("Error logging out:", error.message);
+    toast.error("Failed to log out. Please try again.");
+  }
+};
+
 
 const Sidebar = () => {
   const location = useLocation();
@@ -74,7 +92,9 @@ const Sidebar = () => {
           </Link>
         ))}
         
-        <button className="flex w-full items-center space-x-3 p-3 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl transition-all duration-200">
+        <button
+        onClick={handleLogout}
+         className="flex w-full items-center space-x-3 p-3 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl transition-all duration-200">
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Logout</span>
         </button>
