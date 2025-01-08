@@ -3,6 +3,7 @@ import { FileUp, Image, Mic, Bell, HelpCircle, BookOpen, X, Upload } from 'lucid
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import { useCallback } from 'react';
+import Profile from '../Profile';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -76,16 +77,19 @@ const Dashboard = () => {
             </button>
             <button className="text-gray-300 hover:text-white transition-colors">
               Help
-            </button>
+            </button>z
             <button className="text-gray-300 hover:text-white transition-colors">
               Docs
             </button>
             <button className="relative text-gray-300 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
+              <Bell className="w-5 h-5" />             
+               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button>
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-medium">U</span>
+            <div
+               className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+               onClick={() => navigate("/profile")}
+            >
+             <span className="text-white text-sm font-medium">U</span>
             </div>
           </div>
         </div>
