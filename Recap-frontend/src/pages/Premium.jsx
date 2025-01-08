@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CreditCard, Check, Sparkles, Star, ShieldCheck, User, Mail, Phone } from 'lucide-react';
+import { BookOpen, Bell } from 'lucide-react';
 
 const Premium = () => {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
@@ -35,7 +36,7 @@ const Premium = () => {
     <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <BookOpen className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">Notes Dashboard</span>
+            <span className="text-lg font-semibold text-white">Premium features</span>
           </div>
           
           <div className="flex items-center space-x-6">

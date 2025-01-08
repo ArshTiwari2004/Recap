@@ -10,6 +10,7 @@ import MyNotes from './pages/Dashboard/Mynotes';
 import Flashcards from './components/Flashcards/Flashcards';
 import CollaborativeNotes from './components/Collaboration/Collaborations';
 import Quizzes from './components/Quiz/Quiz';
+import AIInsights from './components/AISuggestions/AIinsights';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/flashcards" element={<Flashcards />} />
         <Route path="/collaboration" element={<CollaborativeNotes />} />
         <Route path="/quizzes" element={<Quizzes />} />
+        <Route path="/ai-insights" element={<AIInsights />} />
         </Routes>
     </Router>
     </>

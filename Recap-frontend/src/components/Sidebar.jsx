@@ -24,7 +24,7 @@ const Sidebar = () => {
     { to: '/quizzes', icon: Calculator, label: 'Quizzes', category: 'main' },
     { to: '/collaboration', icon: Users, label: 'Collaboration', category: 'main' },
     { to: '/progress', icon: BarChart, label: 'Progress', category: 'main' },
-    { to: '/streaks', icon: Activity, label: 'Daily Streaks', category: 'main' },
+    { to: '/ai-insights', icon: Activity, label: 'AI Insights', category: 'main' },
     { to: '/premium', icon: BrainCog, label: 'Premium', category: 'main' },
     { to: '/settings', icon: Settings, label: 'Settings', category: 'bottom' }
   ];
