@@ -21,7 +21,7 @@ const Sidebar = () => {
     { to: '/upload-note', icon: PlusCircle, label: 'Upload Notes', category: 'main' },
     { to: '/my-notes', icon: Eye, label: 'View Notes', category: 'main' },
     { to: '/flashcards', icon: IconCards, label: 'Flashcards', category: 'main' },
-    { to: '/quizzes', icon: Calculator, label: 'Quiz Results', category: 'main' },
+    { to: '/quizzes', icon: Calculator, label: 'Quizzes', category: 'main' },
     { to: '/collaboration', icon: Users, label: 'Collaboration', category: 'main' },
     { to: '/progress', icon: BarChart, label: 'Progress', category: 'main' },
     { to: '/streaks', icon: Activity, label: 'Daily Streaks', category: 'main' },
@@ -33,9 +33,11 @@ const Sidebar = () => {
     <div className="h-screen w-72 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-6 flex flex-col relative overflow-hidden">
       {/* Logo Section */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">
+        <Link 
+            to="/"        
+        className="text-2xl font-bold">
           Re<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">cap</span>
-        </h1>
+        </Link>
       </div>
 
       {/* Main Navigation */}
