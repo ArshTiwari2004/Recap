@@ -11,6 +11,9 @@ import Flashcards from './components/Flashcards/Flashcards';
 import CollaborativeNotes from './components/Collaboration/Collaborations';
 import Quizzes from './components/Quiz/Quiz';
 import AIInsights from './components/AISuggestions/AIinsights';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+
 
 const App = () => {
   return (
@@ -27,6 +30,9 @@ const App = () => {
         <Route path="/collaboration" element={<CollaborativeNotes />} />
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/ai-insights" element={<AIInsights />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
+        
         </Routes>
     </Router>
     </>

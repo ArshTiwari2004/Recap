@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { CreditCard, Check, Sparkles, Star, ShieldCheck, User, Mail, Phone } from 'lucide-react';
 import { BookOpen, Bell } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 
 const Premium = () => {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
 
-  // Previous plans object remains the same
   const plans = {
     monthly: {
       price: '$7.95',
@@ -30,10 +30,12 @@ const Premium = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center justify-start p-6">
+
+      
     
-    {/* Navbar*/}
-    <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
+      {/* Navbar */}
+      <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between w-full fixed top-0 left-0 z-10">
           <div className="flex items-center space-x-2">
             <BookOpen className="w-6 h-6 text-purple-400" />
             <span className="text-lg font-semibold text-white">Premium features</span>
@@ -59,7 +61,8 @@ const Premium = () => {
           </div>
       </div>
 
-      <div className="max-w-4xl w-full space-y-10">
+      {/* Main content */}
+      <div className="max-w-4xl w-full space-y-10 mt-24">
         {/* Header section  */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center px-4 py-2 bg-purple-900/30 rounded-full mb-4">
@@ -72,16 +75,15 @@ const Premium = () => {
           <p className="text-lg text-gray-400">Start your journey today with a 7-day free trial</p>
         </div>
 
-        
+        {/* Plan selection */}
         <div className="grid md:grid-cols-2 gap-8">
           {['monthly', 'yearly'].map((plan) => (
             <div
               key={plan}
               onClick={() => setSelectedPlan(plan)}
-              className={`relative rounded-2xl p-8 transition-all duration-300 ${
-                selectedPlan === plan
-                  ? 'bg-gradient-to-br from-purple-900 to-purple-700 border border-purple-500/50'
-                  : 'bg-gray-800/50 hover:bg-gray-800/80 border border-gray-700'
+              className={`relative rounded-2xl p-8 transition-all duration-300 ${selectedPlan === plan
+                ? 'bg-gradient-to-br from-purple-900 to-purple-700 border border-purple-500/50'
+                : 'bg-gray-800/50 hover:bg-gray-800/80 border border-gray-700'
               } backdrop-blur-xl cursor-pointer group`}
             >
               {plan === 'yearly' && (
@@ -114,10 +116,9 @@ const Premium = () => {
                 </ul>
 
                 <button
-                  className={`w-full py-4 rounded-xl transition-all ${
-                    selectedPlan === plan
-                      ? 'bg-white text-purple-900 hover:bg-gray-100'
-                      : 'bg-gray-700/50 text-white hover:bg-gray-700'
+                  className={`w-full py-4 rounded-xl transition-all ${selectedPlan === plan
+                    ? 'bg-white text-purple-900 hover:bg-gray-100'
+                    : 'bg-gray-700/50 text-white hover:bg-gray-700'
                   } font-medium`}
                 >
                   {selectedPlan === plan ? 'Selected Plan' : 'Choose Plan'}
@@ -127,7 +128,7 @@ const Premium = () => {
           ))}
         </div>
 
-        
+        {/* Purchase section */}
         <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl p-8 border border-gray-700">
           <div className="flex items-center gap-2 mb-8">
             <ShieldCheck className="h-5 w-5 text-purple-400" />
