@@ -1,18 +1,15 @@
-import React from 'react';
-import { ArrowRight, BookOpen, Users, Brain } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, BookOpen, Users, Brain, Mic, Scan, Clipboard } from 'lucide-react';
 import { ButtonsCard } from '../components/ui/tailwindcss-buttons';
-import { useState } from 'react';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
-
+import Footer from '../components/Footer';
 
 
 const LandingPage = () => {
 
-
-    const [isLoginOpen, setLoginOpen] = useState(false);
-    const [isSignupOpen, setSignupOpen] = useState(false);
-
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isSignupOpen, setSignupOpen] = useState(false);
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 ">
@@ -46,10 +43,9 @@ const LandingPage = () => {
         </div>
       </div>
 
-{/* Modals */}
-<LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
-<SignupModal isOpen={isSignupOpen} onClose={() => setSignupOpen(false)} />
-
+      {/* Modals */}
+      <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
+      <SignupModal isOpen={isSignupOpen} onClose={() => setSignupOpen(false)} />
 
       {/* Hero Section */}
       <div className="relative">
@@ -72,14 +68,13 @@ const LandingPage = () => {
                 Capture, connect, and master your study materials effortlessly.
               </p>
               <div className="flex justify-center">
-  <ButtonsCard className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
-    <span className="flex items-center gap-2">
-      Get Started Free
-      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-    </span>
-  </ButtonsCard>
-</div>
-
+                <ButtonsCard className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
+                  <span className="flex items-center gap-2">
+                    Get Started Free
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </ButtonsCard>
+              </div>
             </div>
           </div>
         </div>
@@ -89,7 +84,7 @@ const LandingPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div 
+            <div
               key={index}
               className="group bg-gray-800/40 backdrop-blur-sm p-8 rounded-2xl border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300"
             >
@@ -102,6 +97,20 @@ const LandingPage = () => {
           ))}
         </div>
       </div>
+
+      {/* CTA Button */}
+      <div className="flex justify-center my-12">
+        <button
+          className="bg-purple-500/50 text-white font-semibold text-lg py-3 px-8 rounded-full transition-transform transform hover:scale-105 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+          Start Your Smart Study Journey!
+        </button>
+      </div>
+
+      
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
@@ -121,7 +130,24 @@ const features = [
     icon: <Users className="w-8 h-8 text-purple-400" />,
     title: "Collaborative Study",
     description: "Share and collaborate on notes with classmates in real-time."
+  },
+  {
+    icon: <Mic className="w-8 h-8 text-purple-400" />,
+    title: "Voice-to-Text",
+    description: "Convert voice recordings into text notes for easy review and study."
+  },
+  {
+    icon: <Scan className="w-8 h-8 text-purple-400" />,
+    title: "Handwriting to Digital Notes",
+    description: "Scan handwritten notes and convert them into editable, searchable text."
+  },
+  {
+    icon: <Clipboard className="w-8 h-8 text-purple-400" />,
+    title: "Customizable Quizzes",
+    description: "Create custom quizzes, adjust difficulty, and track progress to enhance learning."
   }
 ];
 
 export default LandingPage;
+
+

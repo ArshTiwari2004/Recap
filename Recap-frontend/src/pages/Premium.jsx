@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { CreditCard, Check, Sparkles, Star, ShieldCheck, User, Mail, Phone } from 'lucide-react';
+import {
+  CreditCard, Check, Sparkles, Star, ShieldCheck, User, Mail, Phone,
+  BookOpen, Bell
+} from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 
 const Premium = () => {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
 
-  // Previous plans object remains the same
   const plans = {
     monthly: {
       price: '$7.95',
@@ -29,76 +32,103 @@ const Premium = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-6">
-      <div className="max-w-4xl w-full space-y-10">
-        {/* Header section  */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center px-4 py-2 bg-purple-900/30 rounded-full mb-4">
-            <Sparkles className="h-4 w-4 text-purple-400 mr-2" />
-            <span className="text-sm text-purple-300">Limited Time Offer</span>
+    <div className="min-h-screen flex bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col  ">
+        {/* Navbar */}
+        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between ">
+          <div className="flex items-center space-x-2">
+            <BookOpen className="w-6 h-6 text-purple-400" />
+            <span className="text-lg font-semibold text-white">Premium features</span>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-            Choose Your Plan
-          </h1>
-          <p className="text-lg text-gray-400">Start your journey today with a 7-day free trial</p>
+          <div className="flex items-center space-x-6">
+            <button className="text-gray-300 hover:text-white transition-colors">
+              Feedback
+            </button>
+            <button className="text-gray-300 hover:text-white transition-colors">
+              Help
+            </button>
+            <button className="text-gray-300 hover:text-white transition-colors">
+              Docs
+            </button>
+            <button className="relative text-gray-300 hover:text-white transition-colors">
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
+            </button>
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-medium">U</span>
+            </div>
+          </div>
         </div>
 
-        
-        <div className="grid md:grid-cols-2 gap-8">
-          {['monthly', 'yearly'].map((plan) => (
-            <div
-              key={plan}
-              onClick={() => setSelectedPlan(plan)}
-              className={`relative rounded-2xl p-8 transition-all duration-300 ${
-                selectedPlan === plan
+        {/* Main content */}
+        <div className="max-w-4xl w-full space-y-10 mt-24 p-2 mx-auto mt-11">
+          {/* Header section */}
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center px-4 py-2 bg-purple-900/30 rounded-full mb-4">
+              <Sparkles className="h-4 w-4 text-purple-400 mr-2" />
+              <span className="text-sm text-purple-300">Limited Time Offer</span>
+            </div>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+              Choose Your Plan
+            </h1>
+            <p className="text-lg text-gray-400">Start your journey today with a 7-day free trial</p>
+          </div>
+
+          {/* Plan selection */}
+          <div className="grid md:grid-cols-2 gap-8">
+            {['monthly', 'yearly'].map((plan) => (
+              <div
+                key={plan}
+                onClick={() => setSelectedPlan(plan)}
+                className={`relative rounded-2xl p-8 transition-all duration-300 ${selectedPlan === plan
                   ? 'bg-gradient-to-br from-purple-900 to-purple-700 border border-purple-500/50'
                   : 'bg-gray-800/50 hover:bg-gray-800/80 border border-gray-700'
-              } backdrop-blur-xl cursor-pointer group`}
-            >
-              {plan === 'yearly' && (
-                <div className="absolute -top-3 -right-3">
-                  <div className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full flex items-center">
-                    <Star className="h-3 w-3 mr-1" />
-                    Best Value
+                  } backdrop-blur-xl cursor-pointer group`}
+              >
+                {plan === 'yearly' && (
+                  <div className="absolute -top-3 -right-3">
+                    <div className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full flex items-center">
+                      <Star className="h-3 w-3 mr-1" />
+                      Best Value
+                    </div>
                   </div>
-                </div>
-              )}
-
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-medium text-white capitalize">{plan} Plan</h3>
-                  <div className="text-4xl font-bold text-white">
-                    {plans[plan].price}
-                    <span className="text-base font-normal text-gray-300">/{plans[plan].period}</span>
+                )}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-medium text-white capitalize">{plan} Plan</h3>
+                    <div className="text-4xl font-bold text-white">
+                      {plans[plan].price}
+                      <span className="text-base font-normal text-gray-300">/{plans[plan].period}</span>
+                    </div>
                   </div>
-                </div>
-
-                <ul className="space-y-4">
-                  {plans[plan].features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="mt-1">
-                        <Check className="h-4 w-4 text-purple-400" />
-                      </div>
-                      <span className="text-gray-300 text-sm leading-tight">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  className={`w-full py-4 rounded-xl transition-all ${
-                    selectedPlan === plan
+                  <ul className="space-y-4">
+                    {plans[plan].features.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <div className="mt-1">
+                          <Check className="h-4 w-4 text-purple-400" />
+                        </div>
+                        <span className="text-gray-300 text-sm leading-tight">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    className={`w-full py-4 rounded-xl transition-all ${selectedPlan === plan
                       ? 'bg-white text-purple-900 hover:bg-gray-100'
                       : 'bg-gray-700/50 text-white hover:bg-gray-700'
-                  } font-medium`}
-                >
-                  {selectedPlan === plan ? 'Selected Plan' : 'Choose Plan'}
-                </button>
+                      } font-medium`}
+                  >
+                    {selectedPlan === plan ? 'Selected Plan' : 'Choose Plan'}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        
+        {/* Purchase section */}
         <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl p-8 border border-gray-700">
           <div className="flex items-center gap-2 mb-8">
             <ShieldCheck className="h-5 w-5 text-purple-400" />
@@ -155,6 +185,7 @@ const Premium = () => {
               </div>
             </div>
 
+
             {/* Payment Details Section */}
             <div className="space-y-6">
               <h4 className="text-lg text-white font-medium">Payment Details</h4>
@@ -202,6 +233,8 @@ const Premium = () => {
         </div>
       </div>
     </div>
+    </div>
+
   );
 };
 

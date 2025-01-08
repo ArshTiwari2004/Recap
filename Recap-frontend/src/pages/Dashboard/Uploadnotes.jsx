@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/Firebaseconfig';
+import Profile from '../Profile';
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ const Dashboard = () => {
     }
   }, []);
 
+
   const handleFiles = async (files) => {
     const file = files[0];
     try {
@@ -54,7 +57,7 @@ const Dashboard = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = type === 'pdf' ? '.pdf' : type === 'image' ? 'image/*' : 'audio/*';
-    
+
     input.onchange = (e) => {
       if (e.target.files && e.target.files[0]) {
         handleFiles(e.target.files);
@@ -90,7 +93,10 @@ const Dashboard = () => {
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button>
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
+            <div
+              className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+              onClick={() => navigate("/profile")}
+            >
               <span className="text-white text-sm font-medium">U</span>
             </div>
           </div>
@@ -151,7 +157,7 @@ const Dashboard = () => {
       {/* Upload Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-            onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}>
+          onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}>
           <div className="bg-gray-800 rounded-xl p-6 max-w-2xl w-full mx-4 border border-gray-700">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-semibold text-white">Choose Upload Type</h3>
@@ -159,7 +165,7 @@ const Dashboard = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className={`grid grid-cols-3 gap-4 ${dragActive ? 'border-2 border-dashed border-purple-500 rounded-xl p-4' : ''}`}>
               <button onClick={() => handleUpload("pdf")}
                 className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-900 to-purple-700 rounded-xl hover:from-purple-800 hover:to-purple-600 transition-all duration-300 group">
