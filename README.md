@@ -39,8 +39,8 @@ Recap is an innovative study companion designed to revolutionize how students or
 
 ## 🖼️ Screenshots
 
-![Homepage](path_to_your_screenshot1.png)
-*Homepage with Smart Study Features*
+![Landingpage](landingpage.png)
+*Landing page of Recap*
 
 ![Notes Organization](path_to_your_screenshot2.png)
 *Intelligent Note Organization System*
