@@ -34,7 +34,7 @@ const SignupModal = ({ isOpen, onClose }) => {
         createdAt: Timestamp.now(),
       });
       toast.success('Account created successfully!');
-      navigate('/upload-note');
+      navigate('/main-dashboard');
     } catch (error) {
       toast.error(error.message);
     }
@@ -56,7 +56,7 @@ const SignupModal = ({ isOpen, onClose }) => {
       });
 
       toast.success('Signed up with GitHub successfully!');
-      navigate('/upload-note');
+      navigate('/main-dashboard');
     } catch (error) {
       toast.error(`GitHub Signup Failed: ${error.message}`);
     }
@@ -71,7 +71,7 @@ const SignupModal = ({ isOpen, onClose }) => {
       // Store user information in local storage or handle it as needed
       localStorage.setItem("user", JSON.stringify(user));
       toast.success(`Welcome ${user.displayName || user.email}!`);
-      navigate('/upload-note');
+      navigate('/main-dashboard');
       console.log("User Info:", user);
     } catch (error) {
       console.error("Error during Google Sign-In:", error.code, error.message);

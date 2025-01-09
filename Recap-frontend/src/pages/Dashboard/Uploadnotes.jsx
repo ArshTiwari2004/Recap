@@ -5,17 +5,22 @@ import Sidebar from '../../components/Sidebar';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/Firebaseconfig';
 import Profile from '../Profile';
+import AudioTranscription from './Audio';
+import { Trash2, Save } from 'lucide-react';
 
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [noteTitle, setNoteTitle] = useState('');
-  const [noteTopic, setNoteTopic] = useState('');
-  const [noteContent, setNoteContent] = useState('');
-  const [dragActive, setDragActive] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
+    const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeComponent, setActiveComponent] = useState(null);
+    const [noteTitle, setNoteTitle] = useState('');
+    const [noteTopic, setNoteTopic] = useState('');
+    const [noteContent, setNoteContent] = useState('');
+    const [dragActive, setDragActive] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [transcriptionResult, setTranscriptionResult] = useState(null);
+    const [showTranscriptionReview, setShowTranscriptionReview] = useState(false);
+    
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -36,6 +41,10 @@ const Dashboard = () => {
     }
   }, []);
 
+  const handleSaveClick = () => {
+    setIsSuccessModalOpen(true); // Open the modal
+  };
+
 
   const handleFiles = async (files) => {
     const file = files[0];
@@ -54,17 +63,37 @@ const Dashboard = () => {
   };
 
   const handleUpload = (type) => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = type === 'pdf' ? '.pdf' : type === 'image' ? 'image/*' : 'audio/*';
+    if (type === 'audio') {
+      setIsModalOpen(false);
+      setActiveComponent('audio');
+    } else {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = type === 'pdf' ? '.pdf' : 'image/*';
 
-    input.onchange = (e) => {
-      if (e.target.files && e.target.files[0]) {
-        handleFiles(e.target.files);
-      }
-    };
-    input.click();
-    setIsModalOpen(false);
+      input.onchange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFiles(e.target.files);
+        }
+      };
+      input.click();
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleTranscriptionComplete = (transcriptionData) => {
+    setTranscriptionResult(transcriptionData);
+    setActiveComponent(null);
+   
+    
+   
+      setShowTranscriptionReview(true);
+
+  };
+
+  const handleDeleteTranscription = () => {
+    setTranscriptionResult(null);
+    setShowTranscriptionReview(false);
   };
 
   return (
@@ -143,10 +172,12 @@ const Dashboard = () => {
 
               <div className="flex justify-end space-x-4">
                 <button className="px-6 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
-                  Back
+                  Delete
                 </button>
-                <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors">
-                  Generate Tests
+                <button 
+             onClick={handleSaveClick}
+                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors">
+                  Save
                 </button>
               </div>
             </div>
@@ -192,6 +223,69 @@ const Dashboard = () => {
         </div>
       )}
 
+      {/* New Transcription Review Modal */}
+      {showTranscriptionReview && transcriptionResult && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-xl p-6 max-w-4xl w-full mx-4 border border-gray-700">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold text-white">Transcription Result</h3>
+              <button 
+                onClick={() => setShowTranscriptionReview(false)} 
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            {/* Transcription Content */}
+            <div className="bg-gray-700/50 rounded-xl p-6 mb-6 max-h-[60vh] overflow-y-auto">
+              <h4 className="text-purple-400 font-medium mb-2">
+                {transcriptionResult.title || 'Audio Transcription'}
+              </h4>
+              <div className="text-gray-200 whitespace-pre-wrap">
+                {transcriptionResult.content}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleDeleteTranscription}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete</span>
+              </button>
+              <button
+                 onClick={handleSaveClick}
+                className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors"
+              >
+                <Save className="w-4 h-4" />
+                <span>Save Note</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Audio Transcription Modal */}
+      {activeComponent === 'audio' && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-xl p-6 max-w-4xl w-full mx-4 border border-gray-700">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold text-white">Audio Transcription</h3>
+              <button onClick={() => setActiveComponent(null)} className="text-gray-400 hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <AudioTranscription onTranscriptionComplete={handleTranscriptionComplete} />
+          </div>
+        </div>
+      )}
+
+
+
       {/* Success Modal */}
       {/* {isSuccessModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -218,8 +312,8 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">File Uploaded Successfully!</h3>
-              <p className="text-gray-400 mb-6">Your file has been uploaded and is ready to view.</p>
+              <h3 className="text-xl font-semibold text-white mb-2">File Saved Successfully!</h3>
+              <p className="text-gray-400 mb-6">Your file has been saved and is ready to view.</p>
               <div className="flex space-x-4 justify-center">
                 <button
                   onClick={() => {
