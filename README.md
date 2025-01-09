@@ -39,7 +39,7 @@ Recap is an innovative study companion designed to revolutionize how students or
 
 ## 🖼️ Screenshots
 
-![Landingpage](landingpage.png)
+![Landingpage](Landingpage.png)
 *Landing page of Recap*
 
 ![Notes Organization](path_to_your_screenshot2.png)
