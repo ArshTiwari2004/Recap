@@ -165,7 +165,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-For support or queries, reach out to us at [your-email@domain.com](teamsynapse3@gmail.com)
+For support or queries, reach out to us at [teamsynapse3@gmail.com](teamsynapse3@gmail.com)
 
 ---
 
