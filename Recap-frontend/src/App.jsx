@@ -14,12 +14,14 @@ import AIInsights from './components/AISuggestions/AIinsights';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Maindashboard from './pages/Maindashboard';
+import { FirebaseProvider } from './context /FirebaseContext';
 
 const App = () => {
   return (
     <>
     <Toaster />
     <Router>
+      <FirebaseProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/premium" element={<Premium />} />
@@ -27,13 +29,16 @@ const App = () => {
         <Route path="/upload-note" element={<Dashboard />} />
         <Route path="/my-notes" element={<MyNotes />} />
         <Route path="/flashcards" element={<Flashcards />} />
+      
         <Route path="/collaboration" element={<CollaborativeNotes />} />
+     
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/ai-insights" element={<AIInsights />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/main-dashboard" element={<Maindashboard />} />
         </Routes>
+        </FirebaseProvider>
     </Router>
     </>
   )
