@@ -1,15 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, BookOpen, Users, Brain, Mic, Scan, Clipboard } from 'lucide-react';
 import { ButtonsCard } from '../components/ui/tailwindcss-buttons';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import Footer from '../components/Footer';
-
+import { signOut } from "firebase/auth";
+import { auth } from "../config/Firebaseconfig";
+import toast from 'react-hot-toast';
 
 const LandingPage = () => {
 
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isSignupOpen, setSignupOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem('user'); // Remove user data from localStorage
+      setUser(null); // Update the state
+      toast.success("You have been logged out!");
+    } catch (error) {
+      toast.error("Failed to log out. Please try again.");
+      console.log("Error logging out:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    // console.log(storedUser);
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 ">
@@ -24,18 +47,29 @@ const LandingPage = () => {
               <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
               <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#pricing">Pricing</a>
               <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#about">About</a>
-              <button
-                onClick={() => setLoginOpen(true)}
-                className="border-2 border-purple-500 text-purple-400 hover:bg-purple-500 text-white mr-4 px-6 py-2 rounded-lg"
+              {user ? (
+                <button
+                onClick={handleLogout}
+                className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-500 hover:text-white transition-all"
               >
-                Log In
+                Logout
               </button>
-              <button
-                onClick={() => setSignupOpen(true)}
-                className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white mr-4 px-6 py-2 rounded-lg"
-              >
-                Signup
-              </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setLoginOpen(true)}
+                    className="border-2 border-purple-500 text-purple-400 hover:bg-purple-500 text-white mr-4 px-6 py-2 rounded-lg"
+                  >
+                    Log In
+                  </button>
+                  <button
+                    onClick={() => setSignupOpen(true)}
+                    className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white mr-4 px-6 py-2 rounded-lg"
+                  >
+                    Signup
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -108,7 +142,7 @@ const LandingPage = () => {
         </button>
       </div>
 
-      
+
 
       {/* Footer */}
       <Footer />
