@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { useFirebase } from '@/context /FirebaseContext';
+import { useFirebase } from '@/context/FirebaseContext';
 
 const CreateGroupModal = ({ isOpen, onClose }) => {
   const { createGroup } = useFirebase();

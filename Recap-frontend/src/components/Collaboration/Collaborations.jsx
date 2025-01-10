@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Users, Plus, UserPlus, Settings, MessageSquare, BookOpen, Bell, Grid, Filter, ChevronDown, Clock, Star, Lock, Globe, BarChart2 } from 'lucide-react';
 import Sidebar from '../Sidebar';
-import { useFirebase } from '@/context /FirebaseContext';
+import { useFirebase } from '@/context/FirebaseContext';
 import CreateGroupModal from '../CreateGroupModal';
 import GroupChat from '../GroupChat';
 import  GroupNotes from '../GroupNotes';

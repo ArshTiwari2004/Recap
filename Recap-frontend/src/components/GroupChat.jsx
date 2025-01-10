@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { fireDB } from '../config/Firebaseconfig';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { useFirebase } from '@/context /FirebaseContext';
+import { useFirebase } from '@/context/FirebaseContext';
 
 const GroupChat = ({ groupId }) => {
   const { currentUser, addMessage } = useFirebase();

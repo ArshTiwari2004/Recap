@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fireDB } from '../config/Firebaseconfig';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { useFirebase } from '@/context /FirebaseContext';
+import { useFirebase } from '@/context/FirebaseContext';
 import { Edit2, Trash2, Save } from 'lucide-react';
 
 const GroupNotes = ({ groupId }) => {

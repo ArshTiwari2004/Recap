@@ -14,7 +14,7 @@ import AIInsights from './components/AISuggestions/AIinsights';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Maindashboard from './pages/Maindashboard';
-import { FirebaseProvider } from './context /FirebaseContext';
+import { FirebaseProvider } from './context/FirebaseContext';
 import OCRScanner from './pages/OCRscanner';
 
 const App = () => {
