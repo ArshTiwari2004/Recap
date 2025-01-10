@@ -7,12 +7,14 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom'
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import SignupModal from './SignupModal';
 
 const LoginModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [signupOpen, setSignupOpen] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
@@ -156,13 +158,17 @@ const LoginModal = ({ isOpen, onClose }) => {
             <img src="/google.svg" alt="GitHub" className="w-5 h-5" />
             Sign in with Google
           </button>
-          {/* <p className="text-center text-gray-400 text-sm">
+          <p className="text-center text-gray-400 text-sm">
           Don't have an account?{" "}
-          <a href="#" className="text-purple-400 hover:text-purple-300">
-            Signup Now
-          </a>
-        </p> */}
-        </form>
+         <span 
+             onClick={() => setSignupOpen(true)}
+             className="text-purple-400 hover:text-purple-300 cursor-pointer"
+           >
+             Sign up 
+           </span>
+         </p>
+         <SignupModal isOpen={signupOpen} onClose={() => setSignupOpen(false)} />
+      </form>
       </div>
     </div>
   );

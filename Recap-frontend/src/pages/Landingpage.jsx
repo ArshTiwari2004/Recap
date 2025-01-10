@@ -39,10 +39,8 @@ const LandingPage = () => {
       {/* Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center">
-            <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-              Recap
-            </span>
+          <div className="flex text-white text-bold items-center">
+             Re<span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">cap</span>
           </div>
           <div className="hidden md:block">
             <div className="flex items-center space-x-10">
@@ -102,7 +100,9 @@ const LandingPage = () => {
                 Capture, connect, and master your study materials effortlessly.
               </p>
               <div className="flex justify-center">
-                <ButtonsCard className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
+                <ButtonsCard 
+                 onClick={() => setSignupOpen(true)}
+                className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
                   <span className="flex items-center gap-2">
                     Get Started Free
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -135,9 +135,10 @@ const LandingPage = () => {
       {/* CTA Button */}
       <div className="flex justify-center my-12">
         <button
+          onClick={() => setSignupOpen(true)}
           className="bg-purple-500/50 text-white font-semibold text-lg py-3 px-8 rounded-full transition-transform transform hover:scale-105 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
         >
-          Start Your Smart Study Journey!
+          Start Your Smart Study Journey Now!
         </button>
       </div>
 

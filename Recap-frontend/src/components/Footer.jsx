@@ -8,21 +8,21 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
          
           <div className="space-y-3">
-            <h2 className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Recap</h2>
+          Re<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">cap</span>
             <p className="text-gray-400 text-sm">AI-driven notes, quick revision. Flashcards, collaboration, knowledge gaps solved.</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-cyan-400" />
+                <MapPin className="w-4 h-4 text-purple-400" />
                 <span className="text-sm">New Delhi, India</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-cyan-400" />
+                <Mail className="w-4 h-4 text-purple-400" />
                 <a href="mailto:arshtiwari12345@gmail.com" className="hover:text-cyan-400 transition-colors text-sm">
                   arshtiwari12345@gmail.com
                 </a>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-cyan-400" />
+                <Phone className="w-4 h-4 text-purple-400" />
                 <span className="text-sm">+91 5555566666</span>
               </div>
             </div>
@@ -30,25 +30,25 @@ const Footer = () => {
 
           {/* Quick Links Section */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-3">Quick Links</h3>
+            <h3 className="text-lg font-semibold text-purple-400 mb-3">Quick Links</h3>
             <ul className="space-y-2">
               <li><a href="/" className="hover:text-cyan-400 transition-colors text-sm">Home</a></li>
               <li><a href="/about" className="hover:text-cyan-400 transition-colors text-sm">About Us</a></li>
-              <li><a href="/contact" className="hover:text-cyan-400 transition-colors text-sm">Contact</a></li>
+              <li><a href="/contact" className="hover:text-cyan-400 transition-colors text-sm">Features</a></li>
             </ul>
           </div>
 
           {/* Newsletter Section */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-3">Newsletter</h3>
+            <h3 className="text-lg font-semibold text-purple-400 mb-3">Newsletter</h3>
             <p className="text-gray-400 text-sm mb-3">Subscribe for updates and offers.</p>
             <div className="flex">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 bg-gray-800 text-white px-3 py-2 rounded-l outline-none focus:ring-2 focus:ring-cyan-400 text-sm"
+                className="flex-1 bg-gray-800 text-white px-3 py-2 rounded-l outline-none focus:ring-2 focus:ring-purple-400 text-sm"
               />
-              <button className="bg-cyan-500 p-2 rounded-r hover:bg-cyan-600 transition-colors">
+              <button className="bg-gradient-to-r from-purple-400 to-pink-600 p-2 rounded-r hover:bg-cyan-600 transition-colors">
                 <Send className="w-4 h-4 text-white" />
               </button>
             </div>
