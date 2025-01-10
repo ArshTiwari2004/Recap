@@ -75,7 +75,8 @@ Recap is an innovative study companion designed to revolutionize how students or
 
 ## Architecture of RECAP
 
-
+![Architecture](Architecture.png)
+*Landing page of Recap*
 
 ## 🚀 Getting Started
 
