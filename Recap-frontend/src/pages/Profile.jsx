@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { Camera, Upload, X } from 'lucide-react';
+import { Camera, Upload, X, BookOpen, Bell, Shield, Briefcase, GraduationCap, Link, Github, Linkedin, Twitter } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 
 const Profile = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    title: '',
-    location: '',
     bio: '',
+    institution: '',
+    major: '',
+    yearOfStudy: '',
+    studyPreferences: '',
     github: '',
     linkedin: '',
     twitter: '',
-    skills: '',
-    experience: [{ company: '', position: '', duration: '' }]
+    experience: [{ organization: '', role: '', duration: '' }]
   });
 
   const [preview, setPreview] = useState(null);
@@ -27,9 +29,7 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
+      reader.onloadend = () => setPreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -37,11 +37,7 @@ const Profile = () => {
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover');
   };
 
   const handleDrop = (e) => {
@@ -49,17 +45,11 @@ const Profile = () => {
     e.stopPropagation();
     setDragActive(false);
     
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
+      reader.onloadend = () => setPreview(reader.result);
       reader.readAsDataURL(e.dataTransfer.files[0]);
     }
-  };
-
-  const removeImage = () => {
-    setPreview(null);
   };
 
   const handleExperienceChange = (index, field, value) => {
@@ -68,232 +58,208 @@ const Profile = () => {
     setFormData({ ...formData, experience: newExperience });
   };
 
-  const addExperience = () => {
-    setFormData({
-      ...formData,
-      experience: [...formData.experience, { company: '', position: '', duration: '' }]
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ ...formData, profileImage: preview });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 py-8 px-4">
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
-        <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6">Profile Information</h2>
+    <div className="flex h-screen bg-gray-900">
+      <Sidebar />
+      
+      <div className="flex-1 flex flex-col">
+        {/* Navbar */}
+        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Shield className="w-6 h-6 text-purple-400" />
+            <span className="text-lg font-semibold text-white">Student Profile</span>
+          </div>
           
-          
-          <div className="mb-8 flex flex-col items-center">
-            <div 
-              className={`relative w-32 h-32 rounded-full overflow-hidden ${
-                dragActive ? 'ring-4 ring-blue-500' : ''
-              }`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
-              {preview ? (
-                <>
-                  <img 
-                    src={preview} 
-                    alt="Profile preview" 
-                    className="w-full h-full object-cover"
+          <div className="flex items-center space-x-6">
+            <button className="text-gray-300 hover:text-white transition-colors">
+              Study Stats
+            </button>
+            <button className="text-gray-300 hover:text-white transition-colors">
+              Settings
+            </button>
+            <button className="relative text-gray-300 hover:text-white transition-colors">
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
+            </button>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-8 overflow-auto">
+          <div className="max-w-5xl mx-auto space-y-6">
+            {/* Profile Header */}
+            <div className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 rounded-xl p-8 shadow-xl">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div 
+                  className={`relative w-40 h-40 rounded-full overflow-hidden ${
+                    dragActive ? 'ring-4 ring-purple-500' : 'ring-2 ring-purple-400/30'
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  {preview ? (
+                    <>
+                      <img src={preview} alt="Profile" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => setPreview(null)}
+                        className="absolute top-2 right-2 p-1 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </>
+                  ) : (
+                    <label className="w-full h-full bg-gray-800/80 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-700/80 transition-colors">
+                      <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                      <Camera className="w-8 h-8 text-purple-400 mb-2" />
+                      <span className="text-sm text-purple-400">Upload Photo</span>
+                    </label>
+                  )}
+                </div>
+                
+                <div className="flex-1 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      name="firstName"
+                      placeholder="First Name"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className="bg-gray-800/80 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                    />
+                    <input
+                      type="text"
+                      name="lastName"
+                      placeholder="Last Name"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className="bg-gray-800/80 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                    />
+                  </div>
+                  <textarea
+                    name="bio"
+                    placeholder="Tell us about your study goals and interests..."
+                    value={formData.bio}
+                    onChange={handleChange}
+                    rows={3}
+                    className="w-full bg-gray-800/80 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
                   />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full m-1 hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </>
-              ) : (
-                <label className="w-full h-full bg-gray-700 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-600 transition-colors">
+                </div>
+              </div>
+            </div>
+
+            {/* Academic Info */}
+            <div className="bg-gray-800/90 rounded-xl p-6 shadow-lg backdrop-blur-sm">
+              <div className="flex items-center space-x-2 mb-6">
+                <GraduationCap className="w-6 h-6 text-purple-400" />
+                <h2 className="text-xl font-semibold text-white">Academic Information</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-300 mb-2">Institution</label>
                   <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageChange}
+                    type="text"
+                    name="institution"
+                    placeholder="Your University/College"
+                    value={formData.institution}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
                   />
-                  <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-400">Upload Photo</span>
-                </label>
-              )}
-            </div>
-            <p className="text-gray-400 text-sm mt-2">Drag & drop or click to upload</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-300 mb-2">First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                placeholder="John"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-300 mb-2">Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Doe"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-300 mb-2">About You</label>
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Write a short bio..."
-                value={formData.lastName}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
-            </div>
-
-          </div>
-        </div>
-
-        <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6"> Education</h2>
-          <div className="space-y-6">
-            <div>
-              <label className="block text-gray-300 mb-2">School/College</label>
-              <input
-                type="text"
-                name="title"
-                
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-300 mb-2">Location</label>
-              <input
-                type="text"
-                name="location"
-                
-                value={formData.location}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-300 mb-2">Year Of Passing</label>
-              <input
-                type="text"
-                name="title"
-                
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
-            </div>
-           
-          </div>
-
-        </div>
-
-        <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6">Experience</h2>
-          {formData.experience.map((exp, index) => (
-            <div key={index} className="space-y-4 mb-6">
-              <div>
-                <label className="block text-gray-300 mb-2">Company</label>
-                <input
-                  type="text"
-                  placeholder="Company name"
-                  value={exp.company}
-                  onChange={(e) => handleExperienceChange(index, 'company', e.target.value)}
-                  className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-300 mb-2">Position</label>
-                <input
-                  type="text"
-                  placeholder="Your role"
-                  value={exp.position}
-                  onChange={(e) => handleExperienceChange(index, 'position', e.target.value)}
-                  className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-300 mb-2">Duration</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 2020 - Present"
-                  value={exp.duration}
-                  onChange={(e) => handleExperienceChange(index, 'duration', e.target.value)}
-                  className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-                />
+                </div>
+                <div>
+                  <label className="block text-gray-300 mb-2">Major/Field of Study</label>
+                  <input
+                    type="text"
+                    name="major"
+                    placeholder="e.g. Computer Science"
+                    value={formData.major}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 mb-2">Year of Study</label>
+                  <select
+                    name="yearOfStudy"
+                    value={formData.yearOfStudy}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="">Select Year</option>
+                    <option value="1">First Year</option>
+                    <option value="2">Second Year</option>
+                    <option value="3">Third Year</option>
+                    <option value="4">Fourth Year</option>
+                    <option value="5">Graduate</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-300 mb-2">Study Preferences</label>
+                  <input
+                    type="text"
+                    name="studyPreferences"
+                    placeholder="e.g. Visual learning, Group study"
+                    value={formData.studyPreferences}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                  />
+                </div>
               </div>
             </div>
-          ))}
-          
-        </div>
 
-        <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6">Social Links</h2>
-          <div className="space-y-6">
-            <div>
-              <label className="block text-gray-300 mb-2">GitHub</label>
-              <input
-                type="text"
-                name="github"
-                placeholder="github.com/username"
-                value={formData.github}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
+            {/* Social Links */}
+            <div className="bg-gray-800/90 rounded-xl p-6 shadow-lg backdrop-blur-sm">
+              <div className="flex items-center space-x-2 mb-6">
+                <Link className="w-6 h-6 text-purple-400" />
+                <h2 className="text-xl font-semibold text-white">Social Links</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="relative">
+                  <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="github"
+                    placeholder="GitHub Username"
+                    value={formData.github}
+                    onChange={handleChange}
+                    className="w-full pl-10 bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                  />
+                </div>
+                <div className="relative">
+                  <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="linkedin"
+                    placeholder="LinkedIn Username"
+                    value={formData.linkedin}
+                    onChange={handleChange}
+                    className="w-full pl-10 bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                  />
+                </div>
+                <div className="relative">
+                  <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="twitter"
+                    placeholder="Twitter Username"
+                    value={formData.twitter}
+                    onChange={handleChange}
+                    className="w-full pl-10 bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-gray-300 mb-2">LinkedIn</label>
-              <input
-                type="text"
-                name="linkedin"
-                placeholder="linkedin.com/in/username"
-                value={formData.linkedin}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-300 mb-2">Twitter</label>
-              <input
-                type="text"
-                name="twitter"
-                placeholder="twitter.com/username"
-                value={formData.twitter}
-                onChange={handleChange}
-                className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-              />
+
+            {/* Save Button */}
+            <div className="flex justify-end">
+              <button className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg">
+                Save Profile
+              </button>
             </div>
           </div>
         </div>
-
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-gradient-to-br from-purple-900 to-purple-700 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
-          >
-            Save Profile
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
