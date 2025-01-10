@@ -45,8 +45,8 @@ Recap is an innovative study companion designed to revolutionize how students or
 ![Dashboard](Dashboard.png)
 *Dashboard of RECAP*
 
-![Flashcards](path_to_your_screenshot3.png)
-*AI-Generated Flashcards*
+![Flashcards](Flashcard.png)
+*AI-Generated Flashcards in RECAP*
 
 ## 🛠️ Tech Stack
 
