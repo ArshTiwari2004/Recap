@@ -16,6 +16,7 @@ import Settings from './pages/Settings';
 import Maindashboard from './pages/Maindashboard';
 import { FirebaseProvider } from './context/FirebaseContext';
 import OCRScanner from './pages/OCRscanner';
+import Error404 from './Error404';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/main-dashboard" element={<Maindashboard />} />
         <Route path="/ocr" element={<OCRScanner />} />
+        <Route path="*" element={<Error404 />} />
         </Routes>
         </FirebaseProvider>
     </Router>
