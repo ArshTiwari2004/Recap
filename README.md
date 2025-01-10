@@ -29,7 +29,7 @@ Recap is an innovative study companion designed to revolutionize how students or
 ### 🌟 Key Features
 
 - **Smart Note Organization**: Automatic categorization by subject and topic
-- **View Your Notes**: View all your notes in a organized way
+- **View Your Notes**: View all your notes in a organized, customizable way
 - **Flashcard Generation**: Automatic creation of study cards from your notes which you can revise later
 - **OCR Integration**: Convert handwritten notes to digital text
 - **Audio Transcription**: Convert lecture recordings to searchable text
