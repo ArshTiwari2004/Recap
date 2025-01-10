@@ -2,23 +2,33 @@ import React, { useState, useCallback } from 'react';
 import { FileUp, Image, Mic, Bell, BookOpen, X, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from '../../config/Firebaseconfig';
+import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { storage, fireDB } from '../../config/Firebaseconfig';
 import Profile from '../Profile';
+import AudioTranscription from './Audio';
+import { Trash2, Save } from 'lucide-react';
+import toast from 'react-hot-toast';
+import ProgressBar from '@/components/ProgressBar';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [activeComponent, setActiveComponent] = useState(null);
-    const [noteTitle, setNoteTitle] = useState('');
-    const [noteTopic, setNoteTopic] = useState('');
-    const [noteContent, setNoteContent] = useState('');
-    const [dragActive, setDragActive] = useState(false);
-    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-    const [transcriptionResult, setTranscriptionResult] = useState(null);
-    const [showTranscriptionReview, setShowTranscriptionReview] = useState(false);
-    
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeComponent, setActiveComponent] = useState(null);
+  const [noteTitle, setNoteTitle] = useState('');
+  const [noteTopic, setNoteTopic] = useState('');
+  const [noteContent, setNoteContent] = useState('');
+  const [dragActive, setDragActive] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [transcriptionResult, setTranscriptionResult] = useState(null);
+  const [showTranscriptionReview, setShowTranscriptionReview] = useState(false);
+  const [subjectName, setSubjectName] = useState('');
+  const [topicName, setTopicName] = useState('');
+  const [progress, setProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -60,33 +70,116 @@ const Dashboard = () => {
     }
   };
 
-  const handleUpload = (type) => {
-    if (type === 'audio') {
-      setIsModalOpen(false);
-      setActiveComponent('audio');
-    } else {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = type === 'pdf' ? '.pdf' : 'image/*';
-
-      input.onchange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-          handleFiles(e.target.files);
+  const selectFile = async (fileType) => {
+    return new Promise((resolve, reject) => {
+      // If the file type is audio, do not open the file selector
+      if (fileType === "audio") {
+        reject(new Error("Audio file selection is not supported"));
+        return;
+      }
+  
+      const input = document.createElement("input");
+      input.type = "file";
+  
+      // Set accepted file types based on the selected file type
+      switch (fileType) {
+        case "audio":
+        // Directly resolve "audio" type
+        resolve("audio");
+        return;
+        case "pdf":
+          input.accept = "application/pdf";
+          break;
+        case "image":
+          input.accept = "image/*";
+          break;
+        default:
+          reject(new Error("Unsupported file type"));
+          return;
+      }
+  
+      // Handle file selection
+      input.onchange = () => {
+        if (input.files && input.files[0]) {
+          resolve(input.files[0]);
+        } else {
+          reject(new Error("No file selected"));
         }
       };
+  
+      // Handle errors
+      input.onerror = () => reject(new Error("File selection failed"));
+  
+      // Trigger file input
       input.click();
-      setIsModalOpen(false);
+    });
+  };
+
+  // Handle file upload
+  const handleUpload = async (fileType) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.uid;
+
+    if (!userId) {
+      console.error("User ID not found. Ensure the user is logged in.");
+      toast.error("Session expired. Please log in again.");
+      return;
+    }
+
+    if (!subjectName || !topicName) {
+      toast.error("Please enter both Subject Name and Topic Name before uploading.");
+      return;
+    }
+
+    const sanitizedSubjectName = subjectName.trim().toLowerCase();
+    const sanitizedTopicName = topicName.trim().toLowerCase();
+
+    try {
+      if (fileType === 'audio') {
+        setIsModalOpen(false);
+        setActiveComponent('audio');
+      }
+      const file = await selectFile(fileType);
+      if (!file) return;
+
+      const storageRef = ref(
+        storage,
+        `${userId}/${sanitizedSubjectName}/${sanitizedTopicName}/${file.name}`
+      );
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      setIsUploading(true);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        (error) => {
+          console.error("Upload failed:", error);
+          alert("An error occurred during upload. Please try again.");
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("File available at:", downloadURL);
+          setIsSuccessModalOpen(true);
+          // alert("File uploaded successfully!");
+        }
+      );
+      setSubjectName("");
+      setTopicName("");
+    } catch (error) {
+      console.error("Error during file selection or upload:", error);
+      // alert("Failed to upload the file. Please try again.");
     }
   };
 
   const handleTranscriptionComplete = (transcriptionData) => {
     setTranscriptionResult(transcriptionData);
     setActiveComponent(null);
-   
-    
-   
-      setShowTranscriptionReview(true);
-
+    setShowTranscriptionReview(true);
   };
 
   const handleDeleteTranscription = () => {
@@ -94,6 +187,53 @@ const Dashboard = () => {
     setShowTranscriptionReview(false);
   };
 
+ const handleSaveNote = async () => {
+    if (!noteTitle.trim() || !noteTopic.trim() || noteContent.trim().length < 20) {
+      toast.error('Please fill all fields and ensure the content is at least 20 characters.');
+      return;
+    }
+  
+    setLoading(true);
+  
+    try {
+      // Retrieve logged-in user's data
+      const user = JSON.parse(localStorage.getItem("user")); 
+      if (!user?.uid) {
+        throw new Error("User not logged in! Please log in to save your notes.");
+      }
+  
+      // Create the note object
+      const noteData = {
+        subject: noteTitle.trim(),
+        topic: noteTopic.trim(),
+        content: noteContent.trim(),
+        uid: user.uid,
+        createdAt: serverTimestamp(),
+      };
+  
+      // Save note to Firestore
+      const docRef = await addDoc(collection(fireDB, 'notes'), noteData);
+  
+      // Notify the user
+      toast.success('Note saved successfully!');
+      console.log(`Note ID: ${docRef.id}`);
+  
+      // Clear input fields
+      setNoteTitle('');
+      setNoteTopic('');
+      setNoteContent('');
+    } catch (error) {
+      console.error('Error saving note:', error);
+      if (error.message.includes("User not logged in")) {
+        toast.error(error.message); // Specific error message
+      } else {
+        toast.error('Failed to save the note. Please try again later.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   return (
     <div className="flex h-screen bg-gray-900" onDragEnter={handleDrag}>
       <Sidebar />
@@ -170,9 +310,9 @@ const Dashboard = () => {
                 <button className="px-6 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
                   Delete
                 </button>
-                <button 
-             onClick={handleSaveClick}
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors">
+                <button
+                  onClick={handleSaveNote}
+                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors">
                   Save
                 </button>
               </div>
@@ -187,10 +327,30 @@ const Dashboard = () => {
           onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}>
           <div className="bg-gray-800 rounded-xl p-6 max-w-2xl w-full mx-4 border border-gray-700">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-semibold text-white">Choose Upload Type</h3>
+              <h3 className="text-xl font-semibold text-white">Upload Notes</h3>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X className="w-5 h-5" />
               </button>
+            </div>
+
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Enter Subject Name"
+                className="w-full p-3 bg-gray-700 rounded-lg text-white border border-gray-600 focus:outline-none"
+                value={subjectName}
+                onChange={(e) => setSubjectName(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Enter Topic Name"
+                className="w-full p-3 bg-gray-700 rounded-lg text-white border border-gray-600 focus:outline-none"
+                value={topicName}
+                onChange={(e) => setTopicName(e.target.value)}
+              />
             </div>
 
             <div className={`grid grid-cols-3 gap-4 ${dragActive ? 'border-2 border-dashed border-purple-500 rounded-xl p-4' : ''}`}>
@@ -225,14 +385,14 @@ const Dashboard = () => {
           <div className="bg-gray-800 rounded-xl p-6 max-w-4xl w-full mx-4 border border-gray-700">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-semibold text-white">Transcription Result</h3>
-              <button 
-                onClick={() => setShowTranscriptionReview(false)} 
+              <button
+                onClick={() => setShowTranscriptionReview(false)}
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             {/* Transcription Content */}
             <div className="bg-gray-700/50 rounded-xl p-6 mb-6 max-h-[60vh] overflow-y-auto">
               <h4 className="text-purple-400 font-medium mb-2">
@@ -253,7 +413,7 @@ const Dashboard = () => {
                 <span>Delete</span>
               </button>
               <button
-                 onClick={handleSaveClick}
+                onClick={handleSaveClick}
                 className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors"
               >
                 <Save className="w-4 h-4" />
@@ -274,31 +434,19 @@ const Dashboard = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <AudioTranscription onTranscriptionComplete={handleTranscriptionComplete} />
           </div>
         </div>
       )}
 
-
-
-      {/* Success Modal */}
-      {/* {isSuccessModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-green-700 rounded-xl p-6 max-w-lg mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold text-white">Upload Successful!</h3>
-              <button onClick={() => setIsSuccessModalOpen(false)} className="text-gray-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-white text-center">Your file has been uploaded successfully!</p>
-            <button onClick={() => setIsSuccessModalOpen(false)} className="mt-4 px-6 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg hover:from-green-500 hover:to-green-400">
-              Close
-            </button>
-          </div>
+      {isUploading && (
+        <div className="mt-4">
+          <p className="text-center text-gray-500">Uploading... {Math.round(progress)}%</p>
+          <ProgressBar progress={progress} />
         </div>
-      )} */}
+      )}
+
       {isSuccessModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 border border-gray-700">

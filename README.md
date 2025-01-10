@@ -52,25 +52,26 @@ Recap is an innovative study companion designed to revolutionize how students or
 
 ### Frontend
 - React.js
-- Next.js
 - Tailwind CSS
-- TypeScript
+- shadcn ui
+- Javascript
+- Tessaract.js
 
 ### Backend
 - Node.js
-- Express.js
-- MongoDB
 - Firebase Authentication
+- Firestore 
+- Firebase storage
+- Firebase cloud function
 
-### AI/ML
-- OpenAI GPT-3.5
-- TensorFlow.js (OCR)
-- Natural Language Processing
+### API Used
+- Assembly AI API
+- Gemini API
 
 ### DevOps & Deployment
 - Vercel
 - Git & GitHub
-- Docker
+
 
 ## Architecture of RECAP
 

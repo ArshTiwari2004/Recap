@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 
 import Maindashboard from './pages/Maindashboard';
+import OCRScanner from './pages/OCRscanner';
 
 const App = () => {
   return (
@@ -32,7 +33,9 @@ const App = () => {
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/ai-insights" element={<AIInsights />} />
         <Route path="/settings" element={<Settings />} />
-        
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/main-dashboard" element={<Maindashboard />} />
+        <Route path="/ocr" element={<OCRScanner />} />
         </Routes>
     </Router>
     </>
