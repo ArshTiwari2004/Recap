@@ -42,7 +42,7 @@ Recap is an innovative study companion designed to revolutionize how students or
 ![Landingpage](Landingpage.png)
 *Landing page of Recap*
 
-![Notes Organization](path_to_your_screenshot2.png)
+![Dashboard](Dashboard.png)
 *Intelligent Note Organization System*
 
 ![Flashcards](path_to_your_screenshot3.png)
