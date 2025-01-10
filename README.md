@@ -29,12 +29,12 @@ Recap is an innovative study companion designed to revolutionize how students or
 ### 🌟 Key Features
 
 - **Smart Note Organization**: Automatic categorization by subject and topic
-- **Concept Mapping**: AI-powered linking of related concepts
-- **Flashcard Generation**: Automatic creation of study cards from your notes
+- **View Your Notes**: View all your notes in a organized way
+- **Flashcard Generation**: Automatic creation of study cards from your notes which you can revise later
 - **OCR Integration**: Convert handwritten notes to digital text
 - **Audio Transcription**: Convert lecture recordings to searchable text
-- **Collaborative Learning**: Share and study with peers
-- **AI-Powered Insights**: Identify knowledge gaps and get personalized recommendations
+- **Collaborative Learning**: Share and create groups with peers and study
+- **AI-Powered Insights**: Identify knowledge gaps and get personalized recommendations and resources
 - **Gamified Learning**: Stay motivated with study streaks and interactive quizzes
 
 ## 🖼️ Screenshots
@@ -59,14 +59,15 @@ Recap is an innovative study companion designed to revolutionize how students or
 
 ### Backend
 - Node.js
-- Firebase Authentication
-- Firestore 
+- Firebase Authentication/OAuth
+- Firestore Database
 - Firebase storage
 - Firebase cloud function
+- Firebase Hosting
 
 ### API Used
 - Assembly AI API
-- Gemini API
+- Cohere AI API
 
 ### DevOps & Deployment
 - Vercel
