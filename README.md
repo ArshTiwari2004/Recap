@@ -43,7 +43,7 @@ Recap is an innovative study companion designed to revolutionize how students or
 *Landing page of Recap*
 
 ![Dashboard](Dashboard.png)
-*Intelligent Note Organization System*
+*Dashboard of RECAP*
 
 ![Flashcards](path_to_your_screenshot3.png)
 *AI-Generated Flashcards*
