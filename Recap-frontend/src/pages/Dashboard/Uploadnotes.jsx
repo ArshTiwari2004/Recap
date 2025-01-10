@@ -91,8 +91,10 @@ const Dashboard = () => {
           input.accept = "application/pdf";
           break;
         case "image":
-          input.accept = "image/*";
-          break;
+          // input.accept = "image/*";
+          // break;
+          resolve("image");
+          return;
         default:
           reject(new Error("Unsupported file type"));
           return;
@@ -138,6 +140,9 @@ const Dashboard = () => {
       if (fileType === 'audio') {
         setIsModalOpen(false);
         setActiveComponent('audio');
+      }
+      if (fileType === "image") {
+        navigate("/ocr");
       }
       const file = await selectFile(fileType);
       if (!file) return;
