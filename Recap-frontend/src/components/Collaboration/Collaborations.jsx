@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Users, Plus, UserPlus, Settings, MessageSquare, BookOpen, Bell, Grid, Filter, ChevronDown, Clock, Star, Lock, Globe, BarChart2 } from 'lucide-react';
 import Sidebar from '../Sidebar';
 import { useFirebase } from '@/context/FirebaseContext';
@@ -152,6 +152,14 @@ const CollaborativeNotes = () => {
     );
   };
 
+  const [user, setUser] = useState(null);
+  
+    useEffect(() => {
+          // Retrieve user data from localStorage
+          const storedUser = JSON.parse(localStorage.getItem('user'));
+          setUser(storedUser);
+        }, []);
+
   return (
     <>
       <div className="flex h-screen bg-gray-900">
@@ -175,9 +183,22 @@ const CollaborativeNotes = () => {
                 <Bell className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
               </button>
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">U</span>
-              </div>
+              <div
+            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt="User Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white text-sm font-medium">
+                U
+              </span>
+            )}
+          </div>
             </div>
           </div>
 

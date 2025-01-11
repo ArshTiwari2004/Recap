@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import Sidebar from '../../components/Sidebar'; // Assuming you have a Sidebar component
 import { Search, Grid, List, Filter, ChevronDown, BookOpen, Bell, Tag, Archive, Folder, Clock, Eye, Download, Share2, Edit2, Trash2, FileUp, Image, Mic, NotebookPen, } from 'lucide-react';
 import { Loader } from '@/components/Loader';
+import { ref, listAll, getDownloadURL } from 'firebase/storage';
 
 const Modal = ({ note, onClose }) => {
   return (
@@ -54,6 +55,67 @@ const MyNotes = () => {
   const [activeFilter, setActiveFilter] = useState(null);
   const [viewMode, setViewMode] = useState('grid');
   const [selectedNote, setSelectedNote] = useState(null);
+  const [notesBySubject, setNotesBySubject] = useState({});
+  const [user, setUser] = useState(null);
+
+  const fetchNotesBySubject = async () => {
+    setLoading(true);
+
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const userId = user?.uid;
+
+      if (!userId) {
+        toast.error('Please log in to view your notes.');
+        setLoading(false);
+        return;
+      }
+
+      // Reference to the user's folder
+      const userFolderRef = ref(storage, `${userId}/`);
+
+      // Fetch all subjects in the user's folder
+      const subjectSnapshot = await listAll(userFolderRef);
+      const subjectFolders = subjectSnapshot.prefixes;
+
+      const notesBySubject = {};
+
+      // Iterate over each subject folder
+      for (const subjectFolder of subjectFolders) {
+        const subjectName = subjectFolder.name;
+
+        // Fetch all files in the subject folder
+        const notesSnapshot = await listAll(subjectFolder);
+
+        const filePromises = notesSnapshot.items.map(async (item) => {
+          const downloadURL = await getDownloadURL(item);
+          return {
+            name: item.name,
+            url: downloadURL,
+            path: item.fullPath,
+          };
+        });
+
+        const subjectNotes = await Promise.all(filePromises);
+
+        // Group notes by subject
+        notesBySubject[subjectName] = subjectNotes;
+      }
+
+      setNotesBySubject(notesBySubject);
+    } catch (error) {
+      console.error('Error fetching notes by subject:', error);
+      toast.error('Failed to load notes by subject.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCategory === 'subjects') {
+      fetchNotesBySubject();
+    }
+  }, [selectedCategory]);
 
   // Fetch notes from Firestore
   useEffect(() => {
@@ -113,6 +175,13 @@ const MyNotes = () => {
   const closeModal = () => {
     setSelectedNote(null);
   };
+
+  useEffect(() => {
+      // Retrieve user data from localStorage
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      setUser(storedUser);
+    }, []);
+
   // Render notes in the UI
   return (
     <div className="flex h-screen bg-gray-900">
@@ -141,9 +210,22 @@ const MyNotes = () => {
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button>
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-medium">U</span>
-            </div>
+            <div
+            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt="User Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white text-sm font-medium">
+                U
+              </span>
+            )}
+          </div>
           </div>
         </div>
 
