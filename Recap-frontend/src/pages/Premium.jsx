@@ -46,6 +46,7 @@ const Premium = () => {
     }
   };
 
+
   const features = [
     {
       icon: Brain,
@@ -71,14 +72,17 @@ const Premium = () => {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      <Sidebar />
+      {/* Sidebar */}
+      <div className="sticky top-0 h-screen w-64">
+        <Sidebar />
+      </div>
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-y-auto">
         {/* Navbar */}
         <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 ml-6">
             <BookOpen className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">Premium Features</span>
+            <span className="text-lg font-semibold text-white ">Premium Features</span>
           </div>
           <div className="flex items-center space-x-6">
             <button className="text-gray-300 hover:text-white transition-colors">
@@ -108,7 +112,7 @@ const Premium = () => {
             <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
               Unlock Your Learning Potential
             </h1>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-400 max-w-3xl mx-auto">
               Choose the perfect plan for your learning journey. All plans include a 7-day free trial.
             </p>
           </div>
@@ -186,7 +190,7 @@ const Premium = () => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-700">
+                <tr className="border-b border-gray-700">
                     <th className="py-4 text-left text-gray-400">Feature</th>
                     <th className="py-4 text-center text-gray-400">Basic</th>
                     <th className="py-4 text-center text-gray-400">Premium Monthly</th>
@@ -223,12 +227,17 @@ const Premium = () => {
             </div>
           </div>
 
-          {/* Trust indicators */}
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 text-gray-400">
-              <ShieldCheck className="h-5 w-5 text-purple-400" />
-              <span>Secure payment • Cancel anytime • 7-day free trial</span>
+          {/* Subscription footer */}
+          <div className="bg-gradient-to-br from-purple-900 to-purple-700 rounded-2xl p-8 text-white flex justify-between items-center">
+            <div>
+              <h3 className="text-xl font-medium">Not sure yet?</h3>
+              <p className="text-sm text-purple-200">
+                Sign up for our free plan and explore the benefits of premium at your own pace.
+              </p>
             </div>
+            <button className="bg-white text-purple-900 py-4 px-6 rounded-xl font-medium">
+              Try Free Plan
+            </button>
           </div>
         </div>
       </div>

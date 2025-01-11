@@ -260,7 +260,7 @@ const Flashcards = () => {
     try {
       setIsGenerating(true);
       
-      const prompt = `Generate 5 flashcards from this content. For each flashcard, create a question and answer pair that tests understanding of key concepts. Format your response as a JSON array of objects, where each object has properties: "question", "answer", "difficulty" (easy/medium/hard). Make the questions challenging but clear. Content: ${noteContent}`;
+      const prompt = `Generate 1 flashcards from this content. For each flashcard, create a question and answer pair that tests understanding of key concepts. Format your response as a JSON array of objects, where each object has properties: "question", "answer", "difficulty" (easy/medium/hard). Make the questions challenging but clear. Content: ${noteContent}`;
 
       const response = await fetch('https://api.cohere.ai/v1/generate', {
         method: 'POST',
