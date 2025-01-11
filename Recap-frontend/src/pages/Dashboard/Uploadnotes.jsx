@@ -142,6 +142,10 @@ const Dashboard = () => {
         setIsModalOpen(false);
         setActiveComponent('audio');
       }
+      if (fileType === "pdf") {
+        navigate("/pdf-ocr");
+      }
+
       if (fileType === "image") {
         navigate("/ocr");
       }
