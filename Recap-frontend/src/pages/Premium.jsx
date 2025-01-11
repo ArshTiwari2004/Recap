@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   CreditCard, Check, Sparkles, Star, ShieldCheck, User, Mail, Phone,
   BookOpen, Bell, Zap, Book, Users, Brain, Calendar
@@ -8,6 +8,14 @@ import Sidebar from '../components/Sidebar';
 
 const Premium = () => {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const [user, setUser] = useState(null);
+  
+    useEffect(() => {
+          // Retrieve user data from localStorage
+          const storedUser = JSON.parse(localStorage.getItem('user'));
+          setUser(storedUser);
+        }, []);
+  
 
   const plans = {
     free: {
@@ -91,9 +99,22 @@ const Premium = () => {
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button>
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-medium">U</span>
-            </div>
+            <div
+            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt="User Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white text-sm font-medium">
+                U
+              </span>
+            )}
+          </div>
           </div>
         </div>
 
