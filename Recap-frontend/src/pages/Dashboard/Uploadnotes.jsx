@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { FileUp, Image, Mic, Bell, BookOpen, X, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -169,6 +170,7 @@ const Dashboard = () => {
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           console.log("File available at:", downloadURL);
+          setNotees((prevNotees) => [...prevNotees, downloadURL]);
           setIsSuccessModalOpen(true);
           // alert("File uploaded successfully!");
         }
@@ -238,6 +240,11 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    // Retrieve user data from localStorage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    setUser(storedUser);
+  }, []);
   
   return (
     <div className="flex h-screen bg-gray-900" onDragEnter={handleDrag}>
@@ -266,11 +273,21 @@ const Dashboard = () => {
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button>
             <div
-              className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
-              onClick={() => navigate("/profile")}
-            >
-              <span className="text-white text-sm font-medium">U</span>
-            </div>
+            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt="User Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white text-sm font-medium">
+                U
+              </span>
+            )}
+          </div>
           </div>
         </div>
 
