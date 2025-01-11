@@ -17,6 +17,7 @@ import Maindashboard from './pages/Maindashboard';
 import { FirebaseProvider } from './context/FirebaseContext';
 import OCRScanner from './pages/OCRscanner';
 import Error404 from './Error404';
+import PDFOCRScanner from './pages/Ocrpdf';
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="/main-dashboard" element={<Maindashboard />} />
         <Route path="/ocr" element={<OCRScanner />} />
         <Route path="*" element={<Error404 />} />
+        <Route path="/pdf-ocr" element={<PDFOCRScanner />} />
         </Routes>
         </FirebaseProvider>
     </Router>
