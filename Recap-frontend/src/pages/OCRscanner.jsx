@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import { Upload, RefreshCw, FileText, AlertCircle, BookOpen, Bell } from "lucide-react";
 import Tesseract from "tesseract.js";
 import Sidebar from "@/components/Sidebar";
-import {  collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { fireDB } from "@/config/Firebaseconfig";
 import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 const OCRScanner = () => {
+
+  const location = useLocation();
+  const { subjectName, topicName } = location.state || {}; // Fallback to an empty object if state is undefined
+  // console.log("Subject Name:", subjectName);
+  // console.log("Topic Name:", topicName);
   const [image, setImage] = useState(null);
   const [text, setText] = useState("");
   const [progress, setProgress] = useState(0);
@@ -75,10 +81,12 @@ const OCRScanner = () => {
     }
 
     try {
-      const docRef = await addDoc(collection(fireDB, "image-notes"), {
+      const docRef = await addDoc(collection(fireDB, "notes"), {
         uid: user.uid,
-        text: text,
-        createdAt: new Date().toISOString(),
+        content: text,
+        subject: subjectName.trim(),
+        topic: topicName.trim(),
+        createdAt: serverTimestamp(),
       });
       toast.success(`Text saved successfully with ID: ${docRef.id}`);
     } catch (error) {

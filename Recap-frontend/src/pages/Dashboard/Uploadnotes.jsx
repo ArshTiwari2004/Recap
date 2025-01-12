@@ -143,11 +143,21 @@ const Dashboard = () => {
         setActiveComponent('audio');
       }
       if (fileType === "pdf") {
-        navigate("/pdf-ocr");
+        navigate("/pdf-ocr",{
+          state: {
+            subjectName: sanitizedSubjectName,
+            topicName: sanitizedTopicName,
+          },
+        });
       }
 
       if (fileType === "image") {
-        navigate("/ocr");
+        navigate("/ocr",{
+          state: {
+            subjectName: sanitizedSubjectName,
+            topicName: sanitizedTopicName,
+          },
+        });
       }
       const file = await selectFile(fileType);
       if (!file) return;
@@ -249,6 +259,30 @@ const Dashboard = () => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
   }, []);
+
+  const saveToFirestore = async () => {
+    if (!user?.uid) {
+      alert('User not logged in. Please log in to save data.');
+      return;
+    }
+
+    const documentData = {
+      uid: user.uid,
+      content: transcriptionResult.content,
+      subject: subjectName.trim(),
+    topic: topicName.trim(),
+      createdAt: serverTimestamp(),
+    };
+
+    try {
+      await addDoc(collection(fireDB, 'notes'), documentData);
+      toast.success('Notes saved successfully!');
+      setIsSuccessModalOpen(true); // Open the modal
+    } catch (error) {
+      console.error('Error saving transcription to Firestore:', error);
+      toast.error('Failed to save transcription. Please try again.');
+    }
+  };
   
   return (
     <div className="flex h-screen bg-gray-900" onDragEnter={handleDrag}>
@@ -441,11 +475,11 @@ const Dashboard = () => {
                 <span>Delete</span>
               </button>
               <button
-                onClick={handleSaveClick}
+                onClick={saveToFirestore}
                 className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors"
               >
                 <Save className="w-4 h-4" />
-                <span>Save Note</span>
+                <span>Save Notes</span>
               </button>
             </div>
           </div>
@@ -463,7 +497,9 @@ const Dashboard = () => {
               </button>
             </div>
 
-            <AudioTranscription onTranscriptionComplete={handleTranscriptionComplete} />
+            <AudioTranscription onTranscriptionComplete={handleTranscriptionComplete}
+            subjectName={subjectName} 
+            topicName={topicName}  />
           </div>
         </div>
       )}
