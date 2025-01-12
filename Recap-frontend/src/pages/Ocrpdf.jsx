@@ -7,8 +7,14 @@ import * as pdfjsLib from "pdfjs-dist";
 import Tesseract from "tesseract.js";
 import Sidebar from "@/components/Sidebar";
 import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 const PDFOCRScanner = () => {
+
+  const location = useLocation();
+  const { subjectName, topicName } = location.state || {}; 
+  // console.log("Subject Name:", subjectName);
+  
   const [pdfFile, setPdfFile] = useState(null);
   const [text, setText] = useState("");
   const [progress, setProgress] = useState(0);
@@ -200,11 +206,10 @@ const pdfjsWorkerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVer
 
       // Save note data to Firestore
       const noteData = {
-        title: noteTitle,
-        topic: noteTopic,
+        uid: user.uid,
+        subject: subjectName.trim(),
+        topic: topicName.trim(),
         content: text,
-        pdfUrl: pdfUrl,
-        userId: user.uid,
         createdAt: serverTimestamp(),
       };
 
