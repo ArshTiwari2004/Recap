@@ -1,9 +1,18 @@
 import React, { useState } from "react";
-import { Upload, RefreshCw, FileText, AlertCircle, FileUp, Image, Mic, Bell, BookOpen } from "lucide-react";
+import { Upload, RefreshCw, FileText, AlertCircle, BookOpen, Bell } from "lucide-react";
 import Tesseract from "tesseract.js";
 import Sidebar from "@/components/Sidebar";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { fireDB } from "@/config/Firebaseconfig";
+import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 const OCRScanner = () => {
+
+  const location = useLocation();
+  const { subjectName, topicName } = location.state || {}; // Fallback to an empty object if state is undefined
+  // console.log("Subject Name:", subjectName);
+  // console.log("Topic Name:", topicName);
   const [image, setImage] = useState(null);
   const [text, setText] = useState("");
   const [progress, setProgress] = useState(0);
@@ -64,10 +73,32 @@ const OCRScanner = () => {
       });
   };
 
+  const saveTextToFirestore = async () => {
+    const user = JSON.parse(localStorage.getItem("user")); // Retrieve user from local storage
+    if (!user || !user.uid) {
+      toast.error("User not logged in or UID not found in local storage.");
+      return;
+    }
+
+    try {
+      const docRef = await addDoc(collection(fireDB, "notes"), {
+        uid: user.uid,
+        content: text,
+        subject: subjectName.trim(),
+        topic: topicName.trim(),
+        createdAt: serverTimestamp(),
+      });
+      toast.success(`Text saved successfully with ID: ${docRef.id}`);
+    } catch (error) {
+      console.error("Error saving text to Firestore:", error);
+      toast.error("Failed to save text to Firestore.");
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black overflow-hidden">
       {/* Sidebar */}
-      <Sidebar/>
+      <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 ml-30">
@@ -80,19 +111,7 @@ const OCRScanner = () => {
             </div>
 
             <div className="flex items-center space-x-6">
-              <button className="text-gray-400 hover:text-white transition-colors duration-200">
-                Feedback
-              </button>
-              <button className="text-gray-400 hover:text-white transition-colors duration-200">
-                Help
-              </button>
-              <button className="text-gray-400 hover:text-white transition-colors duration-200">
-                Docs
-              </button>
-              <div className="relative">
-                <Bell className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors duration-200" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full ring-2 ring-gray-900"></span>
-              </div>
+              <Bell className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors duration-200" />
               <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity duration-200">
                 <span className="text-white text-sm font-medium">U</span>
               </div>
@@ -170,6 +189,17 @@ const OCRScanner = () => {
             >
               {isLoading ? "Processing..." : "Extract Text"}
             </button>
+
+            {/* Save Button */}
+            {text && (
+              <button
+                onClick={saveTextToFirestore}
+                className="w-full py-4 px-6 mt-4 bg-gradient-to-r from-green-600 to-green-800 rounded-xl font-medium text-white
+                  shadow-lg shadow-green-500/20 hover:shadow-green-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+              >
+                Save Notes
+              </button>
+            )}
 
             {/* Extracted Text */}
             {text && (

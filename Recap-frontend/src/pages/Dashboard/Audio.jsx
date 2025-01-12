@@ -1,6 +1,9 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Mic, Square, Upload, Loader } from 'lucide-react';
 import { AssemblyAI } from 'assemblyai';
+import { getFirestore, doc, setDoc, serverTimestamp, addDoc } from 'firebase/firestore';
+import { fireDB } from '@/config/Firebaseconfig';
+import toast from 'react-hot-toast';
 
 // Initialize AssemblyAI client
 const client = new AssemblyAI({
@@ -13,6 +16,33 @@ const AudioTranscription = ({ onTranscriptionComplete }) => {
   const [transcribedText, setTranscribedText] = useState('');
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  const userId = user?.uid;
+
+  const saveToFirestore = async (transcription) => {
+    if (!userId) {
+      alert('User not logged in. Please log in to save data.');
+      return;
+    }
+
+    const documentData = {
+      uid: userId,
+      content: transcribedText,
+      subject: subjectName,
+      topic: topicName,
+      createdAt: serverTimestamp(),
+    };
+
+    try {
+      await addDoc(collection(fireDB, 'notes'), documentData);
+      toast.success('Notes saved successfully!');
+    } catch (error) {
+      console.error('Error saving transcription to Firestore:', error);
+      toast.error('Failed to save transcription. Please try again.');
+    }
+  };
+
 
   // Handle file upload transcription
   const handleFileUpload = async (file) => {
@@ -143,11 +173,11 @@ const AudioTranscription = ({ onTranscriptionComplete }) => {
         {/* Transcription Result */}
         {transcribedText && (
           <div className="mt-6">
-            <h3 className="text-white font-medium mb-2">Transcription:</h3>
-            <div className="bg-gray-700/50 rounded-lg p-4 max-h-60 overflow-y-auto">
-              <p className="text-gray-200 whitespace-pre-wrap">{transcribedText}</p>
-            </div>
+          <h3 className="text-white font-medium mb-2">Transcription:</h3>
+          <div className="bg-gray-700/50 rounded-lg p-4 max-h-60 overflow-y-auto">
+            <p className="text-gray-200 whitespace-pre-wrap">{transcribedText}</p>
           </div>
+        </div>
         )}
       </div>
     </div>
