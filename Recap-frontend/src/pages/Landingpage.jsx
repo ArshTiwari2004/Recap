@@ -7,12 +7,16 @@ import Footer from '../components/Footer';
 import { signOut } from "firebase/auth";
 import { auth } from "../config/Firebaseconfig";
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+
 
 const LandingPage = () => {
 
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isSignupOpen, setSignupOpen] = useState(false);
   const [user, setUser] = useState(null);
+  
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -100,14 +104,23 @@ const LandingPage = () => {
                 Capture, connect, and master your study materials effortlessly.
               </p>
               <div className="flex justify-center">
-                <ButtonsCard 
-                 onClick={() => setSignupOpen(true)}
+              {user ? (<ButtonsCard 
+                 onClick={() => navigate('/main-dashboard')}
                 className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
                   <span className="flex items-center gap-2">
-                    Get Started Free
+                    Go to Dashboard 
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
-                </ButtonsCard>
+                </ButtonsCard>):(
+                  <ButtonsCard 
+                  onClick={() => setSignupOpen(true)}
+                 className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
+                   <span className="flex items-center gap-2">
+                     Get Started Free
+                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                   </span>
+                 </ButtonsCard>
+                )}
               </div>
             </div>
           </div>
