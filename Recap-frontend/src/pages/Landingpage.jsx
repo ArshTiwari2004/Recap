@@ -49,8 +49,8 @@ const LandingPage = () => {
           <div className="hidden md:block">
             <div className="flex items-center space-x-10">
               <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#pricing">Pricing</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#about">About</a>
+              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#team">Team</a>
+             
               {user ? (
                 <button
                 onClick={handleLogout}
@@ -128,7 +128,7 @@ const LandingPage = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24" id = "features">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div
