@@ -8,7 +8,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../config/Firebaseconfig";
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
+import TeamSection from '@/components/Team';
 
 const LandingPage = () => {
 
@@ -154,6 +154,9 @@ const LandingPage = () => {
           Start Your Smart Study Journey Now!
         </button>
       </div>
+
+      {/* Team Section */}
+      <TeamSection />
 
 
 
