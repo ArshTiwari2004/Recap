@@ -9,6 +9,7 @@ import { auth } from "../config/Firebaseconfig";
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import TeamSection from '@/components/Team';
+import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
 
@@ -44,7 +45,9 @@ const LandingPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex text-white text-bold items-center">
-             Re<span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">cap</span>
+            <Link to = "/">
+             <span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-bold text-2xl">Recap</span>
+            </Link>
           </div>
           <div className="hidden md:block">
             <div className="flex items-center space-x-10">
