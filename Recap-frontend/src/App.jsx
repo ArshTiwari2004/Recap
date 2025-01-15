@@ -15,13 +15,17 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 
 import Maindashboard from './pages/Maindashboard';
+import { FirebaseProvider } from './context/FirebaseContext';
 import OCRScanner from './pages/OCRscanner';
+import Error404 from './Error404';
+import PDFOCRScanner from './pages/Ocrpdf';
 
 const App = () => {
   return (
     <>
     <Toaster />
     <Router>
+      <FirebaseProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/premium" element={<Premium />} />
@@ -29,14 +33,19 @@ const App = () => {
         <Route path="/upload-note" element={<Dashboard />} />
         <Route path="/my-notes" element={<MyNotes />} />
         <Route path="/flashcards" element={<Flashcards />} />
+      
         <Route path="/collaboration" element={<CollaborativeNotes />} />
+     
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/ai-insights" element={<AIInsights />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/main-dashboard" element={<Maindashboard />} />
         <Route path="/ocr" element={<OCRScanner />} />
+        <Route path="*" element={<Error404 />} />
+        <Route path="/pdf-ocr" element={<PDFOCRScanner />} />
         </Routes>
+        </FirebaseProvider>
     </Router>
     </>
   )

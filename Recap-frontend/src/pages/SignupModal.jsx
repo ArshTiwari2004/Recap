@@ -7,6 +7,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom'
 import { Timestamp, addDoc, collection } from 'firebase/firestore'
+import LoginModal from './LoginModal';
 
 const SignupModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -15,6 +16,8 @@ const SignupModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  const [loginOpen, setLoginOpen] = useState(false);
 
    const handleSignup = async(e)=>{
     e.preventDefault();
@@ -150,9 +153,17 @@ const SignupModal = ({ isOpen, onClose }) => {
           <a href="#" className="text-purple-400 hover:text-purple-300">Terms of Use</a> and{' '}
           <a href="#" className="text-purple-400 hover:text-purple-300">Privacy Policy</a>
         </p>
-        {/* <p className="text-center text-gray-400 text-sm mt-2">
-          Already have an account? <Link to="/login" className="text-purple-400 hover:text-purple-300">Log in</Link>
-        </p> */}
+        <p className="text-center text-gray-400 text-sm mt-2">
+  Already have an account? 
+  <span 
+    onClick={() => setLoginOpen(true)} 
+    className="text-purple-400 hover:text-purple-300 cursor-pointer  ml-1"
+  >
+    Log in
+  </span>
+</p>
+<LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
+
       </div>
     </div>
   );

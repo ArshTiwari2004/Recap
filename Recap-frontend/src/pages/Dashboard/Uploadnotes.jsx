@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { FileUp, Image, Mic, Bell, BookOpen, X, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -91,8 +92,10 @@ const Dashboard = () => {
           input.accept = "application/pdf";
           break;
         case "image":
-          input.accept = "image/*";
-          break;
+          // input.accept = "image/*";
+          // break;
+          resolve("image");
+          return;
         default:
           reject(new Error("Unsupported file type"));
           return;
@@ -139,6 +142,23 @@ const Dashboard = () => {
         setIsModalOpen(false);
         setActiveComponent('audio');
       }
+      if (fileType === "pdf") {
+        navigate("/pdf-ocr",{
+          state: {
+            subjectName: sanitizedSubjectName,
+            topicName: sanitizedTopicName,
+          },
+        });
+      }
+
+      if (fileType === "image") {
+        navigate("/ocr",{
+          state: {
+            subjectName: sanitizedSubjectName,
+            topicName: sanitizedTopicName,
+          },
+        });
+      }
       const file = await selectFile(fileType);
       if (!file) return;
 
@@ -164,6 +184,7 @@ const Dashboard = () => {
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           console.log("File available at:", downloadURL);
+          setNotees((prevNotees) => [...prevNotees, downloadURL]);
           setIsSuccessModalOpen(true);
           // alert("File uploaded successfully!");
         }
@@ -233,6 +254,35 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    // Retrieve user data from localStorage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    setUser(storedUser);
+  }, []);
+
+  const saveToFirestore = async () => {
+    if (!user?.uid) {
+      alert('User not logged in. Please log in to save data.');
+      return;
+    }
+
+    const documentData = {
+      uid: user.uid,
+      content: transcriptionResult.content,
+      subject: subjectName.trim(),
+    topic: topicName.trim(),
+      createdAt: serverTimestamp(),
+    };
+
+    try {
+      await addDoc(collection(fireDB, 'notes'), documentData);
+      toast.success('Notes saved successfully!');
+      setIsSuccessModalOpen(true); // Open the modal
+    } catch (error) {
+      console.error('Error saving transcription to Firestore:', error);
+      toast.error('Failed to save transcription. Please try again.');
+    }
+  };
   
   return (
     <div className="flex h-screen bg-gray-900" onDragEnter={handleDrag}>
@@ -259,11 +309,21 @@ const Dashboard = () => {
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button>
             <div
-              className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
-              onClick={() => navigate("/profile")}
-            >
-              <span className="text-white text-sm font-medium">U</span>
-            </div>
+            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt="User Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white text-sm font-medium">
+                U
+              </span>
+            )}
+          </div>
           </div>
         </div>
 
@@ -413,11 +473,11 @@ const Dashboard = () => {
                 <span>Delete</span>
               </button>
               <button
-                onClick={handleSaveClick}
+                onClick={saveToFirestore}
                 className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-colors"
               >
                 <Save className="w-4 h-4" />
-                <span>Save Note</span>
+                <span>Save Notes</span>
               </button>
             </div>
           </div>
@@ -435,7 +495,9 @@ const Dashboard = () => {
               </button>
             </div>
 
-            <AudioTranscription onTranscriptionComplete={handleTranscriptionComplete} />
+            <AudioTranscription onTranscriptionComplete={handleTranscriptionComplete}
+            subjectName={subjectName} 
+            topicName={topicName}  />
           </div>
         </div>
       )}

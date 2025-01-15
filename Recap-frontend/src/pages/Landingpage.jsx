@@ -7,12 +7,17 @@ import Footer from '../components/Footer';
 import { signOut } from "firebase/auth";
 import { auth } from "../config/Firebaseconfig";
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import TeamSection from '@/components/Team';
+import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
 
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isSignupOpen, setSignupOpen] = useState(false);
   const [user, setUser] = useState(null);
+  
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -39,16 +44,16 @@ const LandingPage = () => {
       {/* Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center">
-            <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-              Recap
-            </span>
+          <div className="flex text-white text-bold items-center">
+            <Link to = "/">
+             <span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-bold text-2xl">Recap</span>
+            </Link>
           </div>
           <div className="hidden md:block">
             <div className="flex items-center space-x-10">
               <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#pricing">Pricing</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#about">About</a>
+              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#team">Team</a>
+             
               {user ? (
                 <button
                 onClick={handleLogout}
@@ -102,12 +107,23 @@ const LandingPage = () => {
                 Capture, connect, and master your study materials effortlessly.
               </p>
               <div className="flex justify-center">
-                <ButtonsCard className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
+              {user ? (<ButtonsCard 
+                 onClick={() => navigate('/main-dashboard')}
+                className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
                   <span className="flex items-center gap-2">
-                    Get Started Free
+                    Go to Dashboard 
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
-                </ButtonsCard>
+                </ButtonsCard>):(
+                  <ButtonsCard 
+                  onClick={() => setSignupOpen(true)}
+                 className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
+                   <span className="flex items-center gap-2">
+                     Get Started Free
+                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                   </span>
+                 </ButtonsCard>
+                )}
               </div>
             </div>
           </div>
@@ -115,7 +131,7 @@ const LandingPage = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24" id = "features">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div
@@ -135,11 +151,15 @@ const LandingPage = () => {
       {/* CTA Button */}
       <div className="flex justify-center my-12">
         <button
+          onClick={() => setSignupOpen(true)}
           className="bg-purple-500/50 text-white font-semibold text-lg py-3 px-8 rounded-full transition-transform transform hover:scale-105 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
         >
-          Start Your Smart Study Journey!
+          Start Your Smart Study Journey Now!
         </button>
       </div>
+
+      {/* Team Section */}
+      <TeamSection />
 
 
 

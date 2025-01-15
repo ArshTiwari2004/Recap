@@ -29,12 +29,12 @@ Recap is an innovative study companion designed to revolutionize how students or
 ### 🌟 Key Features
 
 - **Smart Note Organization**: Automatic categorization by subject and topic
-- **Concept Mapping**: AI-powered linking of related concepts
-- **Flashcard Generation**: Automatic creation of study cards from your notes
+- **View Your Notes**: View all your notes in a organized, customizable way
+- **Flashcard Generation**: Automatic creation of study cards from your notes which you can revise later
 - **OCR Integration**: Convert handwritten notes to digital text
 - **Audio Transcription**: Convert lecture recordings to searchable text
-- **Collaborative Learning**: Share and study with peers
-- **AI-Powered Insights**: Identify knowledge gaps and get personalized recommendations
+- **Collaborative Learning**: Share and create groups with peers and study
+- **AI-Powered Insights**: Identify knowledge gaps and get personalized recommendations and resources
 - **Gamified Learning**: Stay motivated with study streaks and interactive quizzes
 
 ## 🖼️ Screenshots
@@ -42,39 +42,37 @@ Recap is an innovative study companion designed to revolutionize how students or
 ![Landingpage](Landingpage.png)
 *Landing page of Recap*
 
-![Notes Organization](path_to_your_screenshot2.png)
-*Intelligent Note Organization System*
+![Dashboard](Dashboard.png)
+*Dashboard of RECAP*
 
-![Flashcards](path_to_your_screenshot3.png)
-*AI-Generated Flashcards*
+![Flashcards](Flashcard.png)
+*AI-Generated Flashcards in RECAP*
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- React.js
-- Tailwind CSS
-- shadcn ui
-- Javascript
-- Tessaract.js
+| ![React.js](https://img.shields.io/badge/React.js-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) | ![shadcn UI](https://img.shields.io/badge/shadcn_UI-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) | ![Tesseract.js](https://img.shields.io/badge/Tesseract.js-3178C6?style=for-the-badge&logo=javascript&logoColor=white) |
+|---|---|---|---|---|
 
 ### Backend
-- Node.js
-- Firebase Authentication
-- Firestore 
-- Firebase storage
-- Firebase cloud function
+| ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white) | ![Firebase Authentication](https://img.shields.io/badge/Firebase_Authentication-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) | ![Google OAuth](https://img.shields.io/badge/Google_OAuth-4285F4?style=for-the-badge&logo=google&logoColor=white) | ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) | ![Firestore Database](https://img.shields.io/badge/Firestore_Database-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) |
+|---|---|---|---|---|
+| ![Firebase Storage](https://img.shields.io/badge/Firebase_Storage-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) | ![Firebase Cloud Functions](https://img.shields.io/badge/Firebase_Cloud_Functions-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) | ![Firebase Hosting](https://img.shields.io/badge/Firebase_Hosting-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) | ![Firebase Analytics](https://img.shields.io/badge/Firebase_Analytics-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) | |
 
 ### API Used
-- Assembly AI API
-- Gemini API
+| ![Assembly AI API](https://img.shields.io/badge/Assembly_AI_API-FF6F00?style=for-the-badge&logo=assemblyai&logoColor=white) | ![Cohere AI API](https://img.shields.io/badge/Cohere_AI_API-1E88E5?style=for-the-badge&logo=cohere&logoColor=white) |
+|---|---|
 
 ### DevOps & Deployment
-- Vercel
-- Git & GitHub
+| ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) | ![Git & GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white) | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white) |
+|---|---|---|---|
+
+
 
 
 ## Architecture of RECAP
 
+![Architecture](Architecture.png)
 
 
 ## 🚀 Getting Started
