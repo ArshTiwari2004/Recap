@@ -13,6 +13,7 @@ import Quizzes from './components/Quiz/Quiz';
 import AIInsights from './components/AISuggestions/AIinsights';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import FeedbackForm from './pages/Feedback';
 
 import Maindashboard from './pages/Maindashboard';
 import { FirebaseProvider } from './context/FirebaseContext';
@@ -44,6 +45,7 @@ const App = () => {
         <Route path="/ocr" element={<OCRScanner />} />
         <Route path="*" element={<Error404 />} />
         <Route path="/pdf-ocr" element={<PDFOCRScanner />} />
+        <Route path="/feedback" element={<FeedbackForm />} />
         </Routes>
         </FirebaseProvider>
     </Router>
