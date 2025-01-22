@@ -10,6 +10,7 @@ import { Trash2, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ProgressBar from '@/components/ProgressBar';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import Notification from '@/components/Notifications';
 
 
 const Dashboard = () => {
@@ -208,7 +209,7 @@ const Dashboard = () => {
     setShowTranscriptionReview(false);
   };
 
- const handleSaveNote = async () => {
+  const handleSaveNote = async () => {
     if (!noteTitle.trim() || !noteTopic.trim() || noteContent.trim().length < 20) {
       toast.error('Please fill all fields and ensure the content is at least 20 characters.');
       return;
@@ -254,6 +255,9 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+
+
+  
   useEffect(() => {
     // Retrieve user data from localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -276,11 +280,29 @@ const Dashboard = () => {
 
     try {
       await addDoc(collection(fireDB, 'notes'), documentData);
+      // Create notification
+      await createNotification(user.uid, subjectName.trim());
+      
       toast.success('Notes saved successfully!');
-      setIsSuccessModalOpen(true); // Open the modal
+      setIsSuccessModalOpen(true);
     } catch (error) {
       console.error('Error saving transcription to Firestore:', error);
       toast.error('Failed to save transcription. Please try again.');
+    }
+  };
+
+  const createNotification = async (userId, subject) => {
+    try {
+      await addDoc(collection(fireDB, 'notifications'), {
+        userId: userId,
+        title: 'New Notes Added',
+        message: `Notes for ${subject} have been uploaded successfully`,
+        type: 'upload', // This corresponds to the upload icon in your Notification component
+        read: false,
+        createdAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error creating notification:', error);
     }
   };
   
@@ -306,10 +328,11 @@ const Dashboard = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               Docs
             </button>
-            <button className="relative text-gray-300 hover:text-white transition-colors">
+            {/* <button className="relative text-gray-300 hover:text-white transition-colors">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button>
+            </button> */}
+            <Notification />
             <div
             className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
             onClick={() => navigate("/profile")}

@@ -3,6 +3,7 @@ import { Search, Grid, List, Filter, ChevronDown, BookOpen, Bell, Star, Clock, E
 import { collection, query, onSnapshot, updateDoc, deleteDoc, doc, addDoc } from 'firebase/firestore';
 import { fireDB } from '../../config/Firebaseconfig';
 import Sidebar from '../../components/Sidebar';
+import Notification from '../Notifications';
 
 // Modal Component
 const Modal = ({ isOpen, onClose, title, children, showCloseButton = true, size = 'md' }) => {
@@ -520,6 +521,7 @@ return (
               Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
             </div>
           )}
+          <Notification />
           <button 
             className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => selectedNote && generateFlashcards(selectedNote.content)}

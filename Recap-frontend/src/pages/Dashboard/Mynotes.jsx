@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Loader } from '@/components/Loader';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
+import Notification from '@/components/Notifications';
 
 // View Modal Component
 const Modal = ({ note, onClose }) => {
@@ -308,10 +309,12 @@ const MyNotes = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               Docs
             </button>
-            <button className="relative text-gray-300 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
+          {/* <button className="relative text-gray-300 hover:text-white transition-colors">
+              <B  ell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button>
+            </button> */}
+            <Notification />
+
             <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer">
               {user?.photoURL ? (
                 <img

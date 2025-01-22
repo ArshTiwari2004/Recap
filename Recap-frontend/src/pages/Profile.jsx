@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Camera, Upload, X, BookOpen, Bell, Shield, Briefcase, GraduationCap, Link, Github, Linkedin, Twitter } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import Notification from '@/components/Notifications';
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -74,13 +75,8 @@ const Profile = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               Study Stats
             </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Settings
-            </button>
-            <button className="relative text-gray-300 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button>
+       
+            <Notification />
           </div>
         </div>
 

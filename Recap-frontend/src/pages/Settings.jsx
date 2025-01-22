@@ -18,6 +18,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import Notification from '@/components/Notifications';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('general');
@@ -88,10 +89,11 @@ const Settings = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               Help Center
             </button>
-            <button className="relative text-gray-300 hover:text-white transition-colors">
+            {/* <button className="relative text-gray-300 hover:text-white transition-colors">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button>
+            </button> */}
+            <Notification />
           </div>
         </div>
 
