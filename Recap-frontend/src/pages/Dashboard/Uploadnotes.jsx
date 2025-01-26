@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import ProgressBar from '@/components/ProgressBar';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Notification from '@/components/Notifications';
+import ProfileDropdown from '../ProfileDropdown';
 
 
 const Dashboard = () => {
@@ -30,6 +31,8 @@ const Dashboard = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -322,9 +325,7 @@ const Dashboard = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               Feedback
             </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Help
-            </button>
+          
             <button className="text-gray-300 hover:text-white transition-colors">
               Docs
             </button>
@@ -333,22 +334,27 @@ const Dashboard = () => {
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
             </button> */}
             <Notification />
-            <div
-            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
-            onClick={() => navigate("/profile")}
-          >
-            {user?.photoURL ? (
-              <img
-                src={user.photoURL}
-                alt="User Avatar"
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-white text-sm font-medium">
-                U
-              </span>
-            )}
-          </div>
+            <div className="relative">
+        <button
+          className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+          onClick={() => setIsProfileDropdownOpen((prev) => !prev)}
+        >
+          {user?.photoURL ? (
+            <img
+              src={user.photoURL}
+              alt="User Avatar"
+              className="w-full h-full rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-white text-sm font-medium">
+              {user?.displayName?.charAt(0).toUpperCase()}
+            </span>
+          )}
+        </button>
+        {isProfileDropdownOpen && (
+          <ProfileDropdown email={user?.email} />
+        )}
+      </div>
           </div>
         </div>
 

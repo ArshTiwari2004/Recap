@@ -22,15 +22,15 @@ const Notification = () => {
       orderBy('createdAt', 'desc')
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const newNotifications = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()
-      }));
-      setNotifications(newNotifications);
-      setUnreadCount(newNotifications.filter(n => !n.read).length);
-    });
+    // const unsubscribe = onSnapshot(q, (snapshot) => {
+    //   const newNotifications = snapshot.docs.map(doc => ({
+    //     id: doc.id,
+    //     ...doc.data(),
+    //     createdAt: doc.data().createdAt?.toDate()
+    //   }));
+    //   setNotifications(newNotifications);
+    //   setUnreadCount(newNotifications.filter(n => !n.read).length);
+    // });
 
     // Click outside handler
     const handleClickOutside = (event) => {
@@ -42,7 +42,7 @@ const Notification = () => {
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      unsubscribe();
+     // unsubscribe();
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);

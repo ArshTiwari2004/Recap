@@ -158,6 +158,38 @@ const LandingPage = () => {
         </button>
       </div>
 
+
+      {/* Feedback Section
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+        Got 
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600"> Feedback </span>
+        ?!
+       </h2>
+      <p className="text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
+      We’d love to hear from you! Let us know how we can do better and improve your experience.
+     </p>
+    <div className="flex justify-center">
+      <Link
+        to="/feedback"
+        className="bg-purple-500/10 p-6 border border-purple-500 rounded-2xl max-w-sm w-full text-center
+        transition-all duration-300 transform hover:scale-105"
+
+      >
+        <div className="flex items-center justify-center">
+          <span className="text-white text-2xl mr-3">✍️</span>
+          <span className="text-white text-lg font-semibold tracking-wide">
+            Share Your Feedback
+          </span>
+        </div>
+      </Link>
+       </div>
+        </div>
+      </div> */}
+
+    
+
       {/* Team Section */}
       <TeamSection />
 
