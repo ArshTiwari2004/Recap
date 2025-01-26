@@ -10,7 +10,7 @@ const client = new AssemblyAI({
   apiKey: import.meta.env.VITE_ASSEMBLYAI_API_KEY, 
 }); 
 
-const AudioTranscription = ({ onTranscriptionComplete }) => { 
+const AudioTranscription = ({ onTranscriptionComplete }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [transcribedText, setTranscribedText] = useState('');
