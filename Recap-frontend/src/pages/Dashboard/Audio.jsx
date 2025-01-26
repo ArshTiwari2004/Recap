@@ -7,8 +7,8 @@ import toast from 'react-hot-toast';
 
 // Initialize AssemblyAI client
 const client = new AssemblyAI({
-  apiKey: import.meta.env.VITE_ASSEMBLYAI_API_KEY,
-});
+  apiKey: import.meta.env.VITE_ASSEMBLYAI_API_KEY, 
+}); 
 
 const AudioTranscription = ({ onTranscriptionComplete }) => {
   const [isRecording, setIsRecording] = useState(false);
