@@ -13,12 +13,18 @@ const firebaseConfig = {
   // appId: "1:343285138249:web:59e2c5fe00daa46b02d098",
   // measurementId: "G-3P95V9C8VL"
   
-  apiKey: "AIzaSyAC1iIAlxZK9BQc0m0h9q0qZ3HthRUS-JA",
-  authDomain: "imagedb-d1403.firebaseapp.com",
-  projectId: "imagedb-d1403",
-  storageBucket: "imagedb-d1403.appspot.com",
-  messagingSenderId: "899179594417",
-  appId: "1:899179594417:web:9ff6d674e2874458d25890"
+  // apiKey: "AIzaSyAC1iIAlxZK9BQc0m0h9q0qZ3HthRUS-JA",
+  // authDomain: "imagedb-d1403.firebaseapp.com",
+  // projectId: "imagedb-d1403",
+  // storageBucket: "imagedb-d1403.appspot.com",
+  // messagingSenderId: "899179594417",
+  // appId: "1:899179594417:web:9ff6d674e2874458d25890"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 
   // apiKey: "AIzaSyC4xCBrVL1XIS0MzUXk8RPE4SurvonOeMo",
   // authDomain: "recap-82c2f.firebaseapp.com",
