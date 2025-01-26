@@ -8,7 +8,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../config/Firebaseconfig";
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
+import TeamSection from '@/components/Team';
+import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
 
@@ -44,13 +45,15 @@ const LandingPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex text-white text-bold items-center">
-             Re<span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">cap</span>
+            <Link to = "/">
+             <span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-bold text-2xl">Recap</span>
+            </Link>
           </div>
           <div className="hidden md:block">
             <div className="flex items-center space-x-10">
               <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#pricing">Pricing</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#about">About</a>
+              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#team">Team</a>
+             
               {user ? (
                 <button
                 onClick={handleLogout}
@@ -128,7 +131,7 @@ const LandingPage = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24" id = "features">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div
@@ -154,6 +157,41 @@ const LandingPage = () => {
           Start Your Smart Study Journey Now!
         </button>
       </div>
+
+
+      {/* Feedback Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+        Got 
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600"> Feedback </span>
+        ?!
+       </h2>
+      <p className="text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
+      We’d love to hear from you! Let us know how we can do better and improve your experience.
+     </p>
+    <div className="flex justify-center">
+      <Link
+        to="/feedback"
+        className="bg-purple-500/10 p-6 border border-purple-500 rounded-2xl max-w-sm w-full text-center
+        transition-all duration-300 transform hover:scale-105"
+
+      >
+        <div className="flex items-center justify-center">
+          <span className="text-white text-2xl mr-3">✍️</span>
+          <span className="text-white text-lg font-semibold tracking-wide">
+            Share Your Feedback
+          </span>
+        </div>
+      </Link>
+       </div>
+        </div>
+      </div>
+
+    
+
+      {/* Team Section */}
+      <TeamSection />
 
 
 

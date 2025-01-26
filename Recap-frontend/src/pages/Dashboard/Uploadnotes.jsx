@@ -300,9 +300,7 @@ const Dashboard = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               Feedback
             </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Help
-            </button>
+          
             <button className="text-gray-300 hover:text-white transition-colors">
               Docs
             </button>

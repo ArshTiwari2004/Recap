@@ -3,7 +3,7 @@ import { Send, MapPin, Mail, Phone, Clock } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-8">
+    <footer className="bg-gray-900 text-gray-300 py-8" id="contact">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
          
@@ -32,9 +32,9 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-purple-400 mb-3">Quick Links</h3>
             <ul className="space-y-2">
-              <li><a href="/" className="hover:text-cyan-400 transition-colors text-sm">Home</a></li>
-              <li><a href="/about" className="hover:text-cyan-400 transition-colors text-sm">About Us</a></li>
-              <li><a href="/contact" className="hover:text-cyan-400 transition-colors text-sm">Features</a></li>
+              <li><a href="/" className="hover:text-cyan-400 transition-colors text-sm" >Home</a></li>
+              <li><a href="#features" className="hover:text-cyan-400 transition-colors text-sm "  >Features</a></li>
+              <li><a href="#team" className="hover:text-cyan-400 transition-colors text-sm">Team</a></li>
               
             </ul>
           </div>
