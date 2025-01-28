@@ -45,8 +45,8 @@ const Sidebar = () => {
     { to: '/collaboration', icon: Users, label: 'Collaboration', category: 'main' },
     { to: '/ai-insights', icon: Activity, label: 'AI Insights', category: 'main' },
     { to: '/premium', icon: BrainCog, label: 'Premium', category: 'main' },
-    { to: '/settings', icon: Settings, label: 'Settings', category: 'bottom' },
-    { to: '/profile', icon: User, label: 'Profile', category: 'bottom' },
+   // { to: '/settings', icon: Settings, label: 'Settings', category: 'bottom' },
+   // { to: '/profile', icon: User, label: 'Profile', category: 'bottom' },
   ];
 
   // Example user data; replace with actual user data as needed

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Alert } from '@/components/ui/alert';
 import Sidebar from '../components/Sidebar';
+import Notification from '@/components/Notifications';
 
 const Premium = () => {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
@@ -99,10 +100,7 @@ const Premium = () => {
             <button className="text-gray-300 hover:text-white transition-colors">
               FAQ
             </button>
-            <button className="relative text-gray-300 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button>
+            <Notification />
             <div
             className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
             onClick={() => navigate("/profile")}

@@ -107,12 +107,28 @@ export const FirebaseProvider = ({ children }) => {
       await updateDoc(groupRef, {
         members: arrayUnion(currentUser.uid)
       });
+
+      // Get group data to notify creator
+      const groupDoc = await getDocs(groupRef);
+      const groupData = groupDoc.data();
+
+      // Notify group creator
+      if (groupData?.createdBy) {
+        await createNotification(
+          groupData.createdBy,
+          'New Member Joined',
+          `${currentUser.displayName || 'A new member'} joined your group`,
+          'invite'
+        );
+      }
+
       return { success: true };
     } catch (error) {
       console.error('Error joining group:', error);
       return { success: false, error };
     }
   };
+
 
   // Leave group
   const leaveGroup = async (groupId) => {
@@ -186,18 +202,77 @@ export const FirebaseProvider = ({ children }) => {
   // Add note to group
   const addNote = async (groupId, note) => {
     try {
-      await addDoc(collection(fireDB, `groups/${groupId}/notes`), {
+      const noteRef = await addDoc(collection(fireDB, `groups/${groupId}/notes`), {
         ...note,
         userId: currentUser.uid,
         userName: currentUser.displayName || currentUser.email,
         createdAt: serverTimestamp()
       });
-      return { success: true };
+
+      // Create notification for all group members
+      const groupDoc = await getDocs(doc(fireDB, 'groups', groupId));
+      const groupData = groupDoc.data();
+      
+      if (groupData?.members) {
+        groupData.members.forEach(async (memberId) => {
+          if (memberId !== currentUser.uid) { // Don't notify the note creator
+            await createNotification(
+              memberId,
+              'New Note Added',
+              `${currentUser.displayName || 'A member'} added a new note: ${note.title}`,
+              'upload'
+            );
+          }
+        });
+      }
+
+      return { success: true, noteId: noteRef.id };
     } catch (error) {
       console.error('Error adding note:', error);
       return { success: false, error };
     }
   };
+
+  // Save individual note (not in a group)
+  const saveNote = async (noteData) => {
+    try {
+      const noteRef = await addDoc(collection(fireDB, 'notes'), {
+        ...noteData,
+        userId: currentUser.uid,
+        createdAt: serverTimestamp()
+      });
+
+      // Create notification for the note creator
+      await createNotification(
+        currentUser.uid,
+        'Note Saved Successfully',
+        `Your note "${noteData.subject}" has been saved`,
+        'upload'
+      );
+
+      return { success: true, noteId: noteRef.id };
+    } catch (error) {
+      console.error('Error saving note:', error);
+      return { success: false, error };
+    }
+  };
+
+
+  const createNotification = async (userId, title, message, type = 'upload') => {
+    try {
+      await addDoc(collection(fireDB, 'notifications'), {
+        userId,
+        title,
+        message,
+        type,
+        read: false,
+        createdAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error creating notification:', error);
+    }
+  };
+
 
   const value = {
     currentUser,
@@ -210,7 +285,9 @@ export const FirebaseProvider = ({ children }) => {
     deleteGroup,
     uploadFile,
     addMessage,
-    addNote
+    addNote,
+    saveNote,
+    createNotification
   };
 
   return (

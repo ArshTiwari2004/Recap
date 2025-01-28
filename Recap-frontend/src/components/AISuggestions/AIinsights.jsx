@@ -7,6 +7,7 @@ import {
 import { collection, query, onSnapshot, doc } from 'firebase/firestore';
 import { fireDB } from '../../config/Firebaseconfig';
 import Sidebar from '../Sidebar';
+import Notification from '../Notifications';
 
 const AIInsights = () => {
   const [notes, setNotes] = useState([]);
@@ -365,6 +366,8 @@ const AIInsights = () => {
             <Lightbulb className="w-6 h-6 text-purple-400" />
             <span className="text-lg font-semibold text-white">AI Insights</span>
           </div>
+
+          
           
           <div className="flex items-center space-x-4">
             <button 
@@ -388,6 +391,7 @@ const AIInsights = () => {
             >
               Link Related Notes
             </button>
+            <Notification />
           </div>
         </div>
 
