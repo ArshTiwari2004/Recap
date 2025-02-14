@@ -13,7 +13,7 @@ export default defineConfig({
     outDir: "dist",
   },
   server: {
-    historyApiFallback: true, // Important for routing
-  }
+    historyApiFallback: true, // Ensures routing works in dev
+  },
+  base: "/" // Important for proper route resolution
 });
-
