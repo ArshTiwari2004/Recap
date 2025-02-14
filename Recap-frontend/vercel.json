@@ -1,6 +1,6 @@
 {
-    "redirects": [
-      { "source": "/(.*)", "destination": "/", "statusCode": 200 }
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/index.html" }
     ],
     "cleanUrls": true,
     "headers": [

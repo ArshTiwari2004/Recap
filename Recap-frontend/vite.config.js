@@ -16,3 +16,4 @@ export default defineConfig({
     historyApiFallback: true, // Important for routing
   }
 });
+
