@@ -4,6 +4,7 @@ import { collection, query, onSnapshot, updateDoc, deleteDoc, doc, addDoc } from
 import { fireDB } from '../../config/Firebaseconfig';
 import Sidebar from '../../components/Sidebar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import Notification from '../Notifications';
 
 // Notes Panel Component
 const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
@@ -409,6 +410,7 @@ const QuizComponent = () => {
                 Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
               </div>
             )}
+            <Notification />
             <button 
               className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => selectedNote && generateQuiz(selectedNote.content)}
