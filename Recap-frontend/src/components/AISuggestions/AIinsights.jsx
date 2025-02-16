@@ -355,7 +355,6 @@ const AIInsights = () => {
     </div>
   );
 
-
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar />
@@ -366,43 +365,18 @@ const AIInsights = () => {
             <Lightbulb className="w-6 h-6 text-purple-400" />
             <span className="text-lg font-semibold text-white">AI Insights</span>
           </div>
-
-          
-          
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={getKnowledgeGaps}
-              disabled={loading || !activeNote}
-              className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
-            >
-              Get Knowledge Gaps
-            </button>
-            <button 
-              onClick={getResources}
-              disabled={loading || !activeNote}
-              className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
-            >
-              Find Resources
-            </button>
-            <button 
-              onClick={findRelatedNotes}
-              disabled={loading || !activeNote}
-              className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50"
-            >
-              Link Related Notes
-            </button>
-            <Notification />
-          </div>
+          <Notification />
         </div>
 
         <div className="flex-1 p-8 overflow-auto">
-          <div className="max-w-7xl mx-auto grid grid-cols-3 gap-8">
-            <div>
-              <div className="bg-gray-800 rounded-xl border border-gray-700">
+          <div className="max-w-7xl mx-auto flex gap-8">
+            {/* Left Column - Notes Section */}
+            <div className="w-1/4 flex flex-col">
+              <div className="bg-gray-800 rounded-xl border border-gray-700 flex-1">
                 <div className="p-6 border-b border-gray-700">
                   <h2 className="text-xl font-semibold text-white">Your Notes</h2>
                 </div>
-                <div className="p-4 space-y-2">
+                <div className="p-4 space-y-3 overflow-y-auto">
                   {notes.map(note => (
                     <button
                       key={note.id}
@@ -412,13 +386,13 @@ const AIInsights = () => {
                         setResources(null);
                         setRelatedNotes([]);
                       }}
-                      className={`w-full p-3 rounded-lg text-left transition-colors ${
+                      className={`w-full p-4 rounded-lg text-left transition-colors ${
                         activeNote?.id === note.id
                           ? 'bg-purple-500/20 border border-purple-500'
-                          : 'bg-gray-700 hover:bg-gray-600'
+                          : 'bg-gray-700/50 hover:bg-gray-700'
                       }`}
                     >
-                      <h3 className="text-white font-medium mb-1">{note.subject}</h3>
+                      <h3 className="text-white font-medium mb-2">{note.subject}</h3>
                       <p className="text-gray-400 text-sm line-clamp-2">{note.content}</p>
                     </button>
                   ))}
@@ -426,8 +400,35 @@ const AIInsights = () => {
               </div>
             </div>
 
-            <div className="col-span-2">
-              <div className="bg-gray-800 rounded-xl border border-gray-700">
+            {/* Right Column - Action Buttons and Analysis */}
+            <div className="flex-1 flex flex-col">
+              {/* Action Buttons Row */}
+              <div className="flex justify-end space-x-4 mb-6">
+                <button 
+                  onClick={getKnowledgeGaps}
+                  disabled={loading || !activeNote}
+                  className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 shadow-lg whitespace-nowrap"
+                >
+                  Get Knowledge Gaps
+                </button>
+                <button 
+                  onClick={getResources}
+                  disabled={loading || !activeNote}
+                  className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 shadow-lg whitespace-nowrap"
+                >
+                  Find Resources
+                </button>
+                <button 
+                  onClick={findRelatedNotes}
+                  disabled={loading || !activeNote}
+                  className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 shadow-lg whitespace-nowrap"
+                >
+                  Link Related Notes
+                </button>
+              </div>
+
+              {/* Analysis Section - Shorter Height */}
+              <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-24rem)]">
                 <div className="p-6 border-b border-gray-700">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-white">
@@ -457,9 +458,9 @@ const AIInsights = () => {
                     </div>
                   </div>
                 </div>
-                <div className="p-6">
+                <div className="p-6 overflow-y-auto">
                   {loading ? (
-                    <div className="flex items-center justify-center h-64">
+                    <div className="flex items-center justify-center h-32">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
                     </div>
                   ) : activeTab === 'gaps' ? (
