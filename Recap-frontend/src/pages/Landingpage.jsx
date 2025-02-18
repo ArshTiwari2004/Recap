@@ -175,9 +175,8 @@ const LandingPage = () => {
         to="/feedback"
         className="bg-purple-500/10 p-6 border border-purple-500 rounded-2xl max-w-sm w-full text-center
         transition-all duration-300 transform hover:scale-105"
-
       >
-        <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center">
           <span className="text-white text-2xl mr-3">✍️</span>
           <span className="text-white text-lg font-semibold tracking-wide">
             Share Your Feedback
