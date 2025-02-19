@@ -46,7 +46,7 @@ const LandingPage = () => {
         <div className="flex items-center justify-between h-20">
           <div className="flex text-white text-bold items-center">
             <Link to = "/">
-             <span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-bold text-2xl">Recap</span>
+             <span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-bold text-4xl font-bold">Recap</span>
             </Link>
           </div>
           <div className="hidden md:block">
