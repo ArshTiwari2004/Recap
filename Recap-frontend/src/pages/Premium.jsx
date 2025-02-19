@@ -8,172 +8,135 @@ import { Alert } from '@/components/ui/alert';
 import Sidebar from '../components/Sidebar';
 import toast from 'react-hot-toast';
 import Notification from '@/components/Notifications';
+import NavBar from '@/components/NavBar';
 
 const Premium = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState('monthly');
   const [user, setUser] = useState(null);
-  
-    useEffect(() => {
-          // Retrieve user data from localStorage
-          const storedUser = JSON.parse(localStorage.getItem('user'));
-          setUser(storedUser);
-        }, []);
-        console.log(user)
 
-        const getPaymentAmount = () => {
-          // Convert display prices to paise
-          const amounts = {
-            monthly: 79900, // ₹799
-            yearly: 749900  // ₹7,499
-          };
-          return amounts[selectedPlan];
-        };
+  useEffect(() => {
+    // Retrieve user data from localStorage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    setUser(storedUser);
+  }, []);
 
-        const handlePaymentSuccess = (response) => {
-          toast.success("Payment successful!");
-          // Here you would typically:
-          // 1. Call your backend API to verify payment
-          // 2. Update user's subscription status
-          // 3. Store payment details in your database
-          try {
-            // Example API call
-            // await axios.post('/api/verify-payment', {
-            //   paymentId: response.razorpay_payment_id,
-            //   orderId: response.razorpay_order_id,
-            //   signature: response.razorpay_signature,
-            //   plan: selectedPlan
-            // });
-            
-            // Update local user state
-            const updatedUser = {
-              ...user,
-              subscription: {
-                plan: selectedPlan,
-                startDate: new Date().toISOString(),
-                paymentId: response.razorpay_payment_id
+  const getPaymentAmount = () => {
+    // Convert display prices to paise
+    const amounts = {
+      monthly: 79900, // ₹799
+      yearly: 749900  // ₹7,499
+    };
+    return amounts[selectedPlan];
+  };
+
+  const handlePaymentSuccess = (response) => {
+    toast.success("Payment successful!");
+    try {
+      const updatedUser = {
+        ...user,
+        subscription: {
+          plan: selectedPlan,
+          startDate: new Date().toISOString(),
+          paymentId: response.razorpay_payment_id
+        }
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
+      toast.success("Welcome to Premium! Redirecting to dashboard...", {
+        duration: 3000,
+      });
+
+      setTimeout(() => {
+        navigate('/main-dashboard');
+      }, 2000);
+    } catch (error) {
+      toast.error("Error verifying payment. Please contact support.");
+      console.error("Payment verification failed:", error);
+    }
+  };
+
+  const handlePaymentError = (error) => {
+    toast.error("Payment failed. Please try again.");
+    console.error("Payment failed:", error);
+  };
+
+  const loadRazorpay = async () => {
+    if (!user) {
+      toast.error("Please login to continue");
+      return;
+    }
+
+    try {
+      const options = {
+        key: "rzp_test_fRN4LCYqz2Cmxc",
+        amount: getPaymentAmount(),
+        currency: "INR",
+        name: "Recap Learning",
+        description: `${selectedPlan === 'monthly' ? 'Monthly' : 'Yearly'} Premium Subscription`,
+        image: "/path/to/your/logo.png",
+        handler: handlePaymentSuccess,
+        prefill: {
+          name: user?.displayName || "",
+          email: user?.email || "",
+          contact: user?.phone || "",
+        },
+        theme: {
+          color: "#9333EA",
+        },
+        modal: {
+          confirm_close: true,
+          animation: true,
+        },
+        retry: {
+          enabled: true,
+          max_count: 3,
+        },
+        notes: {
+          plan: selectedPlan,
+          user_id: user?.uid
+        },
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay using UPI",
+                instruments: [
+                  { method: "upi" },
+                  { method: "google_pay" },
+                  { method: "paytm" }
+                ]
+              },
+              card: {
+                name: "Pay using Card",
+                instruments: [
+                  { method: "card" }
+                ]
+              },
+              netbanking: {
+                name: "Pay using Netbanking",
+                instruments: [
+                  { method: "netbanking" }
+                ]
               }
-            };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            setUser(updatedUser);
-            
-            // Show success message and redirect
-            toast.success("Welcome to Premium! Redirecting to dashboard...", {
-              duration: 3000,
-            });
-            
-            // Redirect after a short delay to ensure toast is visible
-            setTimeout(() => {
-              navigate('/main-dashboard');
-            }, 2000);
-            
-          } catch (error) {
-            toast.error("Error verifying payment. Please contact support.");
-            console.error("Payment verification failed:", error);
+            },
+            sequence: ["block.upi", "block.card", "block.netbanking"],
+            preferences: {
+              show_default_blocks: true
+            }
           }
-        };
+        }
+      };
 
-        const handlePaymentError = (error) => {
-          toast.error("Payment failed. Please try again.");
-          console.error("Payment failed:", error);
-        };
-
-        const loadRazorpay = async () => {
-          if (!user) {
-            toast.error("Please login to continue");
-            return;
-          }
-
-          try {
-            // Ideally, you should create an order on your backend
-            // const order = await axios.post('/api/create-order', {
-            //   amount: getPaymentAmount(),
-            //   plan: selectedPlan
-            // });
-
-            const options = {
-              key:  "rzp_test_fRN4LCYqz2Cmxc",
-              amount: getPaymentAmount(),
-              currency: "INR",
-              name: "Recap Learning",
-              description: `${selectedPlan === 'monthly' ? 'Monthly' : 'Yearly'} Premium Subscription`,
-              image: "/path/to/your/logo.png", // Add your logo here
-              // order_id: order.id, // Get this from backend
-              handler: handlePaymentSuccess,
-              prefill: {
-                name: user?.displayName || "",
-                email: user?.email || "",
-                contact: user?.phone || "",
-              },
-              theme: {
-                color: "#9333EA",
-              },
-              modal: {
-                confirm_close: true,
-                animation: true,
-              },
-              retry: {
-                enabled: true,
-                max_count: 3,
-              },
-              notes: {
-                plan: selectedPlan,
-                user_id: user?.uid
-              },
-              // Enable this for multiple payment methods
-              config: {
-                display: {
-                  blocks: {
-                    upi: {
-                      name: "Pay using UPI",
-                      instruments: [
-                        {
-                          method: "upi"
-                        },
-                        {
-                          method: "google_pay"
-                        },
-                        {
-                          method: "paytm"
-                        }
-                      ]
-                    },
-                    card: {
-                      name: "Pay using Card",
-                      instruments: [
-                        {
-                          method: "card"
-                        }
-                      ]
-                    },
-                    netbanking: {
-                      name: "Pay using Netbanking",
-                      instruments: [
-                        {
-                          method: "netbanking"
-                        }
-                      ]
-                    }
-                  },
-                  sequence: ["block.upi", "block.card", "block.netbanking"],
-                  preferences: {
-                    show_default_blocks: true
-                  }
-                }
-              }
-            };
-
-            const rzp1 = new window.Razorpay(options);
-            
-            rzp1.on('payment.failed', handlePaymentError);
-            rzp1.open();
-          } catch (error) {
-            toast.error("Unable to initialize payment. Please try again.");
-            console.error("Payment initialization failed:", error);
-          }
-        };
-        
-  
+      const rzp1 = new window.Razorpay(options);
+      rzp1.on('payment.failed', handlePaymentError);
+      rzp1.open();
+    } catch (error) {
+      toast.error("Unable to initialize payment. Please try again.");
+      console.error("Payment initialization failed:", error);
+    }
+  };
 
   const plans = {
     free: {
@@ -212,7 +175,6 @@ const Premium = () => {
     }
   };
 
-
   const features = [
     {
       icon: Brain,
@@ -237,45 +199,14 @@ const Premium = () => {
   ];
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      {/* Sidebar */}
-      <div className="sticky top-0 h-screen w-64">
+    <div className="flex bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      {/* Fixed Sidebar */}
+      <div className="fixed">
         <Sidebar />
       </div>
-
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-y-auto ml-72 "> {/* Adjust margin-left to match sidebar width */}
         {/* Navbar */}
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2 ml-6">
-            <BookOpen className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white ">Premium Features</span>
-          </div>
-          <div className="flex items-center space-x-6">
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Support
-            </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              FAQ
-            </button>
-            <Notification />
-            <div
-            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
-            onClick={() => navigate("/profile")}
-          >
-            {user?.photoURL ? (
-              <img
-                src={user.photoURL}
-                alt="User Avatar"
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-white text-sm font-medium">
-                U
-              </span>
-            )}
-          </div>
-          </div>
-        </div>
+        <NavBar icon={<BookOpen className="w-6 h-6 text-purple-400" />} header={"Premium Features"} button2={"Support"} button3={"FAQ"} />
 
         {/* Main content */}
         <div className="max-w-6xl mx-auto w-full space-y-12 p-6 mt-8">
@@ -376,7 +307,7 @@ const Premium = () => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                <tr className="border-b border-gray-700">
+                  <tr className="border-b border-gray-700">
                     <th className="py-4 text-left text-gray-400">Feature</th>
                     <th className="py-4 text-center text-gray-400">Basic</th>
                     <th className="py-4 text-center text-gray-400">Premium Monthly</th>
