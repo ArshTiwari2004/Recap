@@ -1,6 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  scrollbar-width: none; /* Options: auto, thin, none */
+  scrollbar-color: #888 transparent; /* Thumb color and transparent track */
+}
+
+/* Chrome, Edge, Safari, Opera */
+::-webkit-scrollbar {
+  width: 10px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Makes track (background line) invisible */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Scrollbar thumb color */
+  border-radius: 10px; /* Makes the thumb rounded */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
