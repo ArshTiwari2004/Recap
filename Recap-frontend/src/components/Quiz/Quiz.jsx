@@ -389,154 +389,153 @@ const QuizComponent = () => {
         selectedNote={selectedNote}
       />
       
-      <div className="flex-1 flex flex-col">
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              {isNotesPanelOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
-            </button>
-            <div className="flex items-center space-x-2">
-              <BookOpen className="w-6 h-6 text-purple-400" />
-              <span className="text-lg font-semibold text-white">Quizzes</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-6">
-            {selectedNote && (
-              <div className="text-sm text-gray-400">
-                Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
-              </div>
-            )}
-            <Notification />
-            <button 
-              className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => selectedNote && generateQuiz(selectedNote.content)}
-              disabled={isGenerating || !selectedNote}
-            >
-              {isGenerating ? 'Generating...' : 'Generate Quiz'}
-            </button>
+    <div className="flex-1 flex flex-col">
+      <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            {isNotesPanelOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
+          </button>
+          <div className="flex items-center space-x-2">
+            <BookOpen className="w-6 h-6 text-purple-400" />
+            <span className="text-lg font-semibold text-white">Quizzes</span>
           </div>
         </div>
 
-        <div className="flex-1 p-8 overflow-auto">
-          <div className="max-w-7xl mx-auto">
-            {!activeQuiz ? (
-              <>
-                <div className="grid grid-cols-4 gap-6 mb-8">
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-gray-400">Total Points</p>
-                          <p className="text-2xl font-semibold text-white">{points}</p>
-                        </div>
-                        <Trophy className="w-8 h-8 text-purple-400" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-gray-400">Quizzes Completed</p>
-                          <p className="text-2xl font-semibold text-white">
-                            {quizzes.filter(q => q.completed).length}/{quizzes.length}
-                          </p>
-                        </div>
-                        <Award className="w-8 h-8 text-purple-400" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-gray-400">Average Score</p>
-                          <p className="text-2xl font-semibold text-white">
-                            {quizzes.length > 0 
-                              ? Math.round(quizzes.reduce((acc, q) => acc + (q.highScore || 0), 0) / quizzes.length)
-                              : 0}%
-                          </p>
-                        </div>
-                        <File className="w-8 h-8 text-purple-400" />
-                      </div>
-                    </CardContent>
-                  </Card>
-            
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-gray-400">Streaks</p>
-                          <p className="text-2xl font-semibold text-white">
-                            0
-                          </p>
-                        </div>
-                        <Flame className="w-8 h-8 text-purple-400" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div> 
+        <div className="flex items-center space-x-4">
+          {selectedNote && (
+            <div className="text-sm text-gray-400">
+              Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
+            </div>
+          )}
+          <Notification />
+        </div>
+      </div>
 
-                <div className="flex items-center justify-between mb-8">
-                  <div className="relative flex-1 max-w-xl">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search quizzes..."
-                      className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center space-x-4 ml-4">
-                    <button
-                      onClick={() => setSelectedCategory('all')}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
-                        selectedCategory === 'all' ? 'bg-purple-500 text-white' : 'text-gray-400'
-                      }`}
-                    >
-                      All
-                    </button>
-                    <button
-                      onClick={() => setSelectedCategory('completed')}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
-                        selectedCategory === 'completed' ? 'bg-purple-500 text-white' : 'text-gray-400'
-                      }`}
-                    >
-                      Completed
-                    </button>
-                  </div>
+      <div className="flex-1 p-8 overflow-auto">
+        <div className="max-w-7xl mx-auto">
+          {!activeQuiz ? (
+            <>
+              <div className="grid grid-cols-4 gap-6 mb-8">
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400">Total Points</p>
+                        <p className="text-2xl font-semibold text-white">{points}</p>
+                      </div>
+                      <Trophy className="w-8 h-8 text-purple-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400">Quizzes Completed</p>
+                        <p className="text-2xl font-semibold text-white">
+                          {quizzes.filter((q) => q.completed).length}/{quizzes.length}
+                        </p>
+                      </div>
+                      <Award className="w-8 h-8 text-purple-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400">Average Score</p>
+                        <p className="text-2xl font-semibold text-white">
+                          {quizzes.length > 0
+                            ? Math.round(quizzes.reduce((acc, q) => acc + (q.highScore || 0), 0) / quizzes.length)
+                            : 0}
+                          %
+                        </p>
+                      </div>
+                      <File className="w-8 h-8 text-purple-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400">Streaks</p>
+                        <p className="text-2xl font-semibold text-white">0</p>
+                      </div>
+                      <Flame className="w-8 h-8 text-purple-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="flex items-center justify-between mb-8 space-x-4">
+                <div className="relative flex-1 max-w-xl">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search quizzes..."
+                    className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <button
+                  className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  onClick={() => selectedNote && generateQuiz(selectedNote.content)}
+                  disabled={isGenerating || !selectedNote}
+                >
+                  {isGenerating ? "Generating..." : "Generate Quiz"}
+                </button>
+
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      selectedCategory === "all" ? "bg-purple-500 text-white" : "text-gray-400"
+                    }`}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setSelectedCategory("completed")}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      selectedCategory === "completed" ? "bg-purple-500 text-white" : "text-gray-400"
+                    }`}
+                  >
+                    Completed
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
                 {quizzes
-                  .filter(quiz => 
-                    selectedCategory === 'all' || 
-                    (selectedCategory === 'completed' && quiz.completed)
+                  .filter((quiz) => selectedCategory === "all" || (selectedCategory === "completed" && quiz.completed))
+                  .filter(
+                    (quiz) =>
+                      quiz.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      quiz.subject.toLowerCase().includes(searchQuery.toLowerCase()),
                   )
-                  .filter(quiz => 
-                    quiz.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    quiz.subject.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
-                  .map(quiz => renderQuizCard(quiz))}
+                  .map((quiz) => renderQuizCard(quiz))}
               </div>
             </>
+          ) : showResults ? (
+            renderResults()
           ) : (
-            showResults ? renderResults() : renderQuizInterface()
+            renderQuizInterface()
           )}
         </div>
       </div>
     </div>
   </div>
-  );
-};
-
+  )
+}
 
 export default QuizComponent;

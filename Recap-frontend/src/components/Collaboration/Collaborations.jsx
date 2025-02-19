@@ -324,12 +324,7 @@ const CollaborativeNotes = () => {
             </div>
             
             <div className="flex items-center space-x-6">
-              <button className="text-gray-300 hover:text-white transition-colors">
-                Group Settings
-              </button>
-              <button className="text-gray-300 hover:text-white transition-colors">
-                Invites
-              </button>
+             
               <Notification />
               <div
                 className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
@@ -350,7 +345,7 @@ const CollaborativeNotes = () => {
             </div>
           </div>
 
-          <div className="flex-1 p-8 overflow-auto">
+          <div className="flex-1\\ p-8 overflow-auto">
             <div className="max-w-7xl mx-auto">
               {!selectedGroup && (
                 <>
@@ -388,6 +383,13 @@ const CollaborativeNotes = () => {
                       <Plus className="w-4 h-4" />
                       <span>Create Group</span>
                     </button>
+
+                    <button className="text-gray-300 hover:text-white transition-colors">
+                Group Settings
+              </button>
+              <button className="text-gray-300 hover:text-white transition-colors">
+                Invites
+              </button>
                   </div>
 
                   <div className="flex items-center justify-between mb-8">

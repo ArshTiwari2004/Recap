@@ -500,146 +500,140 @@ return (
     />
     
     <div className="flex-1 flex flex-col">
-      {/* Navbar */}
-      <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            {isNotesPanelOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
-          </button>
-          <div className="flex items-center space-x-2">
-            <BookOpen className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">Flashcards</span>
+       {/* Navbar */}
+       <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              {isNotesPanelOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
+            </button>
+            <div className="flex items-center space-x-2">
+              <BookOpen className="w-6 h-6 text-purple-400" />
+              <span className="text-lg font-semibold text-white">Flashcards</span>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            {selectedNote && (
+              <div className="text-sm text-gray-400">
+                Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
+              </div>
+            )}
+            <button className="text-gray-400 hover:text-white transition-colors">
+              <Bell className="w-5 h-5" />
+            </button>
           </div>
         </div>
-        
-        <div className="flex items-center space-x-6">
-          {selectedNote && (
-            <div className="text-sm text-gray-400">
-              Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
-            </div>
-          )}
-          <Notification />
-          <button 
-            className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => selectedNote && generateFlashcards(selectedNote.content)}
-            disabled={isGenerating || !selectedNote}
-          >
-            {isGenerating ? 'Generating...' : 'Generate Flashcards'}
-          </button>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-8 overflow-auto">
-        <div className="max-w-7xl mx-auto">
-          {/* Categories */}
-          <div className="flex items-center space-x-6 mb-8">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                selectedCategory === 'all' 
-                  ? 'bg-purple-500 text-white' 
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <Grid className="w-4 h-4" />
-              <span>All Flashcards</span>
-            </button>
-            <button
-              onClick={() => setSelectedCategory('subjects')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                selectedCategory === 'subjects' 
-                  ? 'bg-purple-500 text-white' 
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>By Subject</span>
-            </button>
-            <button
-              onClick={() => setSelectedCategory('favorites')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                selectedCategory === 'favorites' 
-                  ? 'bg-purple-500 text-white' 
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <Star className="w-4 h-4" />
-              <span>Favorites</span>
-            </button>
-          </div>
-
-          {/* Search and Filters */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="relative flex-1 max-w-xl">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search flashcards..."
-                className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <button 
-                  onClick={() => setActiveFilter(activeFilter === 'filter' ? null : 'filter')}
-                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white flex items-center space-x-2 hover:border-purple-500 transition-colors"
-                >
-                  <Filter className="w-4 h-4" />
-                  <span>Filter</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-              </div>
-              
-              <div className="relative">
-                <button 
-                  onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
-                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white flex items-center space-x-2 hover:border-purple-500 transition-colors"
-                >
-                  <Clock className="w-4 h-4" />
-                  <span>Sort by</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="border-l border-gray-700 pl-4 flex items-center space-x-2">
+        {/* Main Content */}
+        <div className="flex-1 p-8 overflow-auto">
+          <div className="max-w-7xl mx-auto">
+            {/* Categories and Generate Button */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center space-x-6">
                 <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'grid' 
-                      ? 'bg-purple-500 text-white' 
-                      : 'text-gray-400 hover:text-white'
+                  onClick={() => setSelectedCategory("all")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                    selectedCategory === "all" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
                   }`}
                 >
-                  <Grid className="w-5 h-5" />
+                  <Grid className="w-4 h-4" />
+                  <span>All Flashcards</span>
                 </button>
                 <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'list' 
-                      ? 'bg-purple-500 text-white' 
-                      : 'text-gray-400 hover:text-white'
+                  onClick={() => setSelectedCategory("subjects")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                    selectedCategory === "subjects" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
                   }`}
                 >
-                  <List className="w-5 h-5" />
+                  <BookOpen className="w-4 h-4" />
+                  <span>By Subject</span>
+                </button>
+                <button
+                  onClick={() => setSelectedCategory("favorites")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                    selectedCategory === "favorites" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  <Star className="w-4 h-4" />
+                  <span>Favorites</span>
                 </button>
               </div>
+              <button
+                className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => selectedNote && generateFlashcards(selectedNote.content)}
+                disabled={isGenerating || !selectedNote}
+              >
+                {isGenerating ? "Generating..." : "Generate Flashcards"}
+              </button>
             </div>
-          </div>
 
-          {/* Flashcards Grid */}
-          <div className={`grid ${viewMode === 'grid' ? 'grid-cols-2' : 'grid-cols-1'} gap-6`}>
-            {filteredCards.map(card => renderFlashcard(card))}
+            {/* Search and Filters */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="relative flex-1 max-w-xl">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search flashcards..."
+                  className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <button
+                    onClick={() => setActiveFilter(activeFilter === "filter" ? null : "filter")}
+                    className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white flex items-center space-x-2 hover:border-purple-500 transition-colors"
+                  >
+                    <Filter className="w-4 h-4" />
+                    <span>Filter</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="relative">
+                  <button
+                    onClick={() => setActiveFilter(activeFilter === "sort" ? null : "sort")}
+                    className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white flex items-center space-x-2 hover:border-purple-500 transition-colors"
+                  >
+                    <Clock className="w-4 h-4" />
+                    <span>Sort by</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="border-l border-gray-700 pl-4 flex items-center space-x-2">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2 rounded-lg transition-colors ${
+                      viewMode === "grid" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    <Grid className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 rounded-lg transition-colors ${
+                      viewMode === "list" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    <List className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Flashcards Grid */}
+            <div className={`grid ${viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"} gap-6`}>
+              {filteredCards.map((card) => renderFlashcard(card))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
     {/* View Card Modal */}
     <ViewCardModal 
