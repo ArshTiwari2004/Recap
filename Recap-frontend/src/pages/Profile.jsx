@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Camera, Upload, X, BookOpen, Bell, Shield, Briefcase, GraduationCap, Link, Github, Linkedin, Twitter } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Notification from '@/components/Notifications';
+import NavBar from '@/components/NavBar';
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -65,20 +66,7 @@ const Profile = () => {
       
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Shield className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">Student Profile</span>
-          </div>
-          
-          <div className="flex items-center space-x-6">
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Study Stats
-            </button>
-       
-            <Notification />
-          </div>
-        </div>
+        <NavBar icon={<Shield className="w-6 h-6 text-purple-400" />} header={"Student Profile"} button3={"Study Stats"} />
 
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
