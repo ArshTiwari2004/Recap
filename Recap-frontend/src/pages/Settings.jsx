@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Notification from '@/components/Notifications';
+import NavBar from '@/components/NavBar';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('general');
@@ -79,23 +80,7 @@ const Settings = () => {
       
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <SettingsIcon className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">Settings</span>
-          </div>
-          
-          <div className="flex items-center space-x-6">
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Help Center
-            </button>
-            {/* <button className="relative text-gray-300 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button> */}
-            <Notification />
-          </div>
-        </div>
+        <NavBar icon={<SettingsIcon className="w-6 h-6 text-purple-400" />} header={"Settings"} button3={"Help Center"}/>
 
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
