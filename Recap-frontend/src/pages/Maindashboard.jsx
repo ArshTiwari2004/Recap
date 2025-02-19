@@ -9,6 +9,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import Notification from '@/components/Notifications';
 import Sidebar from '../components/Sidebar';
+import NavBar from '@/components/NavBar';
 
 
 const Maindashboard = () => {
@@ -44,43 +45,7 @@ const Maindashboard = () => {
       
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Activity className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">Dashboard</span>
-          </div>
-          
-          <div className="flex items-center space-x-6">
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Feedback
-            </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Help
-            </button>
-            {/* <button className="relative text-gray-300 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button> */}
-            <Notification />
-
-            <div
-            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
-            onClick={() => navigate("/profile")}
-          >
-            {user?.photoURL ? (
-              <img
-                src={user.photoURL}
-                alt="User Avatar"
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-white text-sm font-medium">
-                U
-              </span>
-            )}
-          </div>
-          </div>
-        </div>
+        <NavBar icon={<Activity className="w-6 h-6 text-purple-400" />} header={"DashBoard"} button2={"FeedBack"} button3={"Help"} />
 
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
