@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Lightbulb, Bell, Link2, AlertTriangle, ArrowRight,
-  Youtube, FileText, Network, BookOpen, Brain,
-   Zap, Crosshair, Link
-} from 'lucide-react';
-import { collection, query, onSnapshot, doc } from 'firebase/firestore';
-import { fireDB } from '../../config/Firebaseconfig';
-import Sidebar from '../Sidebar';
-import Notification from '../Notifications';
+import React, { useState, useEffect } from "react";
+import {
+  Lightbulb,
+  AlertTriangle,
+  ArrowRight,
+  Youtube,
+  FileText,
+  Zap,
+  Link,
+} from "lucide-react";
+import { collection, query, onSnapshot, doc } from "firebase/firestore";
+import { fireDB } from "../../config/Firebaseconfig";
+import Sidebar from "../Sidebar";
+import NavBar from "../NavBar";
 
 const AIInsights = () => {
   const [notes, setNotes] = useState([]);
@@ -15,11 +19,11 @@ const AIInsights = () => {
   const [analysis, setAnalysis] = useState(null);
   const [resources, setResources] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('gaps');
+  const [activeTab, setActiveTab] = useState("gaps");
   const [relatedNotes, setRelatedNotes] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(fireDB, 'notes'));
+    const q = query(collection(fireDB, "notes"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const notesData = [];
       querySnapshot.forEach((doc) => {
@@ -35,27 +39,27 @@ const AIInsights = () => {
   }, []);
 
   const analyzeWithCohere = async (prompt) => {
-    const response = await fetch('https://api.cohere.ai/v1/generate', {
-      method: 'POST',
+    const response = await fetch("https://api.cohere.ai/v1/generate", {
+      method: "POST",
       headers: {
-        'Authorization': 'Bearer YFAX6MrxeFKRRZakECwf5M9p59Chg7OvYPpsUeDg',
-        'Content-Type': 'application/json'
+        Authorization: "Bearer YFAX6MrxeFKRRZakECwf5M9p59Chg7OvYPpsUeDg",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: 'command',
+        model: "command",
         prompt: prompt,
         max_tokens: 1000,
-        temperature: 0.7
-      })
+        temperature: 0.7,
+      }),
     });
-    
+
     const data = await response.json();
     return data.generations[0].text;
   };
 
   const analyzeContent = async () => {
     if (!activeNote) {
-      alert('Please select a note first');
+      alert("Please select a note first");
       return;
     }
 
@@ -85,26 +89,33 @@ const AIInsights = () => {
       setAnalysis(analysisResult);
 
       // Find related notes
-      const findRelatedPrompt = `Given these topics from the current note: ${analysisResult.topics.join(', ')}
+      const findRelatedPrompt = `Given these topics from the current note: ${analysisResult.topics.join(
+        ", "
+      )}
 
       Compare with these other notes and identify which ones are most related (return max 3):
-      ${notes.filter(note => note.id !== activeNote.id).map(note => 
-        `Note ID ${note.id}: ${note.content.substring(0, 200)}...`
-      ).join('\n\n')}
+      ${notes
+        .filter((note) => note.id !== activeNote.id)
+        .map(
+          (note) => `Note ID ${note.id}: ${note.content.substring(0, 200)}...`
+        )
+        .join("\n\n")}
 
       Format response as JSON array with objects containing id and relevance_score (0-100):
       [{ "id": "note_id", "relevance_score": 85 }]`;
 
       const relatedResult = await analyzeWithCohere(findRelatedPrompt);
       const relatedResults = JSON.parse(relatedResult);
-      const relatedNotesList = relatedResults.map(result => ({
-        ...notes.find(note => note.id === result.id),
-        relevance_score: result.relevance_score
+      const relatedNotesList = relatedResults.map((result) => ({
+        ...notes.find((note) => note.id === result.id),
+        relevance_score: result.relevance_score,
       }));
       setRelatedNotes(relatedNotesList);
 
       // Get learning resources
-      const resourcesPrompt = `Suggest learning resources for these topics: ${analysisResult.topics.join(', ')}
+      const resourcesPrompt = `Suggest learning resources for these topics: ${analysisResult.topics.join(
+        ", "
+      )}
 
       Format as JSON:
       {
@@ -118,17 +129,16 @@ const AIInsights = () => {
 
       const resourcesResult = await analyzeWithCohere(resourcesPrompt);
       setResources(JSON.parse(resourcesResult));
-      
     } catch (error) {
-      console.error('Analysis failed:', error);
-      alert('Analysis failed. Please try again.');
+      console.error("Analysis failed:", error);
+      alert("Analysis failed. Please try again.");
     }
     setLoading(false);
   };
 
   const getKnowledgeGaps = async () => {
     if (!activeNote) {
-      alert('Please select a note first');
+      alert("Please select a note first");
       return;
     }
 
@@ -155,17 +165,17 @@ const AIInsights = () => {
       const result = await analyzeWithCohere(prompt);
       const analysisResult = JSON.parse(result);
       setAnalysis(analysisResult);
-      setActiveTab('gaps');
+      setActiveTab("gaps");
     } catch (error) {
-      console.error('Analysis failed:', error);
-      alert('Analysis failed. Please try again.');
+      console.error("Analysis failed:", error);
+      alert("Analysis failed. Please try again.");
     }
     setLoading(false);
   };
 
   const getResources = async () => {
     if (!activeNote) {
-      alert('Please select a note first');
+      alert("Please select a note first");
       return;
     }
 
@@ -188,17 +198,17 @@ const AIInsights = () => {
       const result = await analyzeWithCohere(prompt);
       const resourcesResult = JSON.parse(result);
       setResources(resourcesResult);
-      setActiveTab('resources');
+      setActiveTab("resources");
     } catch (error) {
-      console.error('Failed to fetch resources:', error);
-      alert('Failed to fetch resources. Please try again.');
+      console.error("Failed to fetch resources:", error);
+      alert("Failed to fetch resources. Please try again.");
     }
     setLoading(false);
   };
 
   const findRelatedNotes = async () => {
     if (!activeNote || notes.length < 2) {
-      alert('Need more notes to find relations');
+      alert("Need more notes to find relations");
       return;
     }
 
@@ -208,23 +218,26 @@ const AIInsights = () => {
       ${activeNote.content}
 
       With these other notes and identify which ones are most related (return max 3):
-      ${notes.filter(note => note.id !== activeNote.id).map(note => 
-        `Note ID ${note.id}: ${note.content.substring(0, 200)}...`
-      ).join('\n\n')}
+      ${notes
+        .filter((note) => note.id !== activeNote.id)
+        .map(
+          (note) => `Note ID ${note.id}: ${note.content.substring(0, 200)}...`
+        )
+        .join("\n\n")}
 
       Format response as JSON array with objects containing id and relevance_score (0-100):
       [{ "id": "note_id", "relevance_score": 85 }]`;
 
       const result = await analyzeWithCohere(prompt);
       const relatedResults = JSON.parse(result);
-      const relatedNotesList = relatedResults.map(result => ({
-        ...notes.find(note => note.id === result.id),
-        relevance_score: result.relevance_score
+      const relatedNotesList = relatedResults.map((result) => ({
+        ...notes.find((note) => note.id === result.id),
+        relevance_score: result.relevance_score,
       }));
       setRelatedNotes(relatedNotesList);
     } catch (error) {
-      console.error('Failed to find related notes:', error);
-      alert('Failed to find related notes. Please try again.');
+      console.error("Failed to find related notes:", error);
+      alert("Failed to find related notes. Please try again.");
     }
     setLoading(false);
   };
@@ -237,7 +250,7 @@ const AIInsights = () => {
             <h3 className="text-white font-medium mb-2">Content Coverage</h3>
             <div className="flex items-center space-x-2">
               <div className="h-2 flex-1 bg-gray-700 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-purple-500 rounded-full transition-all duration-500"
                   style={{ width: `${analysis.coverage}%` }}
                 />
@@ -249,7 +262,10 @@ const AIInsights = () => {
           <div className="space-y-2">
             <h3 className="text-white font-medium">Knowledge Gaps</h3>
             {analysis.gaps.map((gap, index) => (
-              <div key={index} className="flex items-start space-x-2 text-gray-300 bg-gray-800/50 p-3 rounded-lg">
+              <div
+                key={index}
+                className="flex items-start space-x-2 text-gray-300 bg-gray-800/50 p-3 rounded-lg"
+              >
                 <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
                 <span>{gap}</span>
               </div>
@@ -259,7 +275,10 @@ const AIInsights = () => {
           <div className="space-y-2">
             <h3 className="text-white font-medium">Suggested Improvements</h3>
             {analysis.improvements.map((improvement, index) => (
-              <div key={index} className="flex items-start space-x-2 text-gray-300 bg-gray-800/50 p-3 rounded-lg">
+              <div
+                key={index}
+                className="flex items-start space-x-2 text-gray-300 bg-gray-800/50 p-3 rounded-lg"
+              >
                 <Zap className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <span>{improvement}</span>
               </div>
@@ -269,15 +288,17 @@ const AIInsights = () => {
           <div className="space-y-2">
             <h3 className="text-white font-medium">Related Notes</h3>
             {relatedNotes.map((note, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="flex items-start space-x-2 text-gray-300 bg-gray-800/50 p-3 rounded-lg cursor-pointer hover:bg-gray-800"
                 onClick={() => setActiveNote(note)}
               >
                 <Link className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-white font-medium">{note.subject}</h4>
-                  <p className="text-sm text-gray-400 line-clamp-2">{note.content}</p>
+                  <p className="text-sm text-gray-400 line-clamp-2">
+                    {note.content}
+                  </p>
                   <span className="text-xs text-purple-400 mt-1">
                     Relevance: {note.relevance_score}%
                   </span>
@@ -289,7 +310,6 @@ const AIInsights = () => {
       )}
     </div>
   );
-
 
   const renderResources = () => (
     <div className="space-y-4">
@@ -308,7 +328,9 @@ const AIInsights = () => {
                 <Youtube className="w-5 h-5 text-red-500" />
                 <div className="flex-1">
                   <p className="text-gray-200">{video.title}</p>
-                  <p className="text-sm text-gray-400">{video.source} • {video.duration}</p>
+                  <p className="text-sm text-gray-400">
+                    {video.source} • {video.duration}
+                  </p>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-400" />
               </a>
@@ -328,7 +350,9 @@ const AIInsights = () => {
                 <FileText className="w-5 h-5 text-blue-500" />
                 <div className="flex-1">
                   <p className="text-gray-200">{article.title}</p>
-                  <p className="text-sm text-gray-400">{article.source} • {article.readTime} read</p>
+                  <p className="text-sm text-gray-400">
+                    {article.source} • {article.readTime} read
+                  </p>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-400" />
               </a>
@@ -358,15 +382,12 @@ const AIInsights = () => {
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar />
-      
+
       <div className="flex-1 flex flex-col">
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Lightbulb className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">AI Insights</span>
-          </div>
-          <Notification />
-        </div>
+        <NavBar
+          icon={<Lightbulb className="w-6 h-6 text-purple-400" />}
+          header={"AI Insights"}
+        />
 
         <div className="flex-1 p-8 overflow-auto">
           <div className="max-w-7xl mx-auto flex gap-8">
@@ -374,10 +395,12 @@ const AIInsights = () => {
             <div className="w-1/4 flex flex-col">
               <div className="bg-gray-800 rounded-xl border border-gray-700 flex-1">
                 <div className="p-6 border-b border-gray-700">
-                  <h2 className="text-xl font-semibold text-white">Your Notes</h2>
+                  <h2 className="text-xl font-semibold text-white">
+                    Your Notes
+                  </h2>
                 </div>
                 <div className="p-4 space-y-3 overflow-y-auto">
-                  {notes.map(note => (
+                  {notes.map((note) => (
                     <button
                       key={note.id}
                       onClick={() => {
@@ -388,12 +411,16 @@ const AIInsights = () => {
                       }}
                       className={`w-full p-4 rounded-lg text-left transition-colors ${
                         activeNote?.id === note.id
-                          ? 'bg-purple-500/20 border border-purple-500'
-                          : 'bg-gray-700/50 hover:bg-gray-700'
+                          ? "bg-purple-500/20 border border-purple-500"
+                          : "bg-gray-700/50 hover:bg-gray-700"
                       }`}
                     >
-                      <h3 className="text-white font-medium mb-2">{note.subject}</h3>
-                      <p className="text-gray-400 text-sm line-clamp-2">{note.content}</p>
+                      <h3 className="text-white font-medium mb-2">
+                        {note.subject}
+                      </h3>
+                      <p className="text-gray-400 text-sm line-clamp-2">
+                        {note.content}
+                      </p>
                     </button>
                   ))}
                 </div>
@@ -404,21 +431,21 @@ const AIInsights = () => {
             <div className="flex-1 flex flex-col">
               {/* Action Buttons Row */}
               <div className="flex justify-end space-x-4 mb-6">
-                <button 
+                <button
                   onClick={getKnowledgeGaps}
                   disabled={loading || !activeNote}
                   className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 shadow-lg whitespace-nowrap"
                 >
                   Get Knowledge Gaps
                 </button>
-                <button 
+                <button
                   onClick={getResources}
                   disabled={loading || !activeNote}
                   className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 shadow-lg whitespace-nowrap"
                 >
                   Find Resources
                 </button>
-                <button 
+                <button
                   onClick={findRelatedNotes}
                   disabled={loading || !activeNote}
                   className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 shadow-lg whitespace-nowrap"
@@ -432,25 +459,25 @@ const AIInsights = () => {
                 <div className="p-6 border-b border-gray-700">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-white">
-                      {activeNote ? activeNote.subject : 'Select a Note'}
+                      {activeNote ? activeNote.subject : "Select a Note"}
                     </h2>
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => setActiveTab('gaps')}
+                        onClick={() => setActiveTab("gaps")}
                         className={`px-4 py-2 rounded-lg transition-colors ${
-                          activeTab === 'gaps'
-                            ? 'bg-purple-500 text-white'
-                            : 'text-gray-400 hover:text-white'
+                          activeTab === "gaps"
+                            ? "bg-purple-500 text-white"
+                            : "text-gray-400 hover:text-white"
                         }`}
                       >
                         Gaps
                       </button>
                       <button
-                        onClick={() => setActiveTab('resources')}
+                        onClick={() => setActiveTab("resources")}
                         className={`px-4 py-2 rounded-lg transition-colors ${
-                          activeTab === 'resources'
-                            ? 'bg-purple-500 text-white'
-                            : 'text-gray-400 hover:text-white'
+                          activeTab === "resources"
+                            ? "bg-purple-500 text-white"
+                            : "text-gray-400 hover:text-white"
                         }`}
                       >
                         Resources
@@ -463,7 +490,7 @@ const AIInsights = () => {
                     <div className="flex items-center justify-center h-32">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
                     </div>
-                  ) : activeTab === 'gaps' ? (
+                  ) : activeTab === "gaps" ? (
                     renderGapAnalysis()
                   ) : (
                     renderResources()
