@@ -14,6 +14,7 @@ import AIInsights from './components/AISuggestions/AIinsights';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import FeedbackForm from './pages/Feedback';
+import UserLeaderBoard from './components/LeaderBoard';
 
 import Maindashboard from './pages/Maindashboard';
 import { FirebaseProvider } from './context/FirebaseContext';
@@ -34,7 +35,8 @@ const App = () => {
         <Route path="/upload-note" element={<Dashboard />} />
         <Route path="/my-notes" element={<MyNotes />} />
         <Route path="/flashcards" element={<Flashcards />} />
-      
+        <Route path="/leaderboard" element={<UserLeaderBoard />} />
+        
         <Route path="/collaboration" element={<CollaborativeNotes />} />
      
         <Route path="/quizzes" element={<Quizzes />} />
