@@ -8,6 +8,7 @@ import { collection, query, onSnapshot, doc, where } from 'firebase/firestore';
 import { fireDB } from '../../config/Firebaseconfig';
 import Sidebar from '../Sidebar';
 import Notification from '../Notifications';
+import NavBar from '../NavBar';
 
 const AIInsights = () => {
   const [notes, setNotes] = useState([]);
@@ -369,13 +370,13 @@ const AIInsights = () => {
       <Sidebar />
       
       <div className="flex-1 flex flex-col">
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Lightbulb className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">AI Insights</span>
-          </div>
-          <Notification />
-        </div>
+        <NavBar
+          icon={<Lightbulb className="w-6 h-6 text-purple-400" />}
+          header={"AI Insights"}
+          button1={"Feedback"}
+          button2={"Help"}
+          button3={"Dock"}
+        />
 
         <div className="flex-1 p-8 overflow-auto">
           <div className="max-w-7xl mx-auto flex gap-8">
