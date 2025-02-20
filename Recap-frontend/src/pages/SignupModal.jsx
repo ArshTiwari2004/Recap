@@ -40,6 +40,7 @@ const SignupModal = ({ isOpen, onClose }) => {
       navigate('/main-dashboard');
     } catch (error) {
       toast.error(error.message);
+      console.log(error.message)
     }
    }
 

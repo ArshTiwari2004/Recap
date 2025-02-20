@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Camera, Upload, X, BookOpen, Bell, Shield, Briefcase, GraduationCap, Link, Github, Linkedin, Twitter } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Notification from '@/components/Notifications';
@@ -21,36 +21,27 @@ const Profile = () => {
 
   const [preview, setPreview] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Retrieve user data from localStorage
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // Parse JSON before setting state
+    }
+  }, []);
+
+  console.log(user); // Initially null, then updates
+  console.log(user?.photoURL); // Optional chaining prevents errors
+
+  const fullName = user?.displayName || "No Name Available";
+  const nameParts = fullName.split(" "); // Split by space
+  const firstName = nameParts[0] || ""; // First part
+  const lastName = nameParts.slice(1).join(" ") || ""; // Remaining parts as last name
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(e.type === 'dragenter' || e.type === 'dragover');
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files?.[0]) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
-      reader.readAsDataURL(e.dataTransfer.files[0]);
-    }
   };
 
   const handleExperienceChange = (index, field, value) => {
@@ -62,7 +53,7 @@ const Profile = () => {
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar />
-      
+
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
         <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
@@ -70,12 +61,12 @@ const Profile = () => {
             <Shield className="w-6 h-6 text-purple-400" />
             <span className="text-lg font-semibold text-white">Student Profile</span>
           </div>
-          
+
           <div className="flex items-center space-x-6">
             <button className="text-gray-300 hover:text-white transition-colors">
               Study Stats
             </button>
-       
+
             <Notification />
           </div>
         </div>
@@ -86,53 +77,30 @@ const Profile = () => {
             {/* Profile Header */}
             <div className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 rounded-xl p-8 shadow-xl">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <div 
-                  className={`relative w-40 h-40 rounded-full overflow-hidden ${
-                    dragActive ? 'ring-4 ring-purple-500' : 'ring-2 ring-purple-400/30'
-                  }`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                >
-                  {preview ? (
-                    <>
-                      <img src={preview} alt="Profile" className="w-full h-full object-cover" />
-                      <button
-                        onClick={() => setPreview(null)}
-                        className="absolute top-2 right-2 p-1 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-colors"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </>
+                <div className="relative w-40 h-40 rounded-full overflow-hidden ring-2 ring-purple-400/30">
+                  {user?.photoURL ? ( // Use optional chaining to avoid errors
+                    <img
+                      src={user.photoURL}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <label className="w-full h-full bg-gray-800/80 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-700/80 transition-colors">
-                      <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-                      <Camera className="w-8 h-8 text-purple-400 mb-2" />
-                      <span className="text-sm text-purple-400">Upload Photo</span>
-                    </label>
+                    <div className="w-full h-full bg-gray-800 flex items-center justify-center text-white">
+                      No Image
+                    </div>
                   )}
                 </div>
-                
+
                 <div className="flex-1 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      name="firstName"
-                      placeholder="First Name"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="bg-gray-800/80 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
-                    />
-                    <input
-                      type="text"
-                      name="lastName"
-                      placeholder="Last Name"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="bg-gray-800/80 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
-                    />
+                    <div className="bg-gray-800/80 text-white rounded-lg px-4 py-2">
+                      {firstName || "no first name"}
+                    </div>
+                    <div className="bg-gray-800/80 text-white rounded-lg px-4 py-2">
+                      {lastName || "no last name available"}
+                    </div>
                   </div>
+
                   <textarea
                     name="bio"
                     placeholder="Tell us about your study goals and interests..."
@@ -175,19 +143,19 @@ const Profile = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 mb-2">Year of Study</label>
+                  <label className="block text-gray-300 mb-2">Current Board</label>
                   <select
                     name="yearOfStudy"
                     value={formData.yearOfStudy}
                     onChange={handleChange}
                     className="w-full bg-gray-700/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
-                    <option value="">Select Year</option>
-                    <option value="1">First Year</option>
-                    <option value="2">Second Year</option>
-                    <option value="3">Third Year</option>
-                    <option value="4">Fourth Year</option>
-                    <option value="5">Graduate</option>
+                    <option value="">Select Board</option>
+                    <option value="CBSE">CBSE</option>
+                    <option value="ICSE">ICSE</option>
+                    <option value="State">State Board</option>
+                    <option value="NIOS">NIOS</option>
+                    <option value="IB">IB</option>
                   </select>
                 </div>
                 <div>
