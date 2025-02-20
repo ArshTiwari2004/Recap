@@ -10,8 +10,8 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import TeamSection from '@/components/Team';
 import { Link } from 'react-router-dom';
-import { Features } from './Features';
-import { FAQ } from './FAQ';
+import Features from './Features';
+import FAQ from './FAQ';
 
 const LandingPage = () => {
 

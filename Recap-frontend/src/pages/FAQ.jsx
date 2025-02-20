@@ -1,7 +1,5 @@
-"use client"
-
-import React, { useState } from "react"
-import { ChevronDown } from 'lucide-react'
+import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
@@ -29,14 +27,14 @@ const faqs = [
     answer:
       "Yes! You can try Smart Study free for 14 days with full access to all features. After the trial, you can choose between our Basic and Premium plans based on your needs.",
   },
-]
+];
 
-export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+const FAQ = () => {
+  const [openIndex, setOpenIndex] = useState(null);
 
   const toggleAccordion = (index) => {
-    setOpenIndex(openIndex === index ? null : index)
-  }
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-24" id="faq">
@@ -44,7 +42,9 @@ export function FAQ() {
         <div className="inline-block px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-sm font-medium mb-4">
           FAQ
         </div>
-        <h2 className="text-4xl font-bold text-white mb-4">Anything we can help you with?</h2>
+        <h2 className="text-4xl font-bold text-white mb-4">
+          Anything we can help you with?
+        </h2>
       </div>
 
       <div className="space-y-4">
@@ -70,6 +70,7 @@ export function FAQ() {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
+export default FAQ;

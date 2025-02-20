@@ -1,51 +1,50 @@
-import { BookOpen, Brain, Users, Mic, Scan, Clipboard } from "lucide-react"
+import React from "react";
+import { BookOpen, Brain, Users, Mic, Scan, Clipboard } from "lucide-react";
 
 const features = [
   {
-    icon: <BookOpen className="w-8 h-8 text-purple-400" />,
+    icon: <BookOpen className="w-8 h-8 text-purple-400" />, 
     title: "Smart Organization",
-    description: "Automatically categorize and link your notes across subjects for seamless learning.",
+    description: "Automatically categorize and link your notes across subjects for seamless learning."
   },
   {
-    icon: <Brain className="w-8 h-8 text-purple-400" />,
+    icon: <Brain className="w-8 h-8 text-purple-400" />, 
     title: "AI-Enhanced Learning",
-    description: "Get personalized insights and suggestions to improve your study materials.",
+    description: "Get personalized insights and suggestions to improve your study materials."
   },
   {
-    icon: <Users className="w-8 h-8 text-purple-400" />,
+    icon: <Users className="w-8 h-8 text-purple-400" />, 
     title: "Collaborative Study",
-    description: "Share and collaborate on notes with classmates in real-time.",
+    description: "Share and collaborate on notes with classmates in real-time."
   },
   {
-    icon: <Mic className="w-8 h-8 text-purple-400" />,
+    icon: <Mic className="w-8 h-8 text-purple-400" />, 
     title: "Voice-to-Text",
-    description: "Convert voice recordings into text notes for easy review and study.",
+    description: "Convert voice recordings into text notes for easy review and study."
   },
   {
-    icon: <Scan className="w-8 h-8 text-purple-400" />,
+    icon: <Scan className="w-8 h-8 text-purple-400" />, 
     title: "Handwriting to Digital Notes",
-    description: "Scan handwritten notes and convert them into editable, searchable text.",
+    description: "Scan handwritten notes and convert them into editable, searchable text."
   },
   {
-    icon: <Clipboard className="w-8 h-8 text-purple-400" />,
+    icon: <Clipboard className="w-8 h-8 text-purple-400" />, 
     title: "Customizable Quizzes",
-    description: "Create custom quizzes, adjust difficulty, and track progress to enhance learning.",
-  },
-]
+    description: "Create custom quizzes, adjust difficulty, and track progress to enhance learning."
+  }
+];
 
-export function Features() {
+const Features = () => {
   return (
     <div className="relative py-24" id="features">
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/0 via-gray-900 to-gray-900/0 pointer-events-none" />
-
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-block px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-sm font-medium mb-4">
             FEATURES
           </div>
-          <h2 className="text-4xl font-bold text-white mb-4">What is Lecture Transcription?</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">SMART STUDY TOOLS</h2>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div
@@ -65,6 +64,7 @@ export function Features() {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
+export default Features;

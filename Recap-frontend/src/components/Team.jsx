@@ -39,6 +39,7 @@ const TeamSection = () => {
         bot: ""
       }
     }
+    
   ];
 
   return (
