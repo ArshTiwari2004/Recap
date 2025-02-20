@@ -4,7 +4,7 @@ import {
   Youtube, FileText, Network, BookOpen, Brain,
    Zap, Crosshair, Link
 } from 'lucide-react';
-import { collection, query, onSnapshot, doc } from 'firebase/firestore';
+import { collection, query, onSnapshot, doc, where } from 'firebase/firestore';
 import { fireDB } from '../../config/Firebaseconfig';
 import Sidebar from '../Sidebar';
 import Notification from '../Notifications';
@@ -19,21 +19,30 @@ const AIInsights = () => {
   const [relatedNotes, setRelatedNotes] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(fireDB, 'notes'));
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.uid;
+  
+    if (!userId) {
+      toast.error("Please log in to view your notes.");
+      return;
+    }
+  
+    const q = query(collection(fireDB, 'notes'), where('uid', '==', userId));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const notesData = [];
       querySnapshot.forEach((doc) => {
         notesData.push({ id: doc.id, ...doc.data() });
       });
       setNotes(notesData);
+  
       if (notesData.length > 0 && !activeNote) {
         setActiveNote(notesData[0]);
       }
     });
-
+  
     return () => unsubscribe();
   }, []);
-
+  
   const analyzeWithCohere = async (prompt) => {
     const response = await fetch('https://api.cohere.ai/v1/generate', {
       method: 'POST',
