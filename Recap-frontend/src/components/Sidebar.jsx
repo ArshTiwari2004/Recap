@@ -14,6 +14,7 @@ import {
   LogOut,
   User,
   Menu,
+  Book,
 } from "lucide-react"
 import { IconCards } from "@tabler/icons-react"
 import { signOut } from "firebase/auth"
@@ -51,6 +52,7 @@ const Sidebar = () => {
     { to: "/quizzes", icon: Calculator, label: "Quizzes", category: "main" },
     { to: "/collaboration", icon: Users, label: "Collaboration", category: "main" },
     { to: "/ai-insights", icon: Activity, label: "AI Insights", category: "main" },
+    { to: "/leaderboard", icon: Book, label: "LeaderBoard", category: "main" },
     { to: "/premium", icon: BrainCog, label: "Premium", category: "main" },
     { to: "/settings", icon: Settings, label: "Settings", category: "bottom" },
     { to: "/profile", icon: User, label: "Profile", category: "bottom" },

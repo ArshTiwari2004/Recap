@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Lightbulb } from "lucide-react";
 import NavBar from "./NavBar";
 
 const UserLeaderBoard = () => {
@@ -30,7 +30,13 @@ const UserLeaderBoard = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <NavBar header={"Leaderboard"} button2={"FeedBack"} button3={"Docs"} />
+        <NavBar
+          icon={<Lightbulb className="w-6 h-6 text-purple-400" />}
+          header={"AI Insights"}
+          button1={"Feedback"}
+          button2={"Help"}
+          button3={"Dock"}
+        />
 
         {/* Leaderboard Table */}
         <div className="p-6">
