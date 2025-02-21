@@ -383,12 +383,13 @@ const AIInsights = () => {
         <div className="flex-1 p-8 overflow-auto">
           <div className="max-w-7xl mx-auto flex gap-8">
             {/* Left Column - Notes Section */}
+{/* Left Column - Notes Section */}
 <div className="w-1/4 flex flex-col">
-  <div className="bg-gray-800 rounded-xl border border-gray-700 flex-1">
+  <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-9rem)]">
     <div className="p-6 border-b border-gray-700">
       <h2 className="text-xl font-semibold text-white">Your Notes</h2>
     </div>
-    <div className="h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+    <div className="h-[calc(100vh-16rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
       <div className="p-4 space-y-3">
         {notes.map(note => (
           <button
@@ -442,52 +443,56 @@ const AIInsights = () => {
               </div>
 
               {/* Analysis Section - Shorter Height */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-24rem)]">
-                <div className="p-6 border-b border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-white">
-                      {activeNote ? activeNote.subject : 'Select a Note'}
-                    </h2>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => setActiveTab('gaps')}
-                        className={`px-4 py-2 rounded-lg transition-colors ${
-                          activeTab === 'gaps'
-                            ? 'bg-purple-500 text-white'
-                            : 'text-gray-400 hover:text-white'
-                        }`}
-                      >
-                        Gaps
-                      </button>
-                      <button
-                        onClick={() => setActiveTab('resources')}
-                        className={`px-4 py-2 rounded-lg transition-colors ${
-                          activeTab === 'resources'
-                            ? 'bg-purple-500 text-white'
-                            : 'text-gray-400 hover:text-white'
-                        }`}
-                      >
-                        Resources
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6 overflow-y-auto">
-                  {loading ? (
-                    <div className="flex items-center justify-center h-32">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-                    </div>
-                  ) : activeTab === 'gaps' ? (
-                    renderGapAnalysis()
-                  ) : (
-                    renderResources()
-                  )}
-                </div>
-              </div>
-            </div>
+            
+           <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-13rem)] flex flex-col">
+           <div className="p-6 border-b border-gray-700 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-white">
+            {activeNote ? activeNote.subject : 'Select a Note'}
+          </h2>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setActiveTab('gaps')}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'gaps'
+                  ? 'bg-purple-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Gaps
+            </button>
+            <button
+              onClick={() => setActiveTab('resources')}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'resources'
+                  ? 'bg-purple-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Resources
+            </button>
           </div>
         </div>
       </div>
+      <div className="flex-1 overflow-y-auto min-h-0 p-6">
+        {loading ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+          </div>
+        ) : activeTab === 'gaps' ? (
+          renderGapAnalysis()
+        ) : (
+          renderResources()
+        )}
+      </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  
+
       <Chatbot />
     </div>
   );
