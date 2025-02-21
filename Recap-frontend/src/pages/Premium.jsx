@@ -9,6 +9,7 @@ import Sidebar from '../components/Sidebar';
 import toast from 'react-hot-toast';
 import Notification from '@/components/Notifications';
 import NavBar from '@/components/NavBar';
+import Chatbot from './ChatBot';
 
 const Premium = () => {
   const navigate = useNavigate();
@@ -252,7 +253,7 @@ const Premium = () => {
           header={"Premium"}
           button1={"Feedback"}
           button2={"Help"}
-          button3={"Dock"}
+          button3={"Docs"}
         />
 
         {/* Main content */}
@@ -405,6 +406,7 @@ const Premium = () => {
           </div>
         </div>
       </div>
+      <Chatbot />
     </div>
   );
 };
