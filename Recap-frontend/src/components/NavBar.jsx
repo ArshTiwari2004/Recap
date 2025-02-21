@@ -34,7 +34,7 @@ const NavBar = ({ icon, header, button1, button2, button3, userProfile, panelTog
       <div className="flex items-center space-x-2">
       {panelToggleButton}
         {icon || <BookOpen className="w-6 h-6 text-purple-400" />}
-        <span className="text-lg font-semibold text-white">{header || "Add Header here"}</span>
+        <span className="text-lg font-semibold text-white">{header || "PYQ Practice"}</span>
       </div>
 
       <div className="flex items-center space-x-6">

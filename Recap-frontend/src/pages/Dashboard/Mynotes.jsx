@@ -20,7 +20,7 @@ import DownloadModal from '@/components/DownloadModal';
 const Modal = ({ note, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div className="bg-gray-800 p-6 rounded-xl w-4/5 sm:w-3/4 lg:w-1/2 relative max-h-[80vh] overflow-y-auto">
+      <div className="bg-gray-800 p-6 rounded-xl w-4/5 sm:w-3/4 lg:w-1/2 relative max-h-[80vh] overflow-y-auto border border-white">
         <div className="flex items-center space-x-4">
           <button 
             onClick={onClose} 

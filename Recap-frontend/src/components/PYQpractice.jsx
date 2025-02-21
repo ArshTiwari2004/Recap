@@ -10,58 +10,225 @@ import { Badge } from '@/components/ui/badge';
 import { 
   BookOpen, BookmarkPlus, Filter, Award, ArrowRight, Book, 
   Brain, FileText, TrendingUp, Star, AlertCircle, Clock,
-  BookCheck, Trophy
+  BookCheck, Trophy,CheckCircle, Moon, Sun
 } from 'lucide-react';
 import NavBar from './NavBar';
 import Sidebar from '../components/Sidebar';
 import Chatbot from '@/pages/ChatBot';
+import { useGroqService } from '@/services/GroqService';
+import toast from 'react-hot-toast';
 
 // Enhanced dummy data with weak topics and related content
+// Example questions data structure for Class 12 PCM
 const DUMMY_QUESTIONS = [
   {
-    id: '1',
-    question: 'Explain the process of photosynthesis and its importance in the ecosystem.',
-    subject: 'Biology',
-    board: 'CBSE',
-    year: '2023',
+    id: "phy001",
+    board: "CBSE",
+    subject: "Physics",
+    year: "2022",
+    question: "A cyclotron frequency of a charged particle with charge q and mass m in a magnetic field of B is given by f = qB/(2πm). A proton and an alpha particle enter the same magnetic field perpendicularly. Calculate and explain the ratio of their cyclotron frequencies (fproton/falpha).",
     marks: 5,
-    chapter: 'Life Processes',
-    difficulty: 'Medium',
-    weakTopics: ['Cellular Respiration', 'Energy Transfer'],
+    weakTopics: ["Electromagnetic Induction", "Charged Particles in Fields"],
     relatedNotes: {
-      title: 'Photosynthesis Complete Notes',
-      url: '/notes/photosynthesis',
+      title: "Motion of Charged Particles in Magnetic Fields",
       keyPoints: [
-        'Light-dependent reactions',
-        'Calvin cycle',
-        'Factors affecting rate'
+        "Cyclotron frequency f = qB/(2πm)",
+        "Alpha particle: q = 2e, m = 4m_p",
+        "Circular motion occurs due to Lorentz force",
+        "Radius of circular path r = mv/(qB)"
       ]
-    },
-    expectedAnswer: 'Photosynthesis is the process by which plants convert light energy into chemical energy...',
-    previousYearPatterns: [
-      { year: '2022', marks: 3, variation: 'Focus on cellular level explanation' },
-      { year: '2021', marks: 5, variation: 'Environmental impact emphasis' }
-    ],
-    examTips: [
-      'Draw clear diagrams',
-      'Mention all stages clearly',
-      'Include practical examples'
-    ]
+    }
   },
-  // More dummy questions...
+  {
+    id: "chem001",
+    board: "CBSE",
+    subject: "Chemistry",
+    year: "2022",
+    question: "Explain the following observations: (a) Transition metals exhibit variable oxidation states. (b) Zn, Cd and Hg are not considered as transition elements. (c) The E° value for Mn³⁺/Mn²⁺ is much more positive than that for Cr³⁺/Cr²⁺.",
+    marks: 5,
+    weakTopics: ["Transition Elements", "Coordination Chemistry"],
+    relatedNotes: {
+      title: "Properties of d-block Elements",
+      keyPoints: [
+        "Variable oxidation states due to involvement of (n-1)d and ns electrons",
+        "Transition elements have partially filled d-orbitals",
+        "Zn, Cd, Hg have completely filled d-orbitals (d¹⁰)",
+        "Electrode potentials depend on electronic configuration and nuclear charge"
+      ]
+    }
+  },
+  {
+    id: "math001",
+    board: "CBSE",
+    subject: "Mathematics",
+    year: "2022",
+    question: "Using integration, find the area of the region bounded by the curves y = sin x, y = cos x between x = 0 and x = π/4.",
+    marks: 6,
+    weakTopics: ["Integral Calculus", "Area Under Curves"],
+    relatedNotes: {
+      title: "Area Under Curves",
+      keyPoints: [
+        "Area = ∫[upper - lower] dx between the limits",
+        "For intersecting curves, find points of intersection first",
+        "For single variable functions, area = ∫f(x)dx between limits",
+        "Use substitution or integration by parts for complex functions"
+      ]
+    }
+  },
+  {
+    id: "phy002",
+    board: "CBSE",
+    subject: "Physics",
+    year: "2021",
+    question: "A parallel plate capacitor with plate area A and separation d is filled with three dielectric materials of equal thickness d/3 with dielectric constants K₁, K₂, and K₃ as shown. Derive an expression for the equivalent capacitance of this combination.",
+    marks: 5,
+    weakTopics: ["Electrostatics", "Capacitors"],
+    relatedNotes: {
+      title: "Capacitors with Dielectrics",
+      keyPoints: [
+        "Capacitance of parallel plate capacitor C = ε₀A/d",
+        "With dielectric: C = Kε₀A/d where K is dielectric constant",
+        "For series combination of capacitors: 1/C = 1/C₁ + 1/C₂ + 1/C₃",
+        "Equivalent dielectric constant: 3/(1/K₁ + 1/K₂ + 1/K₃)"
+      ]
+    }
+  },
+  {
+    id: "chem002",
+    board: "CBSE",
+    subject: "Chemistry",
+    year: "2021",
+    question: "Calculate the emf of the following cell at 25°C: Fe(s) | Fe²⁺(0.001 M) || H⁺(0.01 M) | H₂(g)(1 atm), Pt(s). Given: E°(Fe²⁺/Fe) = -0.44 V and E°(H⁺/H₂) = 0.00 V.",
+    marks: 5,
+    weakTopics: ["Electrochemistry", "Nernst Equation"],
+    relatedNotes: {
+      title: "Electrochemical Cells and Nernst Equation",
+      keyPoints: [
+        "Nernst equation: E = E° - (RT/nF)ln Q",
+        "Standard conditions: 298K, 1M concentration, 1 atm pressure",
+        "Cell notation: Anode | Anolyte || Catholyte | Cathode",
+        "Cell potential: E(cell) = E(cathode) - E(anode)"
+      ]
+    }
+  },
+  {
+    id: "math002",
+    board: "CBSE",
+    subject: "Mathematics",
+    year: "2021", 
+    question: "Find the particular solution of the differential equation (dy/dx) + y cot x = 2 cosec x, given that y = 0 when x = π/2.",
+    marks: 6,
+    weakTopics: ["Differential Equations", "First Order ODEs"],
+    relatedNotes: {
+      title: "First Order Linear Differential Equations",
+      keyPoints: [
+        "Linear form: dy/dx + Py = Q",
+        "Integrating factor: e^∫P dx",
+        "Solution: y·IF = ∫(Q·IF)dx + C",
+        "Apply initial condition to find value of C"
+      ]
+    }
+  },
+  {
+    id: "phy003",
+    board: "CBSE",
+    subject: "Physics",
+    year: "2020",
+    question: "A long straight wire carries a current I. A proton moves parallel to the wire with velocity v at a distance r from it. Derive an expression for the force experienced by the proton. What happens if the proton moves in the opposite direction?",
+    marks: 5,
+    weakTopics: ["Magnetism", "Magnetic Force"],
+    relatedNotes: {
+      title: "Magnetic Field Due to Current-Carrying Wire",
+      keyPoints: [
+        "Magnetic field due to long straight wire: B = μ₀I/(2πr)",
+        "Direction determined by right-hand thumb rule",
+        "Force on charged particle: F = q(v×B)",
+        "Direction given by Fleming's left-hand rule"
+      ]
+    }
+  },
+  {
+    id: "chem003",
+    board: "CBSE", 
+    subject: "Chemistry",
+    year: "2020",
+    question: "Describe the principle behind the zone refining method used for the purification of metals. Which property of the impurity makes this process possible? Name two metals that can be purified using this method.",
+    marks: 5,
+    weakTopics: ["Metallurgy", "Purification Methods"],
+    relatedNotes: {
+      title: "Purification of Metals",
+      keyPoints: [
+        "Zone refining based on difference in solubility in solid and liquid phases",
+        "Impurities have lower melting points than pure metals",
+        "Segregation coefficient k = CS/CL determines effectiveness",
+        "Used for semiconductor materials like Si, Ge and metals like Ga, In"
+      ]
+    }
+  },
+  {
+    id: "math003",
+    board: "CBSE",
+    subject: "Mathematics", 
+    year: "2020",
+    question: "A vector r⃗(t) = (t²-t)i⃗ + (2t²+t)j⃗ + (t³-t)k⃗ represents the position of a particle moving in space, where t is time. Find the velocity and acceleration vectors at time t. Also, determine the speed of the particle at t = 1.",
+    marks: 6,
+    weakTopics: ["Vector Calculus", "Kinematics"],
+    relatedNotes: {
+      title: "Vector Differentiation",
+      keyPoints: [
+        "Velocity vector v⃗ = dr⃗/dt",
+        "Acceleration vector a⃗ = dv⃗/dt = d²r⃗/dt²",
+        "Speed = |v⃗| = √(v·v)",
+        "Direction of motion given by unit vector v⃗/|v⃗|"
+      ]
+    }
+  },
+  {
+    id: "phy004",
+    board: "CBSE",
+    subject: "Physics",
+    year: "2019",
+    question: "In Young's double slit experiment, the slits are separated by 0.5 mm and the screen is placed 1 m away. A beam of light consisting of two wavelengths 650 nm and 520 nm is used to obtain interference fringes. Find the minimum distance from the central maximum where the bright fringes of the two wavelengths overlap.",
+    marks: 5,
+    weakTopics: ["Wave Optics", "Interference"],
+    relatedNotes: {
+      title: "Young's Double Slit Experiment",
+      keyPoints: [
+        "Position of nth bright fringe: yn = nλD/d",
+        "Fringe width: β = λD/d",
+        "For overlapping fringes: n₁λ₁ = n₂λ₂",
+        "Path difference condition: Δx = d sinθ"
+      ]
+    }
+  }
 ];
 
+// Filter options for the application
 const FILTER_OPTIONS = {
-  boards: ['CBSE', 'ICSE', 'State Board'],
-  subjects: ['Mathematics', 'Physics', 'Chemistry', 'Biology'],
-  years: ['2023', '2022', '2021', '2020'],
+  boards: ["CBSE", "ICSE", "State Board"],
+  subjects: ["Physics", "Chemistry", "Mathematics"],
+  years: ["2019", "2020", "2021", "2022", "2023"],
   weakTopics: [
-    'Cellular Respiration',
-    'Energy Transfer',
-    'Chemical Bonding',
-    'Organic Chemistry',
-    'Mechanics',
-    'Calculus'
+    "Electromagnetic Induction", 
+    "Charged Particles in Fields",
+    "Electrostatics", 
+    "Capacitors",
+    "Magnetism", 
+    "Magnetic Force",
+    "Wave Optics", 
+    "Interference",
+    "Transition Elements", 
+    "Coordination Chemistry",
+    "Electrochemistry", 
+    "Nernst Equation",
+    "Metallurgy", 
+    "Purification Methods",
+    "Integral Calculus", 
+    "Area Under Curves",
+    "Differential Equations", 
+    "First Order ODEs",
+    "Vector Calculus", 
+    "Kinematics"
   ]
 };
 
@@ -85,47 +252,129 @@ const QuickRevisionCard = ({ topic, onComplete }) => (
   </Card>
 );
 
-const LastMinutePrep = () => (
-  <Card className="mb-6 bg-purple-50">
-    <CardHeader>
-      <CardTitle className="flex items-center gap-2">
-        <BookOpen className="w-5 h-5 text-purple-600" />
-        Last Minute Preparation Guide
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white rounded-lg">
-          <Clock className="w-6 h-6 text-purple-600 mb-2" />
-          <h3 className="font-medium mb-2">24 Hours Left</h3>
-          <ul className="text-sm space-y-2">
-            <li>• Review high-weightage topics</li>
-            <li>• Practice previous year questions</li>
-            <li>• Focus on weak areas</li>
-          </ul>
+const LastMinutePrep = () => {
+  const [examTime, setExamTime] = useState(null);
+  const [showTimeInput, setShowTimeInput] = useState(false);
+  const [timeUnit, setTimeUnit] = useState("hours");
+  const [timeValue, setTimeValue] = useState("");
+  const [subject, setSubject] = useState("");
+  const [recommendations, setRecommendations] = useState(null);
+  
+  const { generateTimeBasedRecommendations, loading, error } = useGroqService();
+
+  // Render the appropriate icon based on the icon name
+  const renderIcon = (iconName) => {
+    const icons = {
+      book: <Book className="w-5 h-5 text-blue-500 mb-2" />,
+      brain: <Brain className="w-5 h-5 text-purple-500 mb-2" />,
+      clock: <Clock className="w-5 h-5 text-orange-500 mb-2" />,
+      trophy: <Trophy className="w-5 h-5 text-green-500 mb-2" />
+    };
+    
+    return icons[iconName] || <CheckCircle className="w-5 h-5 text-gray-500 mb-2" />;
+  };
+
+  const handleTimeSubmit = async () => {
+    if (!timeValue || isNaN(parseInt(timeValue))) {
+      alert("Please enter a valid time value");
+      return;
+    }
+
+    const hours = timeUnit === "days" ? parseInt(timeValue) * 24 : parseInt(timeValue);
+    setExamTime(hours);
+  
+    try {
+      const result = await generateTimeBasedRecommendations(hours, subject || "general");
+      
+      // Check if result exists
+      if (!result) {
+        throw new Error("No response received");
+      }
+      
+      setRecommendations(result);
+      setShowTimeInput(false);
+    } catch (error) {
+      console.error("Failed to get recommendations:", error);
+      // Keep time input open so user can try again
+    }
+  };
+
+  return (
+    <Card className="mb-6 bg-purple-50 relative">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-purple-600" />
+          {recommendations?.title || "Last Minute Preparation Guide"}
+        </CardTitle>
+        <Button variant="outline" size="sm" className="ml-auto" onClick={() => setShowTimeInput(!showTimeInput)}>
+          <Clock className="w-4 h-4 mr-2" />
+          How much time is left for your exam?
+        </Button>
+      </CardHeader>
+
+      {showTimeInput && (
+        <div className="absolute right-6 top-16 bg-white p-4 rounded-lg shadow-lg z-10 border">
+          <div className="flex flex-col gap-2 mb-4">
+            <Input 
+              type="number" 
+              placeholder="Enter time" 
+              value={timeValue} 
+              onChange={(e) => setTimeValue(e.target.value)} 
+              className="w-full" 
+            />
+            <Select value={timeUnit} onValueChange={setTimeUnit}>
+              <SelectTrigger>
+                <SelectValue placeholder="Unit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hours">Hours</SelectItem>
+                <SelectItem value="days">Days</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input 
+              placeholder="Subject (optional)" 
+              value={subject} 
+              onChange={(e) => setSubject(e.target.value)} 
+              className="w-full" 
+            />
+          </div>
+          <Button size="sm" onClick={handleTimeSubmit} className="w-full" disabled={loading}>
+            {loading ? "Generating..." : "Get Personalized Plan"}
+          </Button>
         </div>
-        <div className="p-4 bg-white rounded-lg">
-          <Brain className="w-6 h-6 text-purple-600 mb-2" />
-          <h3 className="font-medium mb-2">12 Hours Left</h3>
-          <ul className="text-sm space-y-2">
-            <li>• Quick revision of formulas</li>
-            <li>• Solve quick practice tests</li>
-            <li>• Review marking scheme</li>
-          </ul>
+      )}
+
+      <CardContent>
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
+            Failed to generate recommendations. Please try again.
+          </div>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {recommendations?.cards ? (
+            recommendations.cards.map((card, index) => (
+              <div key={index} className="p-4 bg-white rounded-lg shadow-sm">
+                {renderIcon(card.icon)}
+                <h3 className="font-medium mb-2">{card.title}</h3>
+                <ul className="text-sm space-y-2">
+                  {card.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-3 text-center py-6 text-gray-500">
+              Enter time left for your exam to get personalized recommendations
+            </div>
+          )}
         </div>
-        <div className="p-4 bg-white rounded-lg">
-          <Trophy className="w-6 h-6 text-purple-600 mb-2" />
-          <h3 className="font-medium mb-2">6 Hours Left</h3>
-          <ul className="text-sm space-y-2">
-            <li>• Mental preparation</li>
-            <li>• Light revision only</li>
-            <li>• Rest and relax</li>
-          </ul>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
+
+
 
 const PYQPractice = () => {
   const [filters, setFilters] = useState({
@@ -170,24 +419,35 @@ const PYQPractice = () => {
       toast.error('Please write an answer before submitting');
       return;
     }
-
+  
     setIsEvaluating(true);
     try {
-      // Simulated evaluation result
-      const evaluationResult = {
-        score: 8,
-        overallFeedback: "Strong understanding shown with good examples",
-        strengths: ["Clear explanation", "Good use of terminology"],
-        improvements: ["Add more specific examples", "Expand on practical applications"],
-        keyConceptsMissing: ["Environmental impact", "Rate limiting factors"],
-        technicalAccuracy: "Mostly accurate with minor oversights",
-        structureAndPresentation: "Well-structured response with clear paragraphs",
-        examTips: ["Include diagrams", "Mention real-world applications"],
-        recommendedStudyResources: ["Chapter 5 review", "Practice more diagram-based questions"]
-      };
+      let evaluationResult;
+      
+      // Use the actual Groq service if available, otherwise fall back to mock
+      if (import.meta.env.VITE_GROQ_API_KEY === "true" && import.meta.env.VITE_GROQ_API_KEY) {
+        // Import dynamically to avoid server-side issues
+        const { evaluateAnswer } = await import('@/services/answerEvaluationService');
+        evaluationResult = await evaluateAnswer(currentQuestion, userAnswer);
+      } else {
+        // Use mock evaluation for development/testing
+        const { mockEvaluateAnswer } = await import('@/services/answerEvaluationService');
+        evaluationResult = mockEvaluateAnswer(currentQuestion, userAnswer);
+        console.log("Mock evaluation result:", evaluationResult);
+      }
+      
       setEvaluation(evaluationResult);
       toast.success('Answer evaluated successfully!');
+      
+      // Optional: Track weak topics based on evaluation
+      if (evaluationResult.score < 6) {
+        // Add to weak topics if score is low
+        const newWeakTopics = [...currentQuestion.weakTopics];
+        // Update user profile or state with these weak topics
+      }
+      
     } catch (error) {
+      console.error("Evaluation error:", error);
       toast.error('Failed to evaluate answer');
     } finally {
       setIsEvaluating(false);
