@@ -22,6 +22,7 @@
     "date-fns": "^4.1.0",
     "firebase": "^11.1.0",
     "framer-motion": "^11.18.2",
+    "groq-sdk": "^0.15.0",
     "icons-react": "^3.7.1",
     "lucide-react": "^0.469.0",
     "openai": "^4.77.4",
