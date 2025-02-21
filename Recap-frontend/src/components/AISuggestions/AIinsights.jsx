@@ -383,34 +383,36 @@ const AIInsights = () => {
         <div className="flex-1 p-8 overflow-auto">
           <div className="max-w-7xl mx-auto flex gap-8">
             {/* Left Column - Notes Section */}
-            <div className="w-1/4 flex flex-col">
-              <div className="bg-gray-800 rounded-xl border border-gray-700 flex-1">
-                <div className="p-6 border-b border-gray-700">
-                  <h2 className="text-xl font-semibold text-white">Your Notes</h2>
-                </div>
-                <div className="p-4 space-y-3 overflow-y-auto">
-                  {notes.map(note => (
-                    <button
-                      key={note.id}
-                      onClick={() => {
-                        setActiveNote(note);
-                        setAnalysis(null);
-                        setResources(null);
-                        setRelatedNotes([]);
-                      }}
-                      className={`w-full p-4 rounded-lg text-left transition-colors ${
-                        activeNote?.id === note.id
-                          ? 'bg-purple-500/20 border border-purple-500'
-                          : 'bg-gray-700/50 hover:bg-gray-700'
-                      }`}
-                    >
-                      <h3 className="text-white font-medium mb-2">{note.subject}</h3>
-                      <p className="text-gray-400 text-sm line-clamp-2">{note.content}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+<div className="w-1/4 flex flex-col">
+  <div className="bg-gray-800 rounded-xl border border-gray-700 flex-1">
+    <div className="p-6 border-b border-gray-700">
+      <h2 className="text-xl font-semibold text-white">Your Notes</h2>
+    </div>
+    <div className="h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+      <div className="p-4 space-y-3">
+        {notes.map(note => (
+          <button
+            key={note.id}
+            onClick={() => {
+              setActiveNote(note);
+              setAnalysis(null);
+              setResources(null);
+              setRelatedNotes([]);
+            }}
+            className={`w-full p-4 rounded-lg text-left transition-colors ${
+              activeNote?.id === note.id
+                ? 'bg-purple-500/20 border border-purple-500'
+                : 'bg-gray-700/50 hover:bg-gray-700'
+            }`}
+          >
+            <h3 className="text-white font-medium mb-2">{note.subject}</h3>
+            <p className="text-gray-400 text-sm line-clamp-2">{note.content}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
 
             {/* Right Column - Action Buttons and Analysis */}
             <div className="flex-1 flex flex-col">
