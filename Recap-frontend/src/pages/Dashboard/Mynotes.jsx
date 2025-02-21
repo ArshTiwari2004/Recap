@@ -13,6 +13,8 @@ import { ref, listAll, getDownloadURL } from 'firebase/storage';
 import Notification from '@/components/Notifications';
 import NavBar from '@/components/NavBar';
 import Chatbot from '../ChatBot';
+import ShareModal from '@/components/ShareModal';
+import DownloadModal from '@/components/DownloadModal';
 
 // View Modal Component
 const Modal = ({ note, onClose }) => {
@@ -451,18 +453,14 @@ const MyNotes = () => {
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button 
+                        {/* <button 
                           className="p-2 text-gray-400 hover:text-white transition-colors"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <Download className="w-4 h-4" />
-                        </button>
-                        <button 
-                          className="p-2 text-gray-400 hover:text-white transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Share2 className="w-4 h-4" />
-                        </button>
+                        </button> */}
+                        <DownloadModal note={note} />
+                        <ShareModal note={note} />
                         <button 
                           className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                           onClick={(e) => e.stopPropagation()}

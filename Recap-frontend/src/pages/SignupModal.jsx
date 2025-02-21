@@ -6,7 +6,7 @@ import { auth,fireDB } from '../config/Firebaseconfig.js';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom'
-import { Timestamp, addDoc, collection } from 'firebase/firestore'
+import { Timestamp, addDoc, collection, getDocs, query, where } from 'firebase/firestore'
 import LoginModal from './LoginModal';
 
 const SignupModal = ({ isOpen, onClose }) => {
@@ -71,15 +71,52 @@ const SignupModal = ({ isOpen, onClose }) => {
       const googleProvider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-  
-      // Store user information in local storage or handle it as needed
+      
+      console.log("Authentication successful. User data:", user);
+      
+      try {
+        // First, let's check if the user exists
+        const userRef = collection(fireDB, 'users');
+        const q = query(userRef, where('uid', '==', user.uid));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          console.log("User not found in database. Attempting to add...");
+          
+          // Create the user document
+          const userData = {
+            uid: user.uid,
+            displayName: user.displayName || 'Google User',
+            email: user.email,
+            createdAt: Timestamp.now(),
+            provider: 'google',
+            lastLogin: Timestamp.now()
+          };
+          
+          console.log("Preparing to add user with data:", userData);
+          
+          // Try to add the document and capture the reference
+          const docRef = await addDoc(collection(fireDB, 'users'), userData);
+          console.log("User successfully added with ID:", docRef.id);
+        } else {
+          console.log("User already exists in database:", querySnapshot.docs[0].id);
+          // Optionally update last login time
+          await updateDoc(querySnapshot.docs[0].ref, {
+            lastLogin: Timestamp.now()
+          });
+        }
+      } catch (firestoreError) {
+        console.error("Firestore operation failed:", firestoreError);
+        // Continue the sign-in process even if Firestore operations fail
+      }
+      
+      // Continue with the sign-in process
       localStorage.setItem("user", JSON.stringify(user));
       toast.success(`Welcome ${user.displayName || user.email}!`);
       navigate('/main-dashboard');
-      console.log("User Info:", user);
-    } catch (error) {
-      console.error("Error during Google Sign-In:", error.code, error.message);
-      toast.error(error.message || "Google Sign-In failed!");
+    } catch (authError) {
+      console.error("Authentication failed:", authError.code, authError.message);
+      toast.error(authError.message || "Google Sign-In failed!");
     }
   };
   return (
