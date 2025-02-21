@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, BookOpen, Users, Brain, Mic, Scan, Clipboard } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Brain, Mic, Scan, Clipboard, ExternalLink, Github } from 'lucide-react';
 import { ButtonsCard } from '../components/ui/tailwindcss-buttons';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
@@ -33,6 +33,18 @@ const LandingPage = () => {
       console.log("Error logging out:", error.message);
     }
   };
+  
+  const scrollToTestimonials = () => {
+    const testimonialSection = document.getElementById('testimonials');
+    if (testimonialSection) {
+      testimonialSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const openDemoVideo = () => {
+    // Replace this URL with your actual demo video URL
+    window.open('https://yourdemovideo.com', '_blank');
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -44,46 +56,86 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 ">
-      {/* Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex text-white text-bold items-center">
-            <Link to = "/">
-             <span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-bold text-2xl">Recap</span>
-            </Link>
-          </div>
-          <div className="hidden md:block">
-            <div className="flex items-center space-x-10">
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#team">Team</a>
-             
-              {user ? (
-                <button
-                onClick={handleLogout}
-                className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-500 hover:text-white transition-all"
-              >
-                Logout
-              </button>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setLoginOpen(true)}
-                    className="border-2 border-purple-500 text-purple-400 hover:bg-purple-500 text-white mr-4 px-6 py-2 rounded-lg"
-                  >
-                    Log In
-                  </button>
-                  <button
-                    onClick={() => setSignupOpen(true)}
-                    className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white mr-4 px-6 py-2 rounded-lg"
-                  >
-                    Signup
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+    {/* Navigation */}
+<div className="backdrop-blur-sm border-b border-gray-700/50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center h-20">
+      <div className="flex items-center space-x-10">
+        <Link to="/" className="flex items-center">
+          <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 text-3xl tracking-tight drop-shadow-sm">
+            Recap
+          </span>
+        </Link>
+        
+        <div className="flex items-center space-x-8">
+          <a 
+            href="https://github.com/ArshTiwari2004/Recap" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <Github className="h-5 w-5" />
+          </a>
+          
+          <button 
+            onClick={openDemoVideo}
+            className="text-gray-300 hover:text-white transition-colors flex items-center gap-1.5 text-sm font-medium"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Get a Demo now!
+          </button>
         </div>
       </div>
+      
+      <div className="hidden md:flex items-center space-x-8 ml-auto">
+        <button 
+          onClick={() => {/* Add install logic */}}
+          className="text-gray-300 hover:text-white transition-colors flex items-center gap-1.5 text-sm font-medium"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Install App
+        </button>
+        
+        <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
+        <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#team">Team</a>
+        <button 
+          onClick={scrollToTestimonials} 
+          className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+        >
+          Testimonials
+        </button>
+        
+        {user ? (
+          <button
+            onClick={handleLogout}
+            className="ml-6 border-2 border-purple-500 text-white bg-gradient-to-br from-purple-900 to-purple-700 px-6 py-2 rounded-lg hover:bg-purple-600 transition-all"
+          >
+            Logout
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={() => setLoginOpen(true)}
+              className="ml-6 border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white transition-all px-6 py-2 rounded-lg"
+            >
+              Log In
+            </button>
+            <button
+              onClick={() => setSignupOpen(true)}
+              className="ml-4 border-2 border-purple-500 text-white bg-gradient-to-br from-purple-900 to-purple-700 px-6 py-2 rounded-lg hover:bg-purple-600 transition-all"
+            >
+              Signup
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
 
       {/* Modals */}
       <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
@@ -134,6 +186,9 @@ const LandingPage = () => {
       </div>
       {/* Updated Features Section */}
       <Features />
+      
+      {/* Feedback Display remains the same */}
+      <FeedbackDisplay />
 
       {/* New FAQ Section */}
       <FAQ />
@@ -141,23 +196,15 @@ const LandingPage = () => {
       {/* Team Section remains the same */}
       <TeamSection />
 
-      {/* Feedback Display remains the same */}
-      <FeedbackDisplay />
+      \
 
       {/* Footer remains the same */}
       <Footer />
       </div>
-
-     
-
-
-      
-
-    
-
-      
-  );
+);
 };
+
+
 
 const features = [
   {

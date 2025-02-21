@@ -57,7 +57,7 @@ const FeedbackDisplay = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-900" id="testimonials">
+    <section className="py-16 bg-gray-800" id="testimonials">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-4">What Our Users Say</h2>
@@ -66,26 +66,28 @@ const FeedbackDisplay = () => {
           </p>
         </div>
 
-        <div className="relative">
-          {/* Scroll Buttons */}
+        <div className="relative px-12"> {/* Added padding here to prevent overlap */}
+          {/* Scroll Buttons - Positioned further away from content */}
           <button
             onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
+            aria-label="Scroll left"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           
           <button
             onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
+            aria-label="Scroll right"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
 
-          {/* Scrollable Container */}
+          {/* Scrollable Container with proper spacing */}
           <div 
             ref={scrollContainerRef}
-            className="flex overflow-x-auto hide-scrollbar gap-6 pb-4 px-4 snap-x snap-mandatory"
+            className="flex overflow-x-auto hide-scrollbar gap-8 pb-4 px-2 snap-x snap-mandatory"
             style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
@@ -95,7 +97,7 @@ const FeedbackDisplay = () => {
             {feedbacks.map((feedback) => (
               <div
                 key={feedback.id}
-                className="flex-none w-80 snap-center bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300"
+                className="flex-none w-80 snap-center bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300 mx-2"
               >
                 <div className="flex items-center space-x-4 mb-4">
                   {/* User Profile */}
