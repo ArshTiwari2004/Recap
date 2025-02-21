@@ -606,7 +606,7 @@ const Flashcards = () => {
           header={"Flashcards"}
           button1={"Feedback"}
           button2={"Help"}
-          button3={"Dock"}
+          button3={"Docs"}
         />
 
         {/* Main Content */}

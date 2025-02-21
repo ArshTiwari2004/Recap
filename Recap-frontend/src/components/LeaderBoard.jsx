@@ -1,68 +1,143 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "./Sidebar";
-import { BookOpen, Lightbulb } from "lucide-react";
 import NavBar from "./NavBar";
+import { motion } from "framer-motion";
+import { Trophy } from "lucide-react";
 
-const UserLeaderBoard = () => {
-  const [leaders, setLeaders] = useState([]);
-  const [user, setUser] = useState(null);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+const leaderboardData = [
+  {
+    id: 1,
+    name: "Rajat Mehra",
+    location: "Maharashtra",
+    score: 9500,
+    badges: ["CityExplorer", "FoodExplorer", "GoldMedalist"],
+    profilePic: "https://i.pravatar.cc/150?img=1",
+  },
+  {
+    id: 2,
+    name: "Shantipriya",
+    location: "Tamil Nadu",
+    score: 9200,
+    badges: ["CulturalAmbassador", "HeritageHunter", "SilverMedalist"],
+    profilePic: "https://i.pravatar.cc/150?img=2",
+  },
+  {
+    id: 3,
+    name: "Arsh Tiwari",
+    location: "Uttar Pradesh",
+    score: 8900,
+    badges: ["PhotoPro", "ArtAdmirer", "BronzeMedalist"],
+    profilePic: "https://i.pravatar.cc/150?img=3",
+  },
+  {
+    id: 4,
+    name: "Tanya",
+    location: "Delhi",
+    score: 8700,
+    badges: ["CityExplorer", "FoodExplorer"],
+    profilePic: "https://i.pravatar.cc/150?img=4",
+  },
+];
 
-  useEffect(() => {
-    // Dummy Data for testing
-    const dummyData = [
-      { id: "1", name: "Alice Johnson", score: 95 },
-      { id: "2", name: "Bob Smith", score: 90 },
-      { id: "3", name: "Charlie Brown", score: 85 },
-      { id: "4", name: "David Lee", score: 80 },
-      { id: "5", name: "Eva Davis", score: 75 },
-    ];
-
-    setLeaders(dummyData);
-
-    // Retrieve user data from localStorage
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser);
-  }, []);
+const LeaderBoard = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar />
       <div className="flex-1 flex flex-col">
-        {/* Navbar */}
         <NavBar
-          icon={<Lightbulb className="w-6 h-6 text-purple-400" />}
-          header={"AI Insights"}
-          button1={"Feedback"}
+          icon={<Trophy className="w-6 h-6 text-yellow-400" />}
+          header="Leaderboard"
+          button1={"FeedBack"}
           button2={"Help"}
-          button3={"Dock"}
+          button3={"Docs"}
         />
 
-        {/* Leaderboard Table */}
         <div className="p-6">
-          <h1 className="text-5xl text-center font-bold mb-4 text-white">Leaderboard</h1>
-          <table className="w-full border-collapse border border-gray-700 text-white">
-            <thead>
-              <tr className="bg-gray-800">
-                <th className="border border-gray-700 p-2">Rank</th>
-                <th className="border border-gray-700 p-2">Name</th>
-                <th className="border border-gray-700 p-2">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaders.map((leader, index) => (
-                <tr key={leader.id} className="text-center bg-gray-700">
-                  <td className="border border-gray-600 p-2">{index + 1}</td>
-                  <td className="border border-gray-600 p-2">{leader.name}</td>
-                  <td className="border border-gray-600 p-2">{leader.score}</td>
-                </tr>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-4xl pl-4 font-extrabold text-white">LeaderBoard</h1>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500"
+            >
+              How Scoring Works?
+            </button>
+          </div>
+
+          <div className="bg-gray-800 shadow-lg rounded-2xl p-4">
+            <div className="space-y-4">
+              {leaderboardData.map((user, index) => (
+                <motion.div
+                  key={user.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="flex items-center justify-between p-4 border-b border-gray-700 last:border-b-0"
+                >
+                  <div className="flex items-center space-x-4">
+                    <p className="text-lg font-bold text-yellow-400">#{index + 1}</p>
+                    <img
+                      src={user.profilePic}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="text-lg font-semibold text-white">{user.name}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <p className="text-md font-semibold text-white">Score: {user.score}</p>
+                  </div>
+                </motion.div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-gray-900 p-6 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 className="text-2xl font-bold text-white mb-4">How Scoring Works?</h2>
+            <div className="text-gray-300 space-y-2 text-sm">
+              <p><strong>Daily Engagement:</strong></p>
+              <p>• Daily Visit – 10 points</p>
+              <p>• Consistent 7-day Streak – 30 bonus points</p>
+              <p>• Consistent 30-day Streak – 150 bonus points</p>
+
+              <p><strong>Learning Activities:</strong></p>
+              <p>• Quiz Completed:</p>
+              <p>  - Easy – 10 points</p>
+              <p>  - Medium – 15 points</p>
+              <p>  - Hard – 20 points</p>
+              <p>• Flashcard Generation – 5 points</p>
+              <p>• Correct Quiz Answer – 3 points per correct answer</p>
+
+              <p><strong>Content Contribution:</strong></p>
+              <p>• Notes Upload – 5 points</p>
+              <p>• PDF Upload (Resource Sharing) – 15 points</p>
+
+              <p><strong>Group Activities:</strong></p>
+              <p>• Creating a Study Group – 20 points</p>
+              <p>• Joining a Study Group – 10 points</p>
+
+              <p><strong>Gamification Add-ons:</strong></p>
+              <p>• Leaderboard Bonus: Weekly top 3 users get 100 extra points</p>
+              <p>• Referral System: Inviting a friend who registers and completes a quiz – 50 points</p>
+            </div>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default UserLeaderBoard;
+export default LeaderBoard;

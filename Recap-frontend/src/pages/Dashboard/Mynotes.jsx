@@ -294,7 +294,7 @@ const MyNotes = () => {
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
-        <NavBar icon={<BookOpen className="w-6 h-6 text-purple-400" />} header={"My Notes"} button1={"Feedback"} button2={"Help"} button3={"Dock"} />
+        <NavBar icon={<BookOpen className="w-6 h-6 text-purple-400" />} header={"My Notes"} button1={"Feedback"} button2={"Help"} button3={"Docs"} />
 
         <div className="flex-1 p-8 overflow-auto">
           <div className="flex items-center space-x-6 mb-6">

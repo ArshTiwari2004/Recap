@@ -414,7 +414,7 @@ const QuizComponent = () => {
           header={"Quizzes"}
           button1={"Feedback"}
           button2={"Help"}
-          button3={"Dock"}
+          button3={"Docs"}
         />
 
       <div className="flex-1 p-8 overflow-auto">
