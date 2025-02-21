@@ -10,11 +10,12 @@ import { Badge } from '@/components/ui/badge';
 import { 
   BookOpen, BookmarkPlus, Filter, Award, ArrowRight, Book, 
   Brain, FileText, TrendingUp, Star, AlertCircle, Clock,
-  BookCheck, Trophy
+  BookCheck, Trophy,CheckCircle, Moon, Sun
 } from 'lucide-react';
 import NavBar from './NavBar';
 import Sidebar from '../components/Sidebar';
 import Chatbot from '@/pages/ChatBot';
+import { useGroqService } from '@/services/GroqService';
 
 // Enhanced dummy data with weak topics and related content
 const DUMMY_QUESTIONS = [
@@ -85,47 +86,132 @@ const QuickRevisionCard = ({ topic, onComplete }) => (
   </Card>
 );
 
-const LastMinutePrep = () => (
-  <Card className="mb-6 bg-purple-50">
-    <CardHeader>
-      <CardTitle className="flex items-center gap-2">
-        <BookOpen className="w-5 h-5 text-purple-600" />
-        Last Minute Preparation Guide
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white rounded-lg">
-          <Clock className="w-6 h-6 text-purple-600 mb-2" />
-          <h3 className="font-medium mb-2">24 Hours Left</h3>
-          <ul className="text-sm space-y-2">
-            <li>• Review high-weightage topics</li>
-            <li>• Practice previous year questions</li>
-            <li>• Focus on weak areas</li>
-          </ul>
+const LastMinutePrep = () => {
+  const [examTime, setExamTime] = useState(null);
+  const [showTimeInput, setShowTimeInput] = useState(false);
+  const [timeUnit, setTimeUnit] = useState("hours");
+  const [timeValue, setTimeValue] = useState("");
+  const [subject, setSubject] = useState("");
+  const [recommendations, setRecommendations] = useState(null);
+  
+  const { generateTimeBasedRecommendations, loading, error } = useGroqService();
+
+  const handleTimeSubmit = async () => {
+    const hours = timeUnit === "days" ? parseInt(timeValue) * 24 : parseInt(timeValue);
+    setExamTime(hours);
+
+    try {
+      const result = await generateTimeBasedRecommendations(hours, subject || "general");
+      setRecommendations(result);
+    } catch (error) {
+      console.error("Failed to get recommendations:", error);
+    }
+
+    setShowTimeInput(false);
+  };
+
+  const renderIcon = (iconName) => {
+    const icons = {
+      "Clock": <Clock className="w-6 h-6 text-purple-600 mb-2" />,
+      "Brain": <Brain className="w-6 h-6 text-purple-600 mb-2" />,
+      "Trophy": <Trophy className="w-6 h-6 text-purple-600 mb-2" />,
+      "BookOpen": <BookOpen className="w-6 h-6 text-purple-600 mb-2" />,
+      "FileText": <FileText className="w-6 h-6 text-purple-600 mb-2" />,
+      "TrendingUp": <TrendingUp className="w-6 h-6 text-purple-600 mb-2" />,
+      "AlertCircle": <AlertCircle className="w-6 h-6 text-purple-600 mb-2" />,
+      "CheckCircle": <CheckCircle className="w-6 h-6 text-purple-600 mb-2" />,
+      "Moon": <Moon className="w-6 h-6 text-purple-600 mb-2" />,
+      "Sun": <Sun className="w-6 h-6 text-purple-600 mb-2" />,
+    };
+    return icons[iconName] || <Clock className="w-6 h-6 text-purple-600 mb-2" />;
+  };
+
+  return (
+    <Card className="mb-6 bg-purple-50 relative">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-purple-600" />
+          {recommendations?.title || "Last Minute Preparation Guide"}
+        </CardTitle>
+        <Button variant="outline" size="sm" className="ml-auto" onClick={() => setShowTimeInput(!showTimeInput)}>
+          <Clock className="w-4 h-4 mr-2" />
+          How much time is left for your exam?
+        </Button>
+      </CardHeader>
+
+      {showTimeInput && (
+        <div className="absolute right-6 top-16 bg-white p-4 rounded-lg shadow-lg z-10 border">
+          <div className="flex flex-col gap-2 mb-4">
+            <Input type="number" placeholder="Enter time" value={timeValue} onChange={(e) => setTimeValue(e.target.value)} className="w-full" />
+            <Select value={timeUnit} onValueChange={setTimeUnit}>
+              <SelectTrigger>
+                <SelectValue placeholder="Unit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hours">Hours</SelectItem>
+                <SelectItem value="days">Days</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input placeholder="Subject (optional)" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full" />
+          </div>
+          <Button size="sm" onClick={handleTimeSubmit} className="w-full" disabled={loading}>
+            {loading ? "Generating..." : "Get Personalized Plan"}
+          </Button>
         </div>
-        <div className="p-4 bg-white rounded-lg">
-          <Brain className="w-6 h-6 text-purple-600 mb-2" />
-          <h3 className="font-medium mb-2">12 Hours Left</h3>
-          <ul className="text-sm space-y-2">
-            <li>• Quick revision of formulas</li>
-            <li>• Solve quick practice tests</li>
-            <li>• Review marking scheme</li>
-          </ul>
+      )}
+
+      <CardContent>
+        {error && <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">Failed to generate recommendations. Please try again.</div>}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {recommendations ? (
+            recommendations.cards.map((card, index) => (
+              <div key={index} className="p-4 bg-white rounded-lg">
+                {renderIcon(card.icon)}
+                <h3 className="font-medium mb-2">{card.title}</h3>
+                <ul className="text-sm space-y-2">
+                  {card.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="p-4 bg-white rounded-lg">
+                <Clock className="w-6 h-6 text-purple-600 mb-2" />
+                <h3 className="font-medium mb-2">24 Hours Left</h3>
+                <ul className="text-sm space-y-2">
+                  <li>• Review high-weightage topics</li>
+                  <li>• Practice previous year questions</li>
+                  <li>• Focus on weak areas</li>
+                </ul>
+              </div>
+              <div className="p-4 bg-white rounded-lg">
+                <Brain className="w-6 h-6 text-purple-600 mb-2" />
+                <h3 className="font-medium mb-2">12 Hours Left</h3>
+                <ul className="text-sm space-y-2">
+                  <li>• Quick revision of formulas</li>
+                  <li>• Solve quick practice tests</li>
+                  <li>• Review marking scheme</li>
+                </ul>
+              </div>
+              <div className="p-4 bg-white rounded-lg">
+                <Trophy className="w-6 h-6 text-purple-600 mb-2" />
+                <h3 className="font-medium mb-2">6 Hours Left</h3>
+                <ul className="text-sm space-y-2">
+                  <li>• Mental preparation</li>
+                  <li>• Light revision only</li>
+                  <li>• Rest and relax</li>
+                </ul>
+              </div>
+            </>
+          )}
         </div>
-        <div className="p-4 bg-white rounded-lg">
-          <Trophy className="w-6 h-6 text-purple-600 mb-2" />
-          <h3 className="font-medium mb-2">6 Hours Left</h3>
-          <ul className="text-sm space-y-2">
-            <li>• Mental preparation</li>
-            <li>• Light revision only</li>
-            <li>• Rest and relax</li>
-          </ul>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
+
 
 const PYQPractice = () => {
   const [filters, setFilters] = useState({

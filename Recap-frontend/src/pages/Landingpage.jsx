@@ -159,8 +159,7 @@ const LandingPage = () => {
                 </span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                AI-powered note organization that adapts to your learning style.
-                Capture, connect, and master your study materials effortlessly.
+              Your all-in-one AI-powered study companion—organize, revise, and master concepts effortlessly.
               </p>
               <div className="flex justify-center">
               {user ? (<ButtonsCard 
