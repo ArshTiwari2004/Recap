@@ -8,8 +8,9 @@ import { BookOpen, BookmarkPlus, Filter, Award, ArrowRight } from 'lucide-react'
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { fireDB } from '../config/Firebaseconfig';
 import toast from 'react-hot-toast';
-import Navbar from '../components/Navbar';
+import NavBar from './NavBar';
 import Sidebar from '../components/Sidebar';
+import Chatbot from '@/pages/ChatBot';
 
 // Dummy data - replace with Firebase fetch later
 const DUMMY_QUESTIONS = [
@@ -121,7 +122,7 @@ const PYQPractice = () => {
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Navbar />
+        <NavBar />
         <div className="flex-1 overflow-auto p-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Filters Section */}
@@ -271,6 +272,7 @@ const PYQPractice = () => {
           </div>
         </div>
       </div>
+      <Chatbot/>
     </div>
   );
 };

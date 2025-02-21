@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import Notification from '@/components/Notifications';
 import Sidebar from '../components/Sidebar';
 import NavBar from '@/components/NavBar';
+import Chatbot from './ChatBot';
 
 
 const Maindashboard = () => {
@@ -234,6 +235,8 @@ const Maindashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              <Chatbot />
             </div>
           </div>
         </div>
