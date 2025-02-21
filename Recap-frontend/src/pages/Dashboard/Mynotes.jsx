@@ -16,44 +16,11 @@ import Chatbot from '../ChatBot';
 import ShareModal from '@/components/ShareModal';
 import DownloadModal from '@/components/DownloadModal';
 
-// Modal Wrapper Component
-const ModalWrapper = ({ isOpen, onClose, children }) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={onClose}
-    >
-      <div className="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm" />
-      <div 
-        className="relative z-50" 
-        onClick={e => e.stopPropagation()}
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
-
 // View Modal Component
 const Modal = ({ note, onClose }) => {
-  if (!note) return null;
-  
   return (
-    <ModalWrapper isOpen={!!note} onClose={onClose}>
-      <div className="bg-gray-800 p-6 rounded-xl w-4/5 sm:w-3/4 lg:w-1/2 relative max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="bg-gray-800 p-6 rounded-xl w-4/5 sm:w-3/4 lg:w-1/2 relative max-h-[80vh] overflow-y-auto border border-white">
         <div className="flex items-center space-x-4">
           <button 
             onClick={onClose} 
@@ -80,7 +47,7 @@ const Modal = ({ note, onClose }) => {
           </span>
         </div>
       </div>
-    </ModalWrapper>
+    </div>
   );
 };
 
@@ -124,7 +91,7 @@ const EditNoteModal = ({ note, onClose, onUpdate }) => {
   };
 
   return (
-    <ModalWrapper isOpen={!!note} onClose={onClose}>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-gray-800 p-6 rounded-xl w-4/5 sm:w-3/4 lg:w-1/2 relative">
         <button 
           onClick={onClose}
@@ -187,7 +154,7 @@ const EditNoteModal = ({ note, onClose, onUpdate }) => {
           </div>
         </form>
       </div>
-    </ModalWrapper>
+    </div>
   );
 };
 
@@ -509,15 +476,14 @@ const MyNotes = () => {
           )}
         </div>
       </div>
-      
-        {selectedNote && <Modal note={selectedNote} onClose={closeModal} />}
-        {editingNote && (
-          <EditNoteModal
-            note={editingNote}
-            onClose={() => setEditingNote(null)}
-            onUpdate={handleNoteUpdate}
-          />
-        )}
+      {selectedNote && <Modal note={selectedNote} onClose={closeModal} />}
+      {editingNote && (
+        <EditNoteModal
+          note={editingNote}
+          onClose={() => setEditingNote(null)}
+          onUpdate={handleNoteUpdate}
+        />
+      )}
       <Chatbot />
     </div>
   );
