@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import Features from './Features';
 import FAQ from './FAQ';
 import FeedbackDisplay from '@/components/FeedbackDisplay';
+import Numbersection from '@/components/Numbersection';
 
 const LandingPage = () => {
 
@@ -57,7 +58,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 ">
     {/* Navigation */}
-<div className="backdrop-blur-sm border-b border-gray-700/50">
+<div className="backdrop-blur-sm ">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="flex items-center h-20">
       <div className="flex items-center space-x-10">
@@ -72,14 +73,14 @@ const LandingPage = () => {
             href="https://github.com/ArshTiwari2004/Recap" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-sm text-gray-400 hover:text-white"
           >
             <Github className="h-5 w-5" />
           </a>
           
           <button 
             onClick={openDemoVideo}
-            className="text-gray-300 hover:text-white transition-colors flex items-center gap-1.5 text-sm font-medium"
+            className="text-sm text-gray-400 hover:text-white  flex items-center gap-1.5 "
           >
             <ExternalLink className="h-4 w-4" />
             Get a Demo now!
@@ -90,7 +91,7 @@ const LandingPage = () => {
       <div className="hidden md:flex items-center space-x-8 ml-auto">
         <button 
           onClick={() => {/* Add install logic */}}
-          className="text-gray-300 hover:text-white transition-colors flex items-center gap-1.5 text-sm font-medium"
+          className="text-sm text-gray-400 hover:text-white  flex items-center gap-1.5 "
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -100,11 +101,11 @@ const LandingPage = () => {
           Install App
         </button>
         
-        <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
-        <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#team">Team</a>
+        <a className="text-sm text-gray-400 hover:text-white " href="#features">Features</a>
+        <a className="text-sm text-gray-400 hover:text-white" href="#team">Team</a>
         <button 
           onClick={scrollToTestimonials} 
-          className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          className="text-sm text-gray-400 hover:text-white"
         >
           Testimonials
         </button>
@@ -184,6 +185,9 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Numbers section */}
+      <Numbersection/>
       {/* Updated Features Section */}
       <Features />
       
