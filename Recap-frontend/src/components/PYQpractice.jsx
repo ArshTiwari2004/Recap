@@ -4,15 +4,19 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { BookOpen, BookmarkPlus, Filter, Award, ArrowRight } from 'lucide-react';
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
-import { fireDB } from '../config/Firebaseconfig';
-import toast from 'react-hot-toast';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { 
+  BookOpen, BookmarkPlus, Filter, Award, ArrowRight, Book, 
+  Brain, FileText, TrendingUp, Star, AlertCircle, Clock,
+  BookCheck, Trophy
+} from 'lucide-react';
 import NavBar from './NavBar';
 import Sidebar from '../components/Sidebar';
 import Chatbot from '@/pages/ChatBot';
 
-// Dummy data - replace with Firebase fetch later
+// Enhanced dummy data with weak topics and related content
 const DUMMY_QUESTIONS = [
   {
     id: '1',
@@ -21,64 +25,145 @@ const DUMMY_QUESTIONS = [
     board: 'CBSE',
     year: '2023',
     marks: 5,
+    chapter: 'Life Processes',
+    difficulty: 'Medium',
+    weakTopics: ['Cellular Respiration', 'Energy Transfer'],
+    relatedNotes: {
+      title: 'Photosynthesis Complete Notes',
+      url: '/notes/photosynthesis',
+      keyPoints: [
+        'Light-dependent reactions',
+        'Calvin cycle',
+        'Factors affecting rate'
+      ]
+    },
     expectedAnswer: 'Photosynthesis is the process by which plants convert light energy into chemical energy...',
+    previousYearPatterns: [
+      { year: '2022', marks: 3, variation: 'Focus on cellular level explanation' },
+      { year: '2021', marks: 5, variation: 'Environmental impact emphasis' }
+    ],
+    examTips: [
+      'Draw clear diagrams',
+      'Mention all stages clearly',
+      'Include practical examples'
+    ]
   },
-  {
-    id: '2',
-    question: 'Derive the quadratic formula and solve the equation: ax² + bx + c = 0',
-    subject: 'Mathematics',
-    board: 'CBSE',
-    year: '2023',
-    marks: 6,
-    expectedAnswer: 'The quadratic formula is derived from completing the square method...',
-  },
-  // Add more dummy questions as needed
+  // More dummy questions...
 ];
 
 const FILTER_OPTIONS = {
   boards: ['CBSE', 'ICSE', 'State Board'],
   subjects: ['Mathematics', 'Physics', 'Chemistry', 'Biology'],
   years: ['2023', '2022', '2021', '2020'],
+  weakTopics: [
+    'Cellular Respiration',
+    'Energy Transfer',
+    'Chemical Bonding',
+    'Organic Chemistry',
+    'Mechanics',
+    'Calculus'
+  ]
 };
 
+const QuickRevisionCard = ({ topic, onComplete }) => (
+  <Card className="mb-4 hover:shadow-lg transition-shadow">
+    <CardContent className="p-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h3 className="font-medium text-lg">{topic}</h3>
+          <div className="flex gap-2 mt-2">
+            <Badge variant="outline">15 min revision</Badge>
+            <Badge variant="outline" className="bg-green-50">Quick Tips</Badge>
+          </div>
+        </div>
+        <Button onClick={onComplete} variant="outline" size="sm">
+          <BookCheck className="w-4 h-4 mr-2" />
+          Mark as Revised
+        </Button>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const LastMinutePrep = () => (
+  <Card className="mb-6 bg-purple-50">
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        <BookOpen className="w-5 h-5 text-purple-600" />
+        Last Minute Preparation Guide
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-4 bg-white rounded-lg">
+          <Clock className="w-6 h-6 text-purple-600 mb-2" />
+          <h3 className="font-medium mb-2">24 Hours Left</h3>
+          <ul className="text-sm space-y-2">
+            <li>• Review high-weightage topics</li>
+            <li>• Practice previous year questions</li>
+            <li>• Focus on weak areas</li>
+          </ul>
+        </div>
+        <div className="p-4 bg-white rounded-lg">
+          <Brain className="w-6 h-6 text-purple-600 mb-2" />
+          <h3 className="font-medium mb-2">12 Hours Left</h3>
+          <ul className="text-sm space-y-2">
+            <li>• Quick revision of formulas</li>
+            <li>• Solve quick practice tests</li>
+            <li>• Review marking scheme</li>
+          </ul>
+        </div>
+        <div className="p-4 bg-white rounded-lg">
+          <Trophy className="w-6 h-6 text-purple-600 mb-2" />
+          <h3 className="font-medium mb-2">6 Hours Left</h3>
+          <ul className="text-sm space-y-2">
+            <li>• Mental preparation</li>
+            <li>• Light revision only</li>
+            <li>• Rest and relax</li>
+          </ul>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
 const PYQPractice = () => {
-  const { currentUser } = useFirebase();
   const [filters, setFilters] = useState({
     board: '',
     subject: '',
     year: '',
+    weakTopic: ''
   });
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState(DUMMY_QUESTIONS);
+  const [filteredQuestions, setFilteredQuestions] = useState(DUMMY_QUESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [evaluation, setEvaluation] = useState(null);
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [activeTab, setActiveTab] = useState('practice');
+  const [revisedTopics, setRevisedTopics] = useState(new Set());
+  const [showingNotes, setShowingNotes] = useState(false);
 
   useEffect(() => {
-    // Initially load questions based on dummy data
-    setQuestions(DUMMY_QUESTIONS);
-  }, []);
-
-  const handleFilterChange = (value, filterType) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterType]: value
-    }));
+    // Filter questions based on all criteria
+    let filtered = questions;
     
-    // In real implementation, fetch from Firebase based on filters
-    const filteredQuestions = DUMMY_QUESTIONS.filter(q => 
-      (!filters.board || q.board === filters.board) &&
-      (!filters.subject || q.subject === filters.subject) &&
-      (!filters.year || q.year === filters.year)
-    );
-    setQuestions(filteredQuestions);
-  };
-
-  const handleQuestionSelect = (question) => {
-    setCurrentQuestion(question);
-    setUserAnswer('');
-    setEvaluation(null);
-  };
+    if (filters.board) {
+      filtered = filtered.filter(q => q.board === filters.board);
+    }
+    if (filters.subject) {
+      filtered = filtered.filter(q => q.subject === filters.subject);
+    }
+    if (filters.year) {
+      filtered = filtered.filter(q => q.year === filters.year);
+    }
+    if (filters.weakTopic) {
+      filtered = filtered.filter(q => q.weakTopics.includes(filters.weakTopic));
+    }
+    
+    setFilteredQuestions(filtered);
+  }, [filters, questions]);
 
   const handleAnswerSubmit = async () => {
     if (!userAnswer.trim()) {
@@ -86,36 +171,51 @@ const PYQPractice = () => {
       return;
     }
 
-    // Simulate AI evaluation (replace with actual Cohere API call)
+    setIsEvaluating(true);
     try {
-      // Placeholder for Cohere API integration
-      const simulatedEvaluation = {
-        score: Math.floor(Math.random() * 5) + 1,
-        feedback: "Your answer shows good understanding but could be improved by including more specific examples and technical terms. Consider elaborating on the key concepts and their relationships.",
-        improvements: [
-          "Add more specific examples",
-          "Use more technical terminology",
-          "Improve structure and organization"
-        ]
+      // Simulated evaluation result
+      const evaluationResult = {
+        score: 8,
+        overallFeedback: "Strong understanding shown with good examples",
+        strengths: ["Clear explanation", "Good use of terminology"],
+        improvements: ["Add more specific examples", "Expand on practical applications"],
+        keyConceptsMissing: ["Environmental impact", "Rate limiting factors"],
+        technicalAccuracy: "Mostly accurate with minor oversights",
+        structureAndPresentation: "Well-structured response with clear paragraphs",
+        examTips: ["Include diagrams", "Mention real-world applications"],
+        recommendedStudyResources: ["Chapter 5 review", "Practice more diagram-based questions"]
       };
-
-      setEvaluation(simulatedEvaluation);
+      setEvaluation(evaluationResult);
       toast.success('Answer evaluated successfully!');
     } catch (error) {
       toast.error('Failed to evaluate answer');
-      console.error('Evaluation error:', error);
+    } finally {
+      setIsEvaluating(false);
     }
   };
 
-  const toggleBookmark = async (questionId) => {
-    const newBookmarked = new Set(bookmarkedQuestions);
-    if (newBookmarked.has(questionId)) {
-      newBookmarked.delete(questionId);
-    } else {
-      newBookmarked.add(questionId);
-    }
-    setBookmarkedQuestions(newBookmarked);
-    toast.success(newBookmarked.has(questionId) ? 'Question bookmarked!' : 'Bookmark removed');
+  const toggleBookmark = (questionId) => {
+    setBookmarkedQuestions(prev => {
+      const newBookmarked = new Set(prev);
+      if (newBookmarked.has(questionId)) {
+        newBookmarked.delete(questionId);
+      } else {
+        newBookmarked.add(questionId);
+      }
+      return newBookmarked;
+    });
+  };
+
+  const toggleTopicRevised = (topic) => {
+    setRevisedTopics(prev => {
+      const newRevised = new Set(prev);
+      if (newRevised.has(topic)) {
+        newRevised.delete(topic);
+      } else {
+        newRevised.add(topic);
+      }
+      return newRevised;
+    });
   };
 
   return (
@@ -124,155 +224,437 @@ const PYQPractice = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <NavBar />
         <div className="flex-1 overflow-auto p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Filters Section */}
-            <Card className="lg:col-span-3">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Filter className="w-5 h-5" />
-                  Filter Questions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex gap-4">
-                <Select onValueChange={(value) => handleFilterChange(value, 'board')}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Board" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {FILTER_OPTIONS.boards.map(board => (
-                      <SelectItem key={board} value={board}>{board}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+          <LastMinutePrep />
+          
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="mb-6">
+              <TabsTrigger value="practice">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Practice Questions
+              </TabsTrigger>
+              <TabsTrigger value="weakTopics">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Weak Topics
+              </TabsTrigger>
+              <TabsTrigger value="bookmarks">
+                <Star className="w-4 h-4 mr-2" />
+                Bookmarked
+              </TabsTrigger>
+            </TabsList>
 
-                <Select onValueChange={(value) => handleFilterChange(value, 'subject')}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {FILTER_OPTIONS.subjects.map(subject => (
-                      <SelectItem key={subject} value={subject}>{subject}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <TabsContent value="practice">
+              {/* Previous filters and practice area code remains the same */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Filters Card */}
+                <Card className="lg:col-span-3">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Filter className="w-5 h-5" />
+                      Filter Questions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-wrap gap-4">
+                    <Select 
+                      value={filters.board}
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, board: value }))}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Board" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {FILTER_OPTIONS.boards.map(board => (
+                          <SelectItem key={board} value={board}>{board}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-                <Select onValueChange={(value) => handleFilterChange(value, 'year')}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {FILTER_OPTIONS.years.map(year => (
-                      <SelectItem key={year} value={year}>{year}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
+                    <Select 
+                      value={filters.subject}
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, subject: value }))}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Subject" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {FILTER_OPTIONS.subjects.map(subject => (
+                          <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-            {/* Questions List */}
-            <Card className="lg:col-span-1">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" />
-                  Questions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {questions.map((q) => (
-                  <div
-                    key={q.id}
-                    className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 relative"
-                    onClick={() => handleQuestionSelect(q)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <p className="text-sm font-medium">{q.question.substring(0, 100)}...</p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleBookmark(q.id);
-                        }}
+                    <Select 
+                      value={filters.year}
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, year: value }))}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {FILTER_OPTIONS.years.map(year => (
+                          <SelectItem key={year} value={year}>{year}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select 
+                      value={filters.weakTopic}
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, weakTopic: value }))}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Weak Topic" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {FILTER_OPTIONS.weakTopics.map(topic => (
+                          <SelectItem key={topic} value={topic}>{topic}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </CardContent>
+                </Card>
+
+                {/* Questions List */}
+                <Card className="lg:col-span-1">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      Questions ({filteredQuestions.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {filteredQuestions.map((q) => (
+                      <div
+                        key={q.id}
+                        className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 relative"
+                        onClick={() => setCurrentQuestion(q)}
                       >
-                        <BookmarkPlus
-                          className={`w-5 h-5 ${
-                            bookmarkedQuestions.has(q.id) ? 'text-purple-500 fill-current' : 'text-gray-400'
-                          }`}
-                        />
-                      </Button>
-                    </div>
-                    <div className="flex gap-2 mt-2 text-xs text-gray-500">
-                      <span>{q.board}</span>
-                      <span>•</span>
-                      <span>{q.subject}</span>
-                      <span>•</span>
-                      <span>{q.year}</span>
-                      <span>•</span>
-                      <span>{q.marks} marks</span>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Answer Section */}
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5" />
-                  Practice Area
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {currentQuestion ? (
-                  <>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <h3 className="font-medium mb-2">Question ({currentQuestion.marks} marks)</h3>
-                      <p>{currentQuestion.question}</p>
-                    </div>
-                    <Textarea
-                      placeholder="Write your answer here..."
-                      className="min-h-[200px]"
-                      value={userAnswer}
-                      onChange={(e) => setUserAnswer(e.target.value)}
-                    />
-                    <Button
-                      className="w-full"
-                      onClick={handleAnswerSubmit}
-                    >
-                      Submit for Evaluation
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-
-                    {evaluation && (
-                      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                        <h3 className="font-medium mb-2">AI Evaluation</h3>
-                        <div className="space-y-2">
-                          <p>Score: {evaluation.score}/5</p>
-                          <p>Feedback: {evaluation.feedback}</p>
+                        <div className="flex justify-between items-start">
                           <div>
-                            <p className="font-medium">Areas for Improvement:</p>
-                            <ul className="list-disc list-inside">
-                              {evaluation.improvements.map((imp, index) => (
-                                <li key={index}>{imp}</li>
+                            <p className="text-sm font-medium mb-2">{q.question.substring(0, 100)}...</p>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {q.weakTopics.map(topic => (
+                                <Badge key={topic} variant="outline" className="text-xs">
+                                  {topic}
+                                </Badge>
                               ))}
-                            </ul>
+                            </div>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleBookmark(q.id);
+                            }}
+                          >
+                            <BookmarkPlus
+                              className={`w-5 h-5 ${
+                                bookmarkedQuestions.has(q.id) ? 'text-purple-500 fill-current' : 'text-gray-400'
+                              }`}
+                            />
+                          </Button>
+                        </div>
+                        <div className="flex gap-2 mt-2 text-xs text-gray-500">
+                          <span>{q.board}</span>
+                          <span>•</span>
+                          <span>{q.subject}</span>
+                          <span>•</span>
+                          <span>{q.year}</span>
+                          <span>•</span>
+                          <span>{q.marks} marks</span>
                         </div>
                       </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Practice Area */}
+                <Card className="lg:col-span-2">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Award className="w-5 h-5" />
+                      Practice Area
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {currentQuestion ? (
+                      <div className="space-y-6">
+                        <div className="p-4 bg-gray-50 rounded-lg">
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <h3 className="font-medium">Question ({currentQuestion.marks} marks)</h3>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {currentQuestion.weakTopics.map(topic => (
+                                  <Badge key={topic} variant="outline">{topic}</Badge>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setShowingNotes(!showingNotes)}
+                              >
+                                <FileText className="w-4 h-4 mr-2" />
+                                {showingNotes ? 'Hide Notes' : 'View Notes'}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {/* Handle previous patterns */}}
+                              >
+                                <TrendingUp className="w-4 h-4 mr-2" />
+                                Past Patterns
+                              </Button>
+                            </div>
+                          </div>
+                          <p>{currentQuestion.question}</p>
+
+                          {showingNotes && currentQuestion.relatedNotes && (
+                            <div className="mt-4 p-4 bg-purple-50 rounded-lg">
+                              <h4 className="font-medium mb-2">Quick Reference Notes</h4>
+                              <h5 className="text-sm font-medium text-purple-700">
+                                {currentQuestion.relatedNotes.title}
+                              </h5>
+                              <ul className="mt-2 space-y-1">
+                                {currentQuestion.relatedNotes.keyPoints.map((point, idx) => (
+                                  <li key={idx} className="text-sm">• {point}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+
+                        <Textarea
+                          placeholder="Write your answer here..."
+                          className="min-h-[200px]"
+                          value={userAnswer}
+                          onChange={(e) => setUserAnswer(e.target.value)}
+                        />
+
+                        <Button
+                          className="w-full"
+                          onClick={handleAnswerSubmit}
+                          disabled={isEvaluating}
+                        >
+                          {isEvaluating ? (
+                            'Evaluating...'
+                          ) : (
+                            <>
+                              Submit for Evaluation
+                              <ArrowRight className="w-4 h-4 ml-2" />
+                            </>
+                          )}
+                        </Button>
+
+                        {evaluation && (
+                          <Card className="mt-6">
+                            <CardHeader>
+                              <CardTitle className="flex items-center gap-2">
+                                <Brain className="w-5 h-5" />
+                                AI Evaluation Results
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                              <div className="flex items-center gap-4">
+                                <div className="bg-purple-100 p-4 rounded-lg">
+                                  <p className="text-2xl font-bold text-purple-600">
+                                    {evaluation.score}/10
+                                  </p>
+                                  <p className="text-sm text-purple-600">Score</p>
+                                </div>
+                                <div className="flex-1">
+                                  <p className="font-medium">Overall Feedback</p>
+                                  <p className="text-gray-600">{evaluation.overallFeedback}</p>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <h4 className="font-medium mb-2 flex items-center gap-2">
+                                    <Star className="w-4 h-4 text-green-500" />
+                                    Strengths
+                                  </h4>
+                                  <ul className="list-disc list-inside space-y-1">
+                                    {evaluation.strengths.map((strength, idx) => (
+                                      <li key={idx} className="text-sm text-gray-600">{strength}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                <div>
+                                  <h4 className="font-medium mb-2 flex items-center gap-2">
+                                    <TrendingUp className="w-4 h-4 text-blue-500" />
+                                    Areas for Improvement
+                                  </h4>
+                                  <ul className="list-disc list-inside space-y-1">
+                                    {evaluation.improvements.map((improvement, idx) => (
+                                      <li key={idx} className="text-sm text-gray-600">{improvement}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+
+                              <div>
+                                <h4 className="font-medium mb-2 flex items-center gap-2">
+                                  <AlertCircle className="w-4 h-4 text-orange-500" />
+                                  Missing Key Concepts
+                                </h4>
+                                <ul className="list-disc list-inside space-y-1">
+                                  {evaluation.keyConceptsMissing.map((concept, idx) => (
+                                    <li key={idx} className="text-sm text-gray-600">{concept}</li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <h4 className="font-medium mb-2">Technical Accuracy</h4>
+                                  <p className="text-sm text-gray-600">{evaluation.technicalAccuracy}</p>
+                                </div>
+                                <div>
+                                  <h4 className="font-medium mb-2">Structure & Presentation</h4>
+                                  <p className="text-sm text-gray-600">{evaluation.structureAndPresentation}</p>
+                                </div>
+                              </div>
+
+                              <div>
+                                <h4 className="font-medium mb-2 flex items-center gap-2">
+                                  <Book className="w-4 h-4 text-purple-500" />
+                                  Exam Tips
+                                </h4>
+                                <ul className="list-disc list-inside space-y-1">
+                                  {evaluation.examTips.map((tip, idx) => (
+                                    <li key={idx} className="text-sm text-gray-600">{tip}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        Select a question from the list to start practicing
+                      </div>
                     )}
-                  </>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    Select a question from the list to start practicing
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="weakTopics">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      Your Weak Topics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {FILTER_OPTIONS.weakTopics.map(topic => (
+                      <QuickRevisionCard
+                        key={topic}
+                        topic={topic}
+                        onComplete={() => toggleTopicRevised(topic)}
+                      />
+                    ))}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      Related Questions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {filteredQuestions
+                      .filter(q => q.weakTopics.some(t => filters.weakTopic === t))
+                      .map(q => (
+                        <div
+                          key={q.id}
+                          className="p-4 border rounded-lg mb-4 cursor-pointer hover:bg-gray-50"
+                          onClick={() => {
+                            setCurrentQuestion(q);
+                            setActiveTab('practice');
+                          }}
+                        >
+                          <p className="font-medium mb-2">{q.question}</p>
+                          <div className="flex gap-2 text-sm text-gray-500">
+                            <span>{q.board}</span>
+                            <span>•</span>
+                            <span>{q.subject}</span>
+                            <span>•</span>
+                            <span>{q.marks} marks</span>
+                          </div>
+                        </div>
+                      ))}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="bookmarks">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="w-5 h-5" />
+                    Bookmarked Questions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {Array.from(bookmarkedQuestions).map(questionId => {
+                      const question = questions.find(q => q.id === questionId);
+                      if (!question) return null;
+
+                      return (
+                        <div
+                          key={question.id}
+                          className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                          onClick={() => {
+                            setCurrentQuestion(question);
+                            setActiveTab('practice');
+                          }}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="font-medium mb-2">{question.question}</p>
+                              <div className="flex gap-2 text-sm text-gray-500">
+                                <span>{question.board}</span>
+                                <span>•</span>
+                                <span>{question.subject}</span>
+                                <span>•</span>
+                                <span>{question.year}</span>
+                                <span>•</span>
+                                <span>{question.marks} marks</span>
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleBookmark(question.id);
+                              }}
+                            >
+                              <Star className="w-5 h-5 text-purple-500 fill-current" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {bookmarkedQuestions.size === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        No bookmarked questions yet. Star questions while practicing to see them here.
+                      </div>
+                    )}
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
-      <Chatbot/>
+      <Chatbot />
     </div>
   );
 };
