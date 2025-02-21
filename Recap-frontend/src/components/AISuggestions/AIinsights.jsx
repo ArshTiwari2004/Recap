@@ -385,7 +385,7 @@ const AIInsights = () => {
             {/* Left Column - Notes Section */}
 {/* Left Column - Notes Section */}
 <div className="w-1/4 flex flex-col">
-  <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-9rem)]">
+  <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-11rem)]">
     <div className="p-6 border-b border-gray-700">
       <h2 className="text-xl font-semibold text-white">Your Notes</h2>
     </div>
