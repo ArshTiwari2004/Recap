@@ -13,8 +13,9 @@ import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'fire
 import { fireDB } from '../config/Firebaseconfig';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import NavBar from './NavBar';
 import Sidebar from '../components/Sidebar';
+import Chatbot from '@/pages/ChatBot';
 
 // Dummy data structure
 const DUMMY_QUESTIONS = [
@@ -142,7 +143,7 @@ Provide a detailed evaluation in JSON format with the following structure:
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Navbar />
+        <NavBar />
         <div className="flex-1 overflow-auto p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="mb-6">
@@ -465,6 +466,7 @@ Provide a detailed evaluation in JSON format with the following structure:
           </Tabs>
         </div>
       </div>
+      <Chatbot/>
     </div>
   );
 };
