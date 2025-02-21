@@ -6,6 +6,7 @@ import Sidebar from '../../components/Sidebar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Notification from '../Notifications';
 import NavBar from '../NavBar';
+import { useUser } from '@/context/UserContext';
 
 // Notes Panel Component
 const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
@@ -60,6 +61,10 @@ const QuizComponent = () => {
   const [selectedNote, setSelectedNote] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
+
+  const { user } = useUser();
+
+  console.log(user)
 
   // Fetch notes from Firebase
   useEffect(() => {
@@ -427,7 +432,7 @@ const QuizComponent = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400">Total Points</p>
-                        <p className="text-2xl font-semibold text-white">{points}</p>
+                        <p className="text-2xl font-semibold text-white">{user.dailyPoints || null}</p>
                       </div>
                       <Trophy className="w-8 h-8 text-purple-400" />
                     </div>
@@ -470,7 +475,7 @@ const QuizComponent = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400">Streaks</p>
-                        <p className="text-2xl font-semibold text-white">0</p>
+                        <p className="text-2xl font-semibold text-white">{user.streak}</p>
                       </div>
                       <Flame className="w-8 h-8 text-purple-400" />
                     </div>

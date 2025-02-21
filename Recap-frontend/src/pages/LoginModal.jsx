@@ -2,12 +2,13 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { ButtonsCard } from '../components/ui/tailwindcss-buttons';
 import { signInWithEmailAndPassword, signInWithPopup, GithubAuthProvider, GoogleAuthProvider, signInWithRedirect, sendPasswordResetEmail } from "firebase/auth";
-import { auth } from '../config/Firebaseconfig.js';
+import { auth, fireDB } from '../config/Firebaseconfig.js';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom'
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import SignupModal from './SignupModal';
+import { doc, getDoc, setDoc, updateDoc, Timestamp } from 'firebase/firestore';
 
 const LoginModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -21,11 +22,62 @@ const LoginModal = ({ isOpen, onClose }) => {
     setShowPassword(!showPassword);
   };
 
+  const trackUserLogin = async (user) => {
+    if (!user) return;
+  
+    const userRef = doc(fireDB, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    const now = Timestamp.now();
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  
+    if (!userSnap.exists()) {
+      // New user, create record
+      await setDoc(userRef, {
+        uid: user.uid,
+        displayName: user.displayName || "",
+        email: user.email || "",
+        provider: user.providerData[0]?.providerId.replace(".com", "") || "email",
+        createdAt: now,
+        lastLogin: now,
+        loginCount: 1,
+        dailyPoints: 10,
+        streak: 1
+      });
+      return;
+    }
+  
+    const userData = userSnap.data();
+    const lastLoginDate = userData.lastLogin.toDate().toISOString().split("T")[0];
+  
+    if (lastLoginDate !== today) {
+      // User logs in on a new day
+      let newStreak = userData.streak;
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayFormatted = yesterday.toISOString().split("T")[0];
+  
+      if (lastLoginDate === yesterdayFormatted) {
+        newStreak += 1; // Continue streak
+      } else {
+        newStreak = 1; // Reset streak
+      }
+  
+      await updateDoc(userRef, {
+        loginCount: (userData.loginCount || 0) + 1,
+        lastLogin: now,
+        dailyPoints: (userData.dailyPoints || 0) + 10,
+        streak: newStreak
+      });
+    }
+  };
+  
+
   const loginUsingEmailAndPassword = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      await trackUserLogin(user); 
       localStorage.setItem("user", JSON.stringify(user)); // Store user data in local storage
       toast.success("Login Successful!");
       navigate('/upload-note');
@@ -41,6 +93,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       const githubProvider = new GithubAuthProvider();
       const result = await signInWithPopup(auth, githubProvider);
       const user = result.user;
+      await trackUserLogin(user);
       console.log("User Info:", user);
       toast.success(`Welcome ${user.displayName || user.email}`);
       navigate('/upload-note');
@@ -56,6 +109,8 @@ const LoginModal = ({ isOpen, onClose }) => {
       const googleProvider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
+
+      await trackUserLogin(user);
 
       // Store user information in local storage or handle it as needed
       localStorage.setItem("user", JSON.stringify(user));
