@@ -7,6 +7,12 @@ html {
   scrollbar-color: #888 transparent; /* Thumb color and transparent track */
 }
 
+/* Firefox */
+html {
+  scrollbar-width: none; /* Options: auto, thin, none */
+  scrollbar-color: #888 transparent; /* Thumb color and transparent track */
+}
+
 /* Chrome, Edge, Safari, Opera */
 ::-webkit-scrollbar {
   width: 10px; /* Width of the scrollbar */
