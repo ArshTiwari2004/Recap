@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notifications';
 import toast from 'react-hot-toast';
 import ProfileDropdown from '@/pages/ProfileDropdown';
+import FeedbackButton from './FeedbackButton';
 
 const NavBar = ({ icon, header, button1, button2, button3, userProfile, panelToggleButton }) => {
   const navigate = useNavigate();
@@ -37,12 +38,13 @@ const NavBar = ({ icon, header, button1, button2, button3, userProfile, panelTog
       </div>
 
       <div className="flex items-center space-x-6">
-        <button 
+        {/* <button 
           className="text-gray-300 hover:text-white transition-colors"
         //   onClick={handleFeedbackClick}
         >
           {button1}
-        </button>
+        </button> */}
+        <FeedbackButton />
       
         <button 
           className="text-gray-300 hover:text-white transition-colors"

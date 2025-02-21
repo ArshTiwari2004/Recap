@@ -12,6 +12,7 @@ import TeamSection from '@/components/Team';
 import { Link } from 'react-router-dom';
 import Features from './Features';
 import FAQ from './FAQ';
+import FeedbackDisplay from '@/components/FeedbackDisplay';
 
 const LandingPage = () => {
 
@@ -139,6 +140,9 @@ const LandingPage = () => {
 
       {/* Team Section remains the same */}
       <TeamSection />
+
+      {/* Feedback Display remains the same */}
+      <FeedbackDisplay />
 
       {/* Footer remains the same */}
       <Footer />
