@@ -13,6 +13,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Notification from '@/components/Notifications';
 import ProfileDropdown from '../ProfileDropdown';
 import NavBar from '@/components/NavBar';
+import Chatbot from '../ChatBot';
 
 
 const Dashboard = () => {
@@ -316,7 +317,7 @@ const Dashboard = () => {
 
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <NavBar icon={<BookOpen className="w-6 h-6 text-purple-400" />} header={"Notes Dashboard"} button1={"Feedback"} button2={"Help"} button3={"Dock"}/>
+        <NavBar icon={<BookOpen className="w-6 h-6 text-purple-400" />} header={"Notes Dashboard"} button1={"Feedback"} button2={"Help"} button3={"Docs"}/>
 
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
@@ -532,6 +533,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+      <Chatbot />
     </div>
   );
 };
