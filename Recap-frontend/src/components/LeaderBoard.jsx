@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import NavBar from "./NavBar";
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
+import Chatbot from "@/pages/ChatBot";
 
 const leaderboardData = [
   {
@@ -136,6 +137,7 @@ const LeaderBoard = () => {
           </div>
         </div>
       )}
+      <Chatbot />
     </div>
   );
 };

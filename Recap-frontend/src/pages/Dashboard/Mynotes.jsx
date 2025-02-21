@@ -12,6 +12,7 @@ import { Loader } from '@/components/Loader';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 import Notification from '@/components/Notifications';
 import NavBar from '@/components/NavBar';
+import Chatbot from '../ChatBot';
 
 // View Modal Component
 const Modal = ({ note, onClose }) => {
@@ -485,6 +486,7 @@ const MyNotes = () => {
           onUpdate={handleNoteUpdate}
         />
       )}
+      <Chatbot />
     </div>
   );
 };

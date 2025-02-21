@@ -6,6 +6,7 @@ import Sidebar from '../../components/Sidebar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Notification from '../Notifications';
 import NavBar from '../NavBar';
+import Chatbot from '@/pages/ChatBot';
 
 // Notes Panel Component
 const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
@@ -537,6 +538,7 @@ const QuizComponent = () => {
         </div>
       </div>
     </div>
+    <Chatbot />
   </div>
   )
 }

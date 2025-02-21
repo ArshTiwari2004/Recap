@@ -30,6 +30,7 @@ import GroupChat from "../GroupChat";
 import GroupNotes from "../GroupNotes";
 import Notification from "../Notifications";
 import NavBar from "../NavBar";
+import Chatbot from "@/pages/ChatBot";
 
 const CollaborativeNotes = () => {
   const navigate = useNavigate();
@@ -518,6 +519,7 @@ const CollaborativeNotes = () => {
             </div>
           </div>
         </div>
+        <Chatbot />
       </div>
 
       <CreateGroupModal
@@ -531,7 +533,7 @@ const CollaborativeNotes = () => {
       <JoinGroupModal
         isOpen={showJoinModal}
         onClose={() => {
-          setShowJoinModal(false);
+        setShowJoinModal(false);
           setActiveTab("myGroups");
         }}
       />

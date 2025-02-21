@@ -13,6 +13,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Notification from '@/components/Notifications';
 import ProfileDropdown from '../ProfileDropdown';
 import NavBar from '@/components/NavBar';
+import Chatbot from '../ChatBot';
 
 
 const Dashboard = () => {
@@ -532,6 +533,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+      <Chatbot />
     </div>
   );
 };

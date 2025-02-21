@@ -32,6 +32,7 @@ import { fireDB } from "../../config/Firebaseconfig";
 import Sidebar from "../../components/Sidebar";
 import Notification from "../Notifications";
 import NavBar from "../NavBar";
+import Chatbot from "@/pages/ChatBot";
 
 // Modal Component
 const Modal = ({
@@ -758,6 +759,7 @@ const Flashcards = () => {
           setEditModalOpen(false);
         }}
       />
+      <Chatbot />
     </div>
   );
 };

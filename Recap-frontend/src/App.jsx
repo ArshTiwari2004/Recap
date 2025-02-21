@@ -21,6 +21,7 @@ import { FirebaseProvider } from './context/FirebaseContext';
 import OCRScanner from './pages/OCRscanner';
 import Error404 from './Error404';
 import PDFOCRScanner from './pages/Ocrpdf';
+import PYQPractice from './components/PYQpractice';
 
 const App = () => {
   return (
@@ -48,6 +49,8 @@ const App = () => {
         <Route path="*" element={<Error404 />} />
         <Route path="/pdf-ocr" element={<PDFOCRScanner />} />
         <Route path="/feedback" element={<FeedbackForm />} />
+        <Route path="/pyq-practice" element={<PYQPractice />} />
+
         </Routes>
         </FirebaseProvider>
     </Router>

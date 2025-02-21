@@ -10,6 +10,7 @@ import Sidebar from '../Sidebar';
 import Notification from '../Notifications';
 import NavBar from '../NavBar';
 import toast from 'react-hot-toast';
+import Chatbot from '@/pages/ChatBot';
 
 const AIInsights = () => {
   const [notes, setNotes] = useState([]);
@@ -485,6 +486,7 @@ const AIInsights = () => {
           </div>
         </div>
       </div>
+      <Chatbot />
     </div>
   );
 };

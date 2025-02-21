@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
          
           <div className="space-y-3">
-          Re<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">cap</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 font-md">Recap</span>
             <p className="text-gray-400 text-sm">AI-driven notes, quick revision. Flashcards, collaboration, knowledge gaps solved.</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -35,6 +35,7 @@ const Footer = () => {
               <li><a href="/" className="hover:text-cyan-400 transition-colors text-sm" >Home</a></li>
               <li><a href="#features" className="hover:text-cyan-400 transition-colors text-sm "  >Features</a></li>
               <li><a href="#team" className="hover:text-cyan-400 transition-colors text-sm">Team</a></li>
+              <li><a href= "#testimonials" className="hover:text-cyan-400 transition-colors text-sm">Testimonial</a></li>
               
             </ul>
           </div>
