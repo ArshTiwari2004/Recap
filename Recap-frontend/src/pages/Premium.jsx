@@ -8,6 +8,8 @@ import { Alert } from '@/components/ui/alert';
 import Sidebar from '../components/Sidebar';
 import toast from 'react-hot-toast';
 import Notification from '@/components/Notifications';
+import NavBar from '@/components/NavBar';
+import Chatbot from './ChatBot';
 
 const Premium = () => {
   const navigate = useNavigate();
@@ -239,43 +241,21 @@ const Premium = () => {
   return (
     <div className="min-h-screen flex bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       {/* Sidebar */}
-      <div className="sticky top-0 h-screen w-64">
+      
+    <div className="flex h-screen bg-gray-900">
         <Sidebar />
       </div>
 
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className="flex-1 flex-col">
         {/* Navbar */}
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2 ml-6">
-            <BookOpen className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white ">Premium Features</span>
-          </div>
-          <div className="flex items-center space-x-6">
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Support
-            </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              FAQ
-            </button>
-            <Notification />
-            <div
-            className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
-            onClick={() => navigate("/profile")}
-          >
-            {user?.photoURL ? (
-              <img
-                src={user.photoURL}
-                alt="User Avatar"
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-white text-sm font-medium">
-                U
-              </span>
-            )}
-          </div>
-          </div>
-        </div>
+
+        <NavBar
+          icon={<BookOpen className="w-6 h-6 text-purple-400" />}
+          header={"Premium"}
+          button1={"Feedback"}
+          button2={"Help"}
+          button3={"Docs"}
+        />
 
         {/* Main content */}
         <div className="max-w-6xl mx-auto w-full space-y-12 p-6 mt-8">
@@ -427,6 +407,7 @@ const Premium = () => {
           </div>
         </div>
       </div>
+      <Chatbot />
     </div>
   );
 };

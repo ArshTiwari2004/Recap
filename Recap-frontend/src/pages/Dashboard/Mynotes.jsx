@@ -11,12 +11,16 @@ import {
 import { Loader } from '@/components/Loader';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 import Notification from '@/components/Notifications';
+import NavBar from '@/components/NavBar';
+import Chatbot from '../ChatBot';
+import ShareModal from '@/components/ShareModal';
+import DownloadModal from '@/components/DownloadModal';
 
 // View Modal Component
 const Modal = ({ note, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div className="bg-gray-800 p-6 rounded-xl w-4/5 sm:w-3/4 lg:w-1/2 relative max-h-[80vh] overflow-y-auto">
+      <div className="bg-gray-800 p-6 rounded-xl w-4/5 sm:w-3/4 lg:w-1/2 relative max-h-[80vh] overflow-y-auto border border-white">
         <div className="flex items-center space-x-4">
           <button 
             onClick={onClose} 
@@ -293,43 +297,7 @@ const MyNotes = () => {
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <BookOpen className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">My Notes</span>
-          </div>
-
-          <div className="flex items-center space-x-6">
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Feedback
-            </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Help
-            </button>
-            <button className="text-gray-300 hover:text-white transition-colors">
-              Docs
-            </button>
-          {/* <button className="relative text-gray-300 hover:text-white transition-colors">
-              <B  ell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
-            </button> */}
-            <Notification />
-
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer">
-              {user?.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt="User Avatar"
-                  className="w-full h-full rounded-full object-cover"
-                />
-              ) : (
-                <span className="text-white text-sm font-medium">
-                  U
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+        <NavBar icon={<BookOpen className="w-6 h-6 text-purple-400" />} header={"My Notes"} button1={"Feedback"} button2={"Help"} button3={"Docs"} />
 
         <div className="flex-1 p-8 overflow-auto">
           <div className="flex items-center space-x-6 mb-6">
@@ -485,18 +453,14 @@ const MyNotes = () => {
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button 
+                        {/* <button 
                           className="p-2 text-gray-400 hover:text-white transition-colors"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <Download className="w-4 h-4" />
-                        </button>
-                        <button 
-                          className="p-2 text-gray-400 hover:text-white transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Share2 className="w-4 h-4" />
-                        </button>
+                        </button> */}
+                        <DownloadModal note={note} />
+                        <ShareModal note={note} />
                         <button 
                           className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                           onClick={(e) => e.stopPropagation()}
@@ -520,6 +484,7 @@ const MyNotes = () => {
           onUpdate={handleNoteUpdate}
         />
       )}
+      <Chatbot />
     </div>
   );
 };

@@ -4,10 +4,13 @@ import {
   Youtube, FileText, Network, BookOpen, Brain,
    Zap, Crosshair, Link
 } from 'lucide-react';
-import { collection, query, onSnapshot, doc } from 'firebase/firestore';
+import { collection, query, onSnapshot, doc, where } from 'firebase/firestore';
 import { fireDB } from '../../config/Firebaseconfig';
 import Sidebar from '../Sidebar';
 import Notification from '../Notifications';
+import NavBar from '../NavBar';
+import toast from 'react-hot-toast';
+import Chatbot from '@/pages/ChatBot';
 
 const AIInsights = () => {
   const [notes, setNotes] = useState([]);
@@ -19,21 +22,30 @@ const AIInsights = () => {
   const [relatedNotes, setRelatedNotes] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(fireDB, 'notes'));
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.uid;
+  
+    if (!userId) {
+      toast.error("Please log in to view your notes.");
+      return;
+    }
+  
+    const q = query(collection(fireDB, 'notes'), where('uid', '==', userId));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const notesData = [];
       querySnapshot.forEach((doc) => {
         notesData.push({ id: doc.id, ...doc.data() });
       });
       setNotes(notesData);
+  
       if (notesData.length > 0 && !activeNote) {
         setActiveNote(notesData[0]);
       }
     });
-
+  
     return () => unsubscribe();
   }, []);
-
+  
   const analyzeWithCohere = async (prompt) => {
     const response = await fetch('https://api.cohere.ai/v1/generate', {
       method: 'POST',
@@ -360,45 +372,48 @@ const AIInsights = () => {
       <Sidebar />
       
       <div className="flex-1 flex flex-col">
-        <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Lightbulb className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">AI Insights</span>
-          </div>
-          <Notification />
-        </div>
+        <NavBar
+          icon={<Lightbulb className="w-6 h-6 text-purple-400" />}
+          header={"AI Insights"}
+          button1={"Feedback"}
+          button2={"Help"}
+          button3={"Docs"}
+        />
 
         <div className="flex-1 p-8 overflow-auto">
           <div className="max-w-7xl mx-auto flex gap-8">
             {/* Left Column - Notes Section */}
-            <div className="w-1/4 flex flex-col">
-              <div className="bg-gray-800 rounded-xl border border-gray-700 flex-1">
-                <div className="p-6 border-b border-gray-700">
-                  <h2 className="text-xl font-semibold text-white">Your Notes</h2>
-                </div>
-                <div className="p-4 space-y-3 overflow-y-auto">
-                  {notes.map(note => (
-                    <button
-                      key={note.id}
-                      onClick={() => {
-                        setActiveNote(note);
-                        setAnalysis(null);
-                        setResources(null);
-                        setRelatedNotes([]);
-                      }}
-                      className={`w-full p-4 rounded-lg text-left transition-colors ${
-                        activeNote?.id === note.id
-                          ? 'bg-purple-500/20 border border-purple-500'
-                          : 'bg-gray-700/50 hover:bg-gray-700'
-                      }`}
-                    >
-                      <h3 className="text-white font-medium mb-2">{note.subject}</h3>
-                      <p className="text-gray-400 text-sm line-clamp-2">{note.content}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+{/* Left Column - Notes Section */}
+<div className="w-1/4 flex flex-col">
+  <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-11rem)]">
+    <div className="p-6 border-b border-gray-700">
+      <h2 className="text-xl font-semibold text-white">Your Notes</h2>
+    </div>
+    <div className="h-[calc(100vh-16rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+      <div className="p-4 space-y-3">
+        {notes.map(note => (
+          <button
+            key={note.id}
+            onClick={() => {
+              setActiveNote(note);
+              setAnalysis(null);
+              setResources(null);
+              setRelatedNotes([]);
+            }}
+            className={`w-full p-4 rounded-lg text-left transition-colors ${
+              activeNote?.id === note.id
+                ? 'bg-purple-500/20 border border-purple-500'
+                : 'bg-gray-700/50 hover:bg-gray-700'
+            }`}
+          >
+            <h3 className="text-white font-medium mb-2">{note.subject}</h3>
+            <p className="text-gray-400 text-sm line-clamp-2">{note.content}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
 
             {/* Right Column - Action Buttons and Analysis */}
             <div className="flex-1 flex flex-col">
@@ -428,52 +443,57 @@ const AIInsights = () => {
               </div>
 
               {/* Analysis Section - Shorter Height */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-24rem)]">
-                <div className="p-6 border-b border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-white">
-                      {activeNote ? activeNote.subject : 'Select a Note'}
-                    </h2>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => setActiveTab('gaps')}
-                        className={`px-4 py-2 rounded-lg transition-colors ${
-                          activeTab === 'gaps'
-                            ? 'bg-purple-500 text-white'
-                            : 'text-gray-400 hover:text-white'
-                        }`}
-                      >
-                        Gaps
-                      </button>
-                      <button
-                        onClick={() => setActiveTab('resources')}
-                        className={`px-4 py-2 rounded-lg transition-colors ${
-                          activeTab === 'resources'
-                            ? 'bg-purple-500 text-white'
-                            : 'text-gray-400 hover:text-white'
-                        }`}
-                      >
-                        Resources
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6 overflow-y-auto">
-                  {loading ? (
-                    <div className="flex items-center justify-center h-32">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-                    </div>
-                  ) : activeTab === 'gaps' ? (
-                    renderGapAnalysis()
-                  ) : (
-                    renderResources()
-                  )}
-                </div>
-              </div>
-            </div>
+            
+           <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-15rem)] flex flex-col">
+           <div className="p-6 border-b border-gray-700 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-white">
+            {activeNote ? activeNote.subject : 'Select a Note'}
+          </h2>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setActiveTab('gaps')}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'gaps'
+                  ? 'bg-purple-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Gaps
+            </button>
+            <button
+              onClick={() => setActiveTab('resources')}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'resources'
+                  ? 'bg-purple-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Resources
+            </button>
           </div>
         </div>
       </div>
+      <div className="flex-1 overflow-y-auto min-h-0 p-6">
+        {loading ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+          </div>
+        ) : activeTab === 'gaps' ? (
+          renderGapAnalysis()
+        ) : (
+          renderResources()
+        )}
+      </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  
+
+      <Chatbot />
     </div>
   );
 };

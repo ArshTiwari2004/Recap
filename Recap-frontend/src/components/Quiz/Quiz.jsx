@@ -5,6 +5,9 @@ import { fireDB } from '../../config/Firebaseconfig';
 import Sidebar from '../../components/Sidebar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Notification from '../Notifications';
+import NavBar from '../NavBar';
+import { useUser } from '@/context/UserContext';
+import Chatbot from '@/pages/ChatBot';
 
 // Notes Panel Component
 const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
@@ -59,6 +62,10 @@ const QuizComponent = () => {
   const [selectedNote, setSelectedNote] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
+
+  const { user } = useUser();
+
+  console.log(user)
 
   // Fetch notes from Firebase
   useEffect(() => {
@@ -390,29 +397,31 @@ const QuizComponent = () => {
       />
       
     <div className="flex-1 flex flex-col">
-      <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            {isNotesPanelOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
-          </button>
-          <div className="flex items-center space-x-2">
-            <BookOpen className="w-6 h-6 text-purple-400" />
-            <span className="text-lg font-semibold text-white">Quizzes</span>
-          </div>
-        </div>
 
-        <div className="flex items-center space-x-4">
-          {selectedNote && (
-            <div className="text-sm text-gray-400">
-              Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
+      <NavBar
+          panelToggleButton={
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                {isNotesPanelOpen ? (
+                  <PanelLeftClose className="w-5 h-5" />
+                ) : (
+                  <PanelLeftOpen className="w-5 h-5" />
+                )}
+              </button>
+              <div className="flex items-center space-x-2">
+                <span className="text-lg font-semibold text-white"></span>
+              </div>
             </div>
-          )}
-          <Notification />
-        </div>
-      </div>
+          }
+          icon={<BookOpen className="w-6 h-6 text-purple-400" />}
+          header={"Quizzes"}
+          button1={"Feedback"}
+          button2={"Help"}
+          button3={"Docs"}
+        />
 
       <div className="flex-1 p-8 overflow-auto">
         <div className="max-w-7xl mx-auto">
@@ -424,7 +433,7 @@ const QuizComponent = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400">Total Points</p>
-                        <p className="text-2xl font-semibold text-white">{points}</p>
+                        <p className="text-2xl font-semibold text-white">{user.dailyPoints || null}</p>
                       </div>
                       <Trophy className="w-8 h-8 text-purple-400" />
                     </div>
@@ -467,7 +476,7 @@ const QuizComponent = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400">Streaks</p>
-                        <p className="text-2xl font-semibold text-white">0</p>
+                        <p className="text-2xl font-semibold text-white">{user.streak}</p>
                       </div>
                       <Flame className="w-8 h-8 text-purple-400" />
                     </div>
@@ -534,6 +543,7 @@ const QuizComponent = () => {
         </div>
       </div>
     </div>
+    <Chatbot />
   </div>
   )
 }

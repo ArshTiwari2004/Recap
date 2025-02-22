@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, BookOpen, Users, Brain, Mic, Scan, Clipboard } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Brain, Mic, Scan, Clipboard, ExternalLink, Github } from 'lucide-react';
 import { ButtonsCard } from '../components/ui/tailwindcss-buttons';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
@@ -10,6 +10,10 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import TeamSection from '@/components/Team';
 import { Link } from 'react-router-dom';
+import Features from './Features';
+import FAQ from './FAQ';
+import FeedbackDisplay from '@/components/FeedbackDisplay';
+import Numbersection from '@/components/Numbersection';
 
 const LandingPage = () => {
 
@@ -30,6 +34,18 @@ const LandingPage = () => {
       console.log("Error logging out:", error.message);
     }
   };
+  
+  const scrollToTestimonials = () => {
+    const testimonialSection = document.getElementById('testimonials');
+    if (testimonialSection) {
+      testimonialSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const openDemoVideo = () => {
+    // Replace this URL with your actual demo video URL
+    window.open('https://yourdemovideo.com', '_blank');
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -41,46 +57,86 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 ">
-      {/* Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex text-white text-bold items-center">
-            <Link to = "/">
-             <span className=" text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-bold text-2xl">Recap</span>
-            </Link>
-          </div>
-          <div className="hidden md:block">
-            <div className="flex items-center space-x-10">
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#features">Features</a>
-              <a className="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#team">Team</a>
-             
-              {user ? (
-                <button
-                onClick={handleLogout}
-                className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-500 hover:text-white transition-all"
-              >
-                Logout
-              </button>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setLoginOpen(true)}
-                    className="border-2 border-purple-500 text-purple-400 hover:bg-purple-500 text-white mr-4 px-6 py-2 rounded-lg"
-                  >
-                    Log In
-                  </button>
-                  <button
-                    onClick={() => setSignupOpen(true)}
-                    className="border-2 border-purple-500 text-purple-400 bg-gradient-to-br from-purple-900 to-purple-700 text-white mr-4 px-6 py-2 rounded-lg"
-                  >
-                    Signup
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+    {/* Navigation */}
+<div className="backdrop-blur-sm ">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center h-20">
+      <div className="flex items-center space-x-10">
+        <Link to="/" className="flex items-center">
+          <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 text-3xl tracking-tight drop-shadow-sm">
+            Recap
+          </span>
+        </Link>
+        
+        <div className="flex items-center space-x-8">
+          <a 
+            href="https://github.com/ArshTiwari2004/Recap" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-sm text-gray-400 hover:text-white"
+          >
+            <Github className="h-5 w-5" />
+          </a>
+          
+          <button 
+            onClick={openDemoVideo}
+            className="text-sm text-gray-400 hover:text-white  flex items-center gap-1.5 "
+          >
+            <ExternalLink className="h-4 w-4" />
+            Get a Demo now!
+          </button>
         </div>
       </div>
+      
+      <div className="hidden md:flex items-center space-x-8 ml-auto">
+        <button 
+          onClick={() => {/* Add install logic */}}
+          className="text-sm text-gray-400 hover:text-white  flex items-center gap-1.5 "
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Install App
+        </button>
+        
+        <a className="text-sm text-gray-400 hover:text-white " href="#features">Features</a>
+        <a className="text-sm text-gray-400 hover:text-white" href="#team">Team</a>
+        <button 
+          onClick={scrollToTestimonials} 
+          className="text-sm text-gray-400 hover:text-white"
+        >
+          Testimonials
+        </button>
+        
+        {user ? (
+          <button
+            onClick={handleLogout}
+            className="ml-6 border-2 border-purple-500 text-white bg-gradient-to-br from-purple-900 to-purple-700 px-6 py-2 rounded-lg hover:bg-purple-600 transition-all"
+          >
+            Logout
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={() => setLoginOpen(true)}
+              className="ml-6 border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white transition-all px-6 py-2 rounded-lg"
+            >
+              Log In
+            </button>
+            <button
+              onClick={() => setSignupOpen(true)}
+              className="ml-4 border-2 border-purple-500 text-white bg-gradient-to-br from-purple-900 to-purple-700 px-6 py-2 rounded-lg hover:bg-purple-600 transition-all"
+            >
+              Signup
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
 
       {/* Modals */}
       <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
@@ -97,14 +153,13 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center space-y-8">
               <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white">
-                Transform Your Study Notes
-                <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-                  Into Knowledge
+              Transform the Way You 
+                <span className="  block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+               Learn & Succeed.
                 </span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                AI-powered note organization that adapts to your learning style.
-                Capture, connect, and master your study materials effortlessly.
+              ~ AI that knows your weak spots before you do.
               </p>
               <div className="flex justify-center">
               {user ? (<ButtonsCard 
@@ -130,75 +185,29 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Features Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24" id = "features">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="group bg-gray-800/40 backdrop-blur-sm p-8 rounded-2xl border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300"
-            >
-              <div className="bg-purple-500/10 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition-colors">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-300 leading-relaxed">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Numbers section */}
+      <Numbersection/>
+      {/* Updated Features Section */}
+      <Features />
+      
+      {/* Feedback Display remains the same */}
+      <FeedbackDisplay />
 
-      {/* CTA Button */}
-      <div className="flex justify-center my-12">
-        <button
-          onClick={() => setSignupOpen(true)}
-          className="bg-purple-500/50 text-white font-semibold text-lg py-3 px-8 rounded-full transition-transform transform hover:scale-105 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
-        >
-          Start Your Smart Study Journey Now!
-        </button>
-      </div>
+      {/* New FAQ Section */}
+      <FAQ />
 
-
-      {/* Feedback Section
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
-        Got 
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600"> Feedback </span>
-        ?!
-       </h2>
-      <p className="text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-      We’d love to hear from you! Let us know how we can do better and improve your experience.
-     </p>
-    <div className="flex justify-center">
-      <Link
-        to="/feedback"
-        className="bg-purple-500/10 p-6 border border-purple-500 rounded-2xl max-w-sm w-full text-center
-        transition-all duration-300 transform hover:scale-105"
-      >
-      <div className="flex items-center justify-center">
-          <span className="text-white text-2xl mr-3">✍️</span>
-          <span className="text-white text-lg font-semibold tracking-wide">
-            Share Your Feedback
-          </span>
-        </div>
-      </Link>
-       </div>
-        </div>
-      </div> */}
-
-    
-
-      {/* Team Section */}
+      {/* Team Section remains the same */}
       <TeamSection />
 
+      \
 
-
-      {/* Footer */}
+      {/* Footer remains the same */}
       <Footer />
-    </div>
-  );
+      </div>
+);
 };
+
+
 
 const features = [
   {

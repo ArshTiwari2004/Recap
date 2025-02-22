@@ -1,17 +1,53 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, Grid, List, Filter, ChevronDown, BookOpen, Bell, Star, Clock, Eye, Edit2, Trash2, Heart, RotateCw, Check, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { collection, query, onSnapshot, updateDoc, deleteDoc, doc, addDoc } from 'firebase/firestore';
-import { fireDB } from '../../config/Firebaseconfig';
-import Sidebar from '../../components/Sidebar';
-import Notification from '../Notifications';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Search,
+  Grid,
+  List,
+  Filter,
+  ChevronDown,
+  BookOpen,
+  Bell,
+  Star,
+  Clock,
+  Eye,
+  Edit2,
+  Trash2,
+  Heart,
+  RotateCw,
+  Check,
+  X,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from "lucide-react";
+import {
+  collection,
+  query,
+  onSnapshot,
+  updateDoc,
+  deleteDoc,
+  doc,
+  addDoc,
+} from "firebase/firestore";
+import { fireDB } from "../../config/Firebaseconfig";
+import Sidebar from "../../components/Sidebar";
+import Notification from "../Notifications";
+import NavBar from "../NavBar";
+import Chatbot from "@/pages/ChatBot";
 
 // Modal Component
-const Modal = ({ isOpen, onClose, title, children, showCloseButton = true, size = 'md' }) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  showCloseButton = true,
+  size = "md",
+}) => {
   const modalRef = useRef(null);
 
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
 
     const handleClickOutside = (e) => {
@@ -19,38 +55,41 @@ const Modal = ({ isOpen, onClose, title, children, showCloseButton = true, size 
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.addEventListener('mousedown', handleClickOutside);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
+    sm: "max-w-md",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" />
-      <div 
+      <div
         ref={modalRef}
         className={`relative ${sizeClasses[size]} w-full mx-4 bg-gray-800 rounded-xl shadow-xl transform transition-all`}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
           <h2 className="text-lg font-semibold text-white">{title}</h2>
           {showCloseButton && (
-            <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
               <X className="w-5 h-5" />
             </button>
           )}
@@ -64,7 +103,11 @@ const Modal = ({ isOpen, onClose, title, children, showCloseButton = true, size 
 // Notes Panel Component
 const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
   return (
-    <div className={`fixed left-0 top-0 h-full bg-gray-800 border-r border-gray-700 transition-all duration-300 ${isOpen ? 'w-80' : 'w-0'} overflow-hidden`}>
+    <div
+      className={`fixed left-0 top-0 h-full bg-gray-800 border-r border-gray-700 transition-all duration-300 ${
+        isOpen ? "w-80" : "w-0"
+      } overflow-hidden`}
+    >
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Notes</h2>
@@ -72,18 +115,22 @@ const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
             <PanelLeftClose className="w-5 h-5" />
           </button>
         </div>
-        
+
         <div className="space-y-3">
-          {notes.map(note => (
+          {notes.map((note) => (
             <div
               key={note.id}
               className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                selectedNote?.id === note.id ? 'bg-purple-500/20 border border-purple-500' : 'bg-gray-700 hover:bg-gray-600'
+                selectedNote?.id === note.id
+                  ? "bg-purple-500/20 border border-purple-500"
+                  : "bg-gray-700 hover:bg-gray-600"
               }`}
               onClick={() => onNoteSelect(note)}
             >
               <h3 className="text-white font-medium mb-1">{note.subject}</h3>
-              <p className="text-gray-400 text-sm line-clamp-2">{note.content}</p>
+              <p className="text-gray-400 text-sm line-clamp-2">
+                {note.content}
+              </p>
               <div className="flex items-center space-x-2 mt-2 text-xs text-gray-400">
                 <Clock className="w-3 h-3" />
                 <span>{new Date(note.createdAt).toLocaleDateString()}</span>
@@ -107,7 +154,7 @@ const ViewCardModal = ({ isOpen, onClose, card, onEdit, onDelete }) => {
           <h3 className="text-lg font-medium text-white mb-2">Question:</h3>
           <p className="text-gray-300">{card?.question}</p>
         </div>
-        
+
         {!showAnswer ? (
           <button
             onClick={() => setShowAnswer(true)}
@@ -163,29 +210,41 @@ const EditModal = ({ isOpen, onClose, card, onSave }) => {
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Flashcard" size="lg">
       <div className="p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-white mb-2">Question</label>
+          <label className="block text-sm font-medium text-white mb-2">
+            Question
+          </label>
           <textarea
             className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-purple-500"
             rows={3}
             value={editedCard.question}
-            onChange={(e) => setEditedCard({ ...editedCard, question: e.target.value })}
+            onChange={(e) =>
+              setEditedCard({ ...editedCard, question: e.target.value })
+            }
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-white mb-2">Answer</label>
+          <label className="block text-sm font-medium text-white mb-2">
+            Answer
+          </label>
           <textarea
             className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-purple-500"
             rows={3}
             value={editedCard.answer}
-            onChange={(e) => setEditedCard({ ...editedCard, answer: e.target.value })}
+            onChange={(e) =>
+              setEditedCard({ ...editedCard, answer: e.target.value })
+            }
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-white mb-2">Difficulty</label>
+          <label className="block text-sm font-medium text-white mb-2">
+            Difficulty
+          </label>
           <select
             className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-purple-500"
             value={editedCard.difficulty}
-            onChange={(e) => setEditedCard({ ...editedCard, difficulty: e.target.value })}
+            onChange={(e) =>
+              setEditedCard({ ...editedCard, difficulty: e.target.value })
+            }
           >
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
@@ -193,7 +252,10 @@ const EditModal = ({ isOpen, onClose, card, onSave }) => {
           </select>
         </div>
         <div className="flex justify-end space-x-3">
-          <button onClick={onClose} className="px-4 py-2 text-gray-400 hover:text-white transition-colors">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          >
             Cancel
           </button>
           <button
@@ -213,10 +275,10 @@ const EditModal = ({ isOpen, onClose, card, onSave }) => {
 
 // Main Flashcards Component
 const Flashcards = () => {
-  const [viewMode, setViewMode] = useState('grid');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('newest');
+  const [viewMode, setViewMode] = useState("grid");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
   const [activeFilter, setActiveFilter] = useState(null);
   const [flashcards, setFlashcards] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -230,7 +292,7 @@ const Flashcards = () => {
 
   // Fetch notes from Firebase
   useEffect(() => {
-    const q = query(collection(fireDB, 'notes'));
+    const q = query(collection(fireDB, "notes"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const notesData = [];
       querySnapshot.forEach((doc) => {
@@ -244,7 +306,7 @@ const Flashcards = () => {
 
   // Fetch flashcards from Firebase
   useEffect(() => {
-    const q = query(collection(fireDB, 'flashcards'));
+    const q = query(collection(fireDB, "flashcards"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const cardsData = [];
       querySnapshot.forEach((doc) => {
@@ -260,25 +322,25 @@ const Flashcards = () => {
   const generateFlashcards = async (noteContent) => {
     try {
       setIsGenerating(true);
-      
+
       const prompt = `Generate 1 flashcards from this content. For each flashcard, create a question and answer pair that tests understanding of key concepts. Format your response as a JSON array of objects, where each object has properties: "question", "answer", "difficulty" (easy/medium/hard). Make the questions challenging but clear. Content: ${noteContent}`;
 
-      const response = await fetch('https://api.cohere.ai/v1/generate', {
-        method: 'POST',
+      const response = await fetch("https://api.cohere.ai/v1/generate", {
+        method: "POST",
         headers: {
-          'Authorization': 'Bearer YFAX6MrxeFKRRZakECwf5M9p59Chg7OvYPpsUeDg',
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Authorization: "Bearer YFAX6MrxeFKRRZakECwf5M9p59Chg7OvYPpsUeDg",
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({
-          model: 'command',
+          model: "command",
           prompt: prompt,
           max_tokens: 1000,
           temperature: 0.7,
           k: 0,
           stop_sequences: [],
-          return_likelihoods: 'NONE'
-        })
+          return_likelihoods: "NONE",
+        }),
       });
 
       if (!response.ok) {
@@ -286,7 +348,7 @@ const Flashcards = () => {
       }
 
       const data = await response.json();
-      
+
       // Parse the generated text as JSON
       let generatedCards;
       try {
@@ -294,23 +356,25 @@ const Flashcards = () => {
         if (jsonMatch) {
           generatedCards = JSON.parse(jsonMatch[0]);
         } else {
-          throw new Error('No JSON array found in response');
+          throw new Error("No JSON array found in response");
         }
       } catch (parseError) {
-        console.error('Error parsing generated cards:', parseError);
-        generatedCards = [{
-          question: "What is a key concept from this content?",
-          answer: data.generations[0].text.slice(0, 200),
-          difficulty: "medium"
-        }];
+        console.error("Error parsing generated cards:", parseError);
+        generatedCards = [
+          {
+            question: "What is a key concept from this content?",
+            answer: data.generations[0].text.slice(0, 200),
+            difficulty: "medium",
+          },
+        ];
       }
 
       // Save the generated flashcards
       for (const card of generatedCards) {
-        await addDoc(collection(fireDB, 'flashcards'), {
+        await addDoc(collection(fireDB, "flashcards"), {
           ...card,
           noteId: selectedNote.id,
-          subject: selectedNote.subject || 'General',
+          subject: selectedNote.subject || "General",
           createdAt: new Date().toISOString(),
           favorite: false,
           mastered: false,
@@ -320,9 +384,8 @@ const Flashcards = () => {
       }
 
       return generatedCards;
-
     } catch (error) {
-      console.error('Error generating flashcards:', error);
+      console.error("Error generating flashcards:", error);
       return extractFlashcardsFromContent(noteContent);
     } finally {
       setIsGenerating(false);
@@ -331,19 +394,21 @@ const Flashcards = () => {
 
   // Fallback local extraction function
   const extractFlashcardsFromContent = (content) => {
-    const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const sentences = content
+      .split(/[.!?]+/)
+      .filter((s) => s.trim().length > 0);
     const flashcards = [];
 
     sentences.forEach((sentence, index) => {
       sentence = sentence.trim();
-      
-      if (sentence.includes(' is ') || sentence.includes(' are ')) {
+
+      if (sentence.includes(" is ") || sentence.includes(" are ")) {
         const [term, definition] = sentence.split(/ is | are /);
         if (term && definition) {
           flashcards.push({
             question: `What is ${term.trim()}?`,
             answer: definition.trim(),
-            difficulty: 'medium'
+            difficulty: "medium",
           });
         }
       }
@@ -353,7 +418,7 @@ const Flashcards = () => {
       flashcards.push({
         question: "What is the main concept discussed in this content?",
         answer: sentences[0],
-        difficulty: 'medium'
+        difficulty: "medium",
       });
     }
 
@@ -362,7 +427,7 @@ const Flashcards = () => {
 
   const handleFlashcardGeneration = async () => {
     if (!selectedNote) {
-      console.log('Please select a note first');
+      console.log("Please select a note first");
       return;
     }
 
@@ -371,55 +436,59 @@ const Flashcards = () => {
       const cards = await generateFlashcards(selectedNote.content);
       console.log(`Successfully generated ${cards.length} flashcards`);
     } catch (error) {
-      console.error('Failed to generate flashcards:', error);
+      console.error("Failed to generate flashcards:", error);
     } finally {
       setIsGenerating(false);
     }
   };
-  
+
   const toggleFavorite = async (cardId) => {
-    const cardRef = doc(fireDB, 'flashcards', cardId);
-    const card = flashcards.find(c => c.id === cardId);
+    const cardRef = doc(fireDB, "flashcards", cardId);
+    const card = flashcards.find((c) => c.id === cardId);
     await updateDoc(cardRef, { favorite: !card.favorite });
   };
 
   const toggleMastered = async (cardId) => {
-    const cardRef = doc(fireDB, 'flashcards', cardId);
-    const card = flashcards.find(c => c.id === cardId);
+    const cardRef = doc(fireDB, "flashcards", cardId);
+    const card = flashcards.find((c) => c.id === cardId);
     await updateDoc(cardRef, { mastered: !card.mastered });
   };
 
   const deleteCard = async (cardId) => {
-    await deleteDoc(doc(fireDB, 'flashcards', cardId));
+    await deleteDoc(doc(fireDB, "flashcards", cardId));
   };
 
   const updateCard = async (cardId, updatedData) => {
-    const cardRef = doc(fireDB, 'flashcards', cardId);
+    const cardRef = doc(fireDB, "flashcards", cardId);
     await updateDoc(cardRef, updatedData);
   };
 
   // Filter and sort flashcards
-  const filteredCards = flashcards.filter(card => {
-    if (searchQuery) {
-      return card.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-             card.answer.toLowerCase().includes(searchQuery.toLowerCase());
-    }
-    if (selectedCategory === 'favorites') {
-      return card.favorite;
-    }
-    if (selectedCategory === 'subjects') {
+  const filteredCards = flashcards
+    .filter((card) => {
+      if (searchQuery) {
+        return (
+          card.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          card.answer.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+      if (selectedCategory === "favorites") {
+        return card.favorite;
+      }
+      if (selectedCategory === "subjects") {
+        return true;
+      }
       return true;
-    }
-    return true;
-  }).sort((a, b) => {
-    if (sortBy === 'newest') {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    }
-    if (sortBy === 'oldest') {
-      return new Date(a.createdAt) - new Date(b.createdAt);
-    }
-    return 0;
-  });
+    })
+    .sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+      if (sortBy === "oldest") {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      return 0;
+    });
 
   const openCardModal = (card) => {
     setSelectedCard(card);
@@ -433,99 +502,113 @@ const Flashcards = () => {
 
   const renderFlashcard = (card) => {
     return (
-      <div 
-      key={card.id} 
-      className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300 cursor-pointer"
-      onClick={() => openCardModal(card)}
-    >
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <h3 className="text-white font-medium text-lg mb-1">{card.question}</h3>
-          <p className="text-gray-400 text-sm">{card.subject}</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <button 
-            className={`p-2 ${card.favorite ? 'text-purple-400' : 'text-gray-400'} hover:text-purple-400 transition-colors`}
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleFavorite(card.id);
-            }}
-          >
-            <Heart className="w-4 h-4" fill={card.favorite ? "currentColor" : "none"} />
-          </button>
-          <button 
-            className={`p-2 ${card.mastered ? 'text-green-400' : 'text-gray-400'} hover:text-green-400 transition-colors`}
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleMastered(card.id);
-            }}
-          >
-            <Check className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      <span className={`px-2 py-1 rounded-full text-xs ${
-        card.difficulty === 'hard' ? 'bg-red-500/20 text-red-400' :
-        card.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-        'bg-green-500/20 text-green-400'
-      }`}>
-        {card.difficulty}
-      </span>
-
-      <div className="flex items-center justify-between text-sm text-gray-400 mt-4">
-        <div className="flex items-center space-x-2">
-          <Clock className="w-4 h-4" />
-          <span>Last reviewed: {new Date(card.lastReviewed).toLocaleDateString()}</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RotateCw className="w-4 h-4" />
-          <span>{card.timesReviewed} reviews</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-return (
-  <div className="flex h-screen bg-gray-900">
-    <Sidebar />
-    
-    <NotesPanel
-      isOpen={isNotesPanelOpen}
-      onClose={() => setIsNotesPanelOpen(false)}
-      notes={notes}
-      onNoteSelect={setSelectedNote}
-      selectedNote={selectedNote}
-    />
-    
-    <div className="flex-1 flex flex-col">
-       {/* Navbar */}
-       <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+      <div
+        key={card.id}
+        className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300 cursor-pointer"
+        onClick={() => openCardModal(card)}
+      >
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="text-white font-medium text-lg mb-1">
+              {card.question}
+            </h3>
+            <p className="text-gray-400 text-sm">{card.subject}</p>
+          </div>
+          <div className="flex items-center space-x-2">
             <button
-              onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
-              className="text-gray-400 hover:text-white transition-colors"
+              className={`p-2 ${
+                card.favorite ? "text-purple-400" : "text-gray-400"
+              } hover:text-purple-400 transition-colors`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite(card.id);
+              }}
             >
-              {isNotesPanelOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
+              <Heart
+                className="w-4 h-4"
+                fill={card.favorite ? "currentColor" : "none"}
+              />
             </button>
-            <div className="flex items-center space-x-2">
-              <BookOpen className="w-6 h-6 text-purple-400" />
-              <span className="text-lg font-semibold text-white">Flashcards</span>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {selectedNote && (
-              <div className="text-sm text-gray-400">
-                Selected Note: <span className="text-purple-400">{selectedNote.subject}</span>
-              </div>
-            )}
-            <button className="text-gray-400 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
+            <button
+              className={`p-2 ${
+                card.mastered ? "text-green-400" : "text-gray-400"
+              } hover:text-green-400 transition-colors`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMastered(card.id);
+              }}
+            >
+              <Check className="w-4 h-4" />
             </button>
           </div>
         </div>
+
+        <span
+          className={`px-2 py-1 rounded-full text-xs ${
+            card.difficulty === "hard"
+              ? "bg-red-500/20 text-red-400"
+              : card.difficulty === "medium"
+              ? "bg-yellow-500/20 text-yellow-400"
+              : "bg-green-500/20 text-green-400"
+          }`}
+        >
+          {card.difficulty}
+        </span>
+
+        <div className="flex items-center justify-between text-sm text-gray-400 mt-4">
+          <div className="flex items-center space-x-2">
+            <Clock className="w-4 h-4" />
+            <span>
+              Last reviewed: {new Date(card.lastReviewed).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RotateCw className="w-4 h-4" />
+            <span>{card.timesReviewed} reviews</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-900">
+      <Sidebar />
+
+      <NotesPanel
+        isOpen={isNotesPanelOpen}
+        onClose={() => setIsNotesPanelOpen(false)}
+        notes={notes}
+        onNoteSelect={setSelectedNote}
+        selectedNote={selectedNote}
+      />
+
+      <div className="flex-1 flex flex-col">
+        {/* Navbar */}
+        <NavBar
+          panelToggleButton={
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setIsNotesPanelOpen(!isNotesPanelOpen)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                {isNotesPanelOpen ? (
+                  <PanelLeftClose className="w-5 h-5" />
+                ) : (
+                  <PanelLeftOpen className="w-5 h-5" />
+                )}
+              </button>
+              <div className="flex items-center space-x-2">
+                <span className="text-lg font-semibold text-white"></span>
+              </div>
+            </div>
+          }
+          icon={<BookOpen className="w-6 h-6 text-purple-400" />}
+          header={"Flashcards"}
+          button1={"Feedback"}
+          button2={"Help"}
+          button3={"Docs"}
+        />
 
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
@@ -536,7 +619,9 @@ return (
                 <button
                   onClick={() => setSelectedCategory("all")}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                    selectedCategory === "all" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                    selectedCategory === "all"
+                      ? "bg-purple-500 text-white"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   <Grid className="w-4 h-4" />
@@ -545,7 +630,9 @@ return (
                 <button
                   onClick={() => setSelectedCategory("subjects")}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                    selectedCategory === "subjects" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                    selectedCategory === "subjects"
+                      ? "bg-purple-500 text-white"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   <BookOpen className="w-4 h-4" />
@@ -554,7 +641,9 @@ return (
                 <button
                   onClick={() => setSelectedCategory("favorites")}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                    selectedCategory === "favorites" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                    selectedCategory === "favorites"
+                      ? "bg-purple-500 text-white"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   <Star className="w-4 h-4" />
@@ -563,7 +652,9 @@ return (
               </div>
               <button
                 className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={() => selectedNote && generateFlashcards(selectedNote.content)}
+                onClick={() =>
+                  selectedNote && generateFlashcards(selectedNote.content)
+                }
                 disabled={isGenerating || !selectedNote}
               >
                 {isGenerating ? "Generating..." : "Generate Flashcards"}
@@ -586,7 +677,11 @@ return (
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <button
-                    onClick={() => setActiveFilter(activeFilter === "filter" ? null : "filter")}
+                    onClick={() =>
+                      setActiveFilter(
+                        activeFilter === "filter" ? null : "filter"
+                      )
+                    }
                     className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white flex items-center space-x-2 hover:border-purple-500 transition-colors"
                   >
                     <Filter className="w-4 h-4" />
@@ -597,7 +692,9 @@ return (
 
                 <div className="relative">
                   <button
-                    onClick={() => setActiveFilter(activeFilter === "sort" ? null : "sort")}
+                    onClick={() =>
+                      setActiveFilter(activeFilter === "sort" ? null : "sort")
+                    }
                     className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white flex items-center space-x-2 hover:border-purple-500 transition-colors"
                   >
                     <Clock className="w-4 h-4" />
@@ -610,7 +707,9 @@ return (
                   <button
                     onClick={() => setViewMode("grid")}
                     className={`p-2 rounded-lg transition-colors ${
-                      viewMode === "grid" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                      viewMode === "grid"
+                        ? "bg-purple-500 text-white"
+                        : "text-gray-400 hover:text-white"
                     }`}
                   >
                     <Grid className="w-5 h-5" />
@@ -618,7 +717,9 @@ return (
                   <button
                     onClick={() => setViewMode("list")}
                     className={`p-2 rounded-lg transition-colors ${
-                      viewMode === "list" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                      viewMode === "list"
+                        ? "bg-purple-500 text-white"
+                        : "text-gray-400 hover:text-white"
                     }`}
                   >
                     <List className="w-5 h-5" />
@@ -628,34 +729,39 @@ return (
             </div>
 
             {/* Flashcards Grid */}
-            <div className={`grid ${viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"} gap-6`}>
+            <div
+              className={`grid ${
+                viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
+              } gap-6`}
+            >
               {filteredCards.map((card) => renderFlashcard(card))}
             </div>
           </div>
         </div>
       </div>
 
-    {/* View Card Modal */}
-    <ViewCardModal 
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-      card={selectedCard}
-      onEdit={openEditModal}
-      onDelete={deleteCard}
-    />
+      {/* View Card Modal */}
+      <ViewCardModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        card={selectedCard}
+        onEdit={openEditModal}
+        onDelete={deleteCard}
+      />
 
-    {/* Edit Card Modal */}
-    <EditModal
-      isOpen={editModalOpen}
-      onClose={() => setEditModalOpen(false)}
-      card={editingCard}
-      onSave={(updatedCard) => {
-        updateCard(updatedCard.id, updatedCard);
-        setEditModalOpen(false);
-      }}
-    />
-  </div>
-);
+      {/* Edit Card Modal */}
+      <EditModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        card={editingCard}
+        onSave={(updatedCard) => {
+          updateCard(updatedCard.id, updatedCard);
+          setEditModalOpen(false);
+        }}
+      />
+      <Chatbot />
+    </div>
+  );
 };
 
 export default Flashcards;
