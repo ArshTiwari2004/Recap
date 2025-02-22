@@ -1,136 +1,193 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Trophy, Medal, Crown, Star, Flame } from "lucide-react";
+import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
+import { fireDB } from "@/config/Firebaseconfig";
 import Sidebar from "./Sidebar";
 import NavBar from "./NavBar";
-import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
 import Chatbot from "@/pages/ChatBot";
-
-const leaderboardData = [
-  {
-    id: 1,
-    name: "Rajat Mehra",
-    location: "Maharashtra",
-    score: 9500,
-    badges: ["CityExplorer", "FoodExplorer", "GoldMedalist"],
-    profilePic: "https://i.pravatar.cc/150?img=1",
-  },
-  {
-    id: 2,
-    name: "Shantipriya",
-    location: "Tamil Nadu",
-    score: 9200,
-    badges: ["CulturalAmbassador", "HeritageHunter", "SilverMedalist"],
-    profilePic: "https://i.pravatar.cc/150?img=2",
-  },
-  {
-    id: 3,
-    name: "Arsh Tiwari",
-    location: "Uttar Pradesh",
-    score: 8900,
-    badges: ["PhotoPro", "ArtAdmirer", "BronzeMedalist"],
-    profilePic: "https://i.pravatar.cc/150?img=3",
-  },
-  {
-    id: 4,
-    name: "Tanya",
-    location: "Delhi",
-    score: 8700,
-    badges: ["CityExplorer", "FoodExplorer"],
-    profilePic: "https://i.pravatar.cc/150?img=4",
-  },
-];
+import { useUser } from "@/context/UserContext";
 
 const LeaderBoard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const { user } = useUser();
+
+  useEffect(() => {
+    const q = query(
+      collection(fireDB, "users"),
+      orderBy("streak", "desc"),
+      limit(10)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const userData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        streak: doc.data().streak || 0,
+      }));
+      setLeaderboardData(userData);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const getInitials = (name) => {
+    if (!name) return "?";
+    return name
+      .split(" ")
+      .map(part => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getRankStyle = (index) => {
+    switch (index) {
+      case 0:
+        return {
+          border: "border-2 border-yellow-400",
+          icon: <Crown className="w-6 h-6 text-yellow-400" />,
+          badge: "bg-yellow-400/20 text-yellow-400",
+          ring: "ring-4 ring-yellow-400/30"
+        };
+      case 1:
+        return {
+          border: "border-2 border-gray-300",
+          icon: <Medal className="w-6 h-6 text-gray-300" />,
+          badge: "bg-gray-300/20 text-gray-300",
+          ring: "ring-4 ring-gray-300/30"
+        };
+      case 2:
+        return {
+          border: "border-2 border-amber-600",
+          icon: <Medal className="w-6 h-6 text-amber-600" />,
+          badge: "bg-amber-600/20 text-amber-600",
+          ring: "ring-4 ring-amber-600/30"
+        };
+      default:
+        return {
+          border: "border border-gray-700",
+          icon: null,
+          badge: "bg-purple-500/20 text-purple-400",
+          ring: ""
+        };
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <NavBar
           icon={<Trophy className="w-6 h-6 text-yellow-400" />}
           header="Leaderboard"
-          button1={"FeedBack"}
-          button2={"Help"}
-          button3={"Docs"}
+          button1="Feedback"
+          button2="Help"
+          button3="Docs"
         />
 
-        <div className="p-6">
+        <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-4xl pl-4 font-extrabold text-white">LeaderBoard</h1>
+            <div>
+              <h1 className="text-4xl pl-4 font-extrabold text-white">
+                Daily Streaks Leaderboard
+              </h1>
+              <p className="text-gray-400 pl-4 mt-2">Top 10 learners competing for the longest streaks</p>
+            </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500"
+              className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-yellow-500 transition-all duration-300 flex items-center space-x-2"
             >
-              How Scoring Works?
+              <Flame className="w-5 h-5" />
+              <span>How Streaks Work?</span>
             </button>
           </div>
 
-          <div className="bg-gray-800 shadow-lg rounded-2xl p-4">
+          <div className="bg-gray-800 shadow-xl rounded-2xl p-6 border border-gray-700 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
             <div className="space-y-4">
-              {leaderboardData.map((user, index) => (
-                <motion.div
-                  key={user.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="flex items-center justify-between p-4 border-b border-gray-700 last:border-b-0"
-                >
-                  <div className="flex items-center space-x-4">
-                    <p className="text-lg font-bold text-yellow-400">#{index + 1}</p>
-                    <img
-                      src={user.profilePic}
-                      alt={user.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <p className="text-lg font-semibold text-white">{user.name}</p>
+              {leaderboardData.map((userData, index) => {
+                const rankStyle = getRankStyle(index);
+                return (
+                  <div
+                    key={userData.id}
+                    className={`flex items-center justify-between p-6 rounded-xl transition-all duration-300 hover:scale-[1.01] ${
+                      userData.id === user?.uid
+                        ? "bg-purple-500/20 border-2 border-purple-500"
+                        : `bg-gray-700/50 hover:bg-gray-700 ${rankStyle.border}`
+                    }`}
+                  >
+                    <div className="flex items-center space-x-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-8 flex justify-center">
+                          {rankStyle.icon || (
+                            <span className="text-lg font-bold text-gray-400">
+                              #{index + 1}
+                            </span>
+                          )}
+                        </div>
+                        <div className={`w-14 h-14 rounded-full bg-gray-600 flex items-center justify-center ${rankStyle.ring}`}>
+                          <span className="text-xl font-bold text-white">
+                            {getInitials(userData.displayName)}
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-lg font-semibold text-white">
+                          {userData.displayName || "Anonymous User"}
+                        </p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <p className="text-sm text-gray-400">
+                            {userData.email || "No email"}
+                          </p>
+                          {index < 3 && (
+                            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className={`${rankStyle.badge} px-6 py-3 rounded-lg flex items-center space-x-2`}>
+                        <Flame className="w-5 h-5" />
+                        <p className="font-semibold">
+                          {userData.streak} day streak
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <p className="text-md font-semibold text-white">Score: {user.score}</p>
-                  </div>
-                </motion.div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-gray-900 p-6 rounded-lg shadow-lg max-w-lg w-full">
-            <h2 className="text-2xl font-bold text-white mb-4">How Scoring Works?</h2>
-            <div className="text-gray-300 space-y-2 text-sm">
-              <p><strong>Daily Engagement:</strong></p>
-              <p>• Daily Visit – 10 points</p>
-              <p>• Consistent 7-day Streak – 30 bonus points</p>
-              <p>• Consistent 30-day Streak – 150 bonus points</p>
-
-              <p><strong>Learning Activities:</strong></p>
-              <p>• Quiz Completed:</p>
-              <p>  - Easy – 10 points</p>
-              <p>  - Medium – 15 points</p>
-              <p>  - Hard – 20 points</p>
-              <p>• Flashcard Generation – 5 points</p>
-              <p>• Correct Quiz Answer – 3 points per correct answer</p>
-
-              <p><strong>Content Contribution:</strong></p>
-              <p>• Notes Upload – 5 points</p>
-              <p>• PDF Upload (Resource Sharing) – 15 points</p>
-
-              <p><strong>Group Activities:</strong></p>
-              <p>• Creating a Study Group – 20 points</p>
-              <p>• Joining a Study Group – 10 points</p>
-
-              <p><strong>Gamification Add-ons:</strong></p>
-              <p>• Leaderboard Bonus: Weekly top 3 users get 100 extra points</p>
-              <p>• Referral System: Inviting a friend who registers and completes a quiz – 50 points</p>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+          <div className="bg-gray-900 p-8 rounded-2xl shadow-xl max-w-lg w-full border-2 border-gray-700">
+            <h2 className="text-2xl font-bold text-white mb-4 flex items-center space-x-3">
+              <Flame className="w-6 h-6 text-yellow-400" />
+              <span>How Streaks Work?</span>
+            </h2>
+            <div className="text-gray-300 space-y-4">
+              <p className="font-semibold text-lg text-white">Daily Streaks System:</p>
+              <ul className="space-y-3">
+                {[
+                  "Log in daily to maintain your streak",
+                  "Complete at least one quiz per day to increase your streak",
+                  "Missing a day resets your streak to 0",
+                  "Longer streaks earn you special badges and higher leaderboard positions",
+                  "Compete with other users to maintain the longest active streak"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center space-x-3">
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
             <button
               onClick={() => setIsModalOpen(false)}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600"
+              className="mt-6 bg-red-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-red-600 transition-all duration-300 w-full font-semibold"
             >
               Close
             </button>
