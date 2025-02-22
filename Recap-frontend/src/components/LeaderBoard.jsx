@@ -77,7 +77,7 @@ const LeaderBoard = () => {
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar />
-      <div className="flex-1 flex-col">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <NavBar
           icon={<Trophy className="w-6 h-6 text-yellow-400" />}
           header="Leaderboard"
@@ -86,7 +86,7 @@ const LeaderBoard = () => {
           button3="Docs"
         />
 
-        <div className="p-6">
+        <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-4xl pl-4 font-extrabold text-white">
@@ -103,7 +103,7 @@ const LeaderBoard = () => {
             </button>
           </div>
 
-          <div className="bg-gray-800 shadow-xl rounded-2xl p-6 border border-gray-700">
+          <div className="bg-gray-800 shadow-xl rounded-2xl p-6 border border-gray-700 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
             <div className="space-y-4">
               {leaderboardData.map((userData, index) => {
                 const rankStyle = getRankStyle(index);

@@ -25,6 +25,7 @@ import PYQPractice from './components/PYQpractice';
 import CommunityContent from './components/CommunityContent';
 
 
+import AIQuestionBank from './pages/AIQuestionBank';
 
 const App = () => {
   return (
@@ -58,7 +59,7 @@ const App = () => {
         
 
       
-
+        <Route path="/ai-question-bank" element={<AIQuestionBank />} />
         </Routes>
        
         </FirebaseProvider>
