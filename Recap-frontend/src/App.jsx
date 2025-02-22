@@ -59,7 +59,7 @@ const App = () => {
         
 
       
-        <Route path="/ai-question-bank" element={<AIQuestionBank />} />
+        <Route path="/aiquestionbank" element={<AIQuestionBank />} />
         </Routes>
        
         </FirebaseProvider>
