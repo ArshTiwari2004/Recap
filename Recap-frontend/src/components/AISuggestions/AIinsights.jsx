@@ -444,7 +444,7 @@ const AIInsights = () => {
 
               {/* Analysis Section - Shorter Height */}
             
-           <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-13rem)] flex flex-col">
+           <div className="bg-gray-800 rounded-xl border border-gray-700 h-[calc(100vh-15rem)] flex flex-col">
            <div className="p-6 border-b border-gray-700 flex-shrink-0">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-white">
