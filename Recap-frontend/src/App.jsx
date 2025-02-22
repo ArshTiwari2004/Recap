@@ -22,6 +22,7 @@ import OCRScanner from './pages/OCRscanner';
 import Error404 from './Error404';
 import PDFOCRScanner from './pages/Ocrpdf';
 import PYQPractice from './components/PYQpractice';
+import AIQuestionBank from './pages/AIQuestionBank';
 
 const App = () => {
   return (
@@ -50,7 +51,7 @@ const App = () => {
         <Route path="/pdf-ocr" element={<PDFOCRScanner />} />
         <Route path="/feedback" element={<FeedbackForm />} />
         <Route path="/pyq-practice" element={<PYQPractice />} />
-
+        <Route path="/ai-question-bank" element={<AIQuestionBank />} />
         </Routes>
         </FirebaseProvider>
     </Router>
