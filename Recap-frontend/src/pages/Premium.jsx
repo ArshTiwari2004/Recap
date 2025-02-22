@@ -241,11 +241,12 @@ const Premium = () => {
   return (
     <div className="min-h-screen flex bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       {/* Sidebar */}
-      <div className="sticky top-0 h-screen w-64">
+      
+    <div className="flex h-screen bg-gray-900">
         <Sidebar />
       </div>
 
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className="flex-1 flex-col">
         {/* Navbar */}
 
         <NavBar

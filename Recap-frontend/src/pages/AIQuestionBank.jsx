@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Groq } from 'groq-sdk';
 import { ClockIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import TestAnalysis from '@/components/TestAnalysis';
+import NavBar from '@/components/NavBar';
+import Sidebar from '@/components/Sidebar';
+//import Lightbulb from 'lucide-react';
 
 const AITestGenerator = () => {
   const [testParams, setTestParams] = useState({
@@ -251,6 +254,16 @@ Return ONLY valid JSON without any additional text.`;
   
 
   return (
+    <div className="flex h-screen bg-gray-900">
+      <Sidebar />
+      <div className="flex-1  flex-col">
+        <NavBar
+          // icon={<Lightbulb className="w-6 h-6 text-purple-400" />}
+          header={"Learn with AI"}
+          button1={"Feedback"}
+          button2={"Help"}
+          button3={"Docs"}
+        />
     <div className="w-full px-6 py-8 bg-gray-900 text-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-8 text-white">AI Test Generator</h1>
       
@@ -432,6 +445,8 @@ Return ONLY valid JSON without any additional text.`;
         </div>
       )} */}
     </div>
+  </div>
+  </div>
   );
 };
 
