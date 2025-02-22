@@ -353,7 +353,7 @@ const CollaborativeNotes = () => {
       <div className="flex h-screen bg-gray-900">
         <Sidebar />
 
-        <div className="flex-1 flex-col">
+        <div className="flex-1  flex-col">
           <NavBar
             icon={<Users className="w-6 h-6 text-purple-400" />}
             header={"Collaborative Notes"}

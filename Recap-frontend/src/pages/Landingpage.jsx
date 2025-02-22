@@ -153,13 +153,13 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center space-y-8">
               <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white">
-              Study Less, Score More
-                <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-                —Powered by AI
+              Transform the Way You 
+                <span className="  block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+               Learn & Succeed.
                 </span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              AI that knows your weak spots before you do.
+              ~ AI that knows your weak spots before you do.
               </p>
               <div className="flex justify-center">
               {user ? (<ButtonsCard 

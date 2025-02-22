@@ -16,6 +16,7 @@ import {
   Menu,
   Book,
   Clipboard,
+  GroupIcon,
 } from "lucide-react"
 import { IconCards } from "@tabler/icons-react"
 import { signOut } from "firebase/auth"
@@ -52,12 +53,12 @@ const Sidebar = () => {
     { to: "/flashcards", icon: IconCards, label: "Flashcards", category: "main" },
     { to: "/quizzes", icon: Calculator, label: "Quizzes", category: "main" },
     { to:"/pyq-practice", icon: Clipboard, label: "PYQ Practice", category: "main" },
+    { to:"/community", icon: GroupIcon , label: "Community", category: "main" },
     { to: "/collaboration", icon: Users, label: "Collaboration", category: "main" },
     { to: "/ai-insights", icon: Activity, label: "AI Insights", category: "main" },
     { to: "/leaderboard", icon: Book, label: "LeaderBoard", category: "main" },
     { to: "/premium", icon: BrainCog, label: "Premium", category: "main" },
-    {to: "/pwa ", icon: BrainCog, label: "Install app", category: "main"},
-    {to: "/ai-question-bank ", icon: Clipboard, label: "Learn With AI", category: "main"},
+    // {to: "/pwa ", icon: BrainCog, label: "Install app", category: "main"},
     // { to: "/settings", icon: Settings, label: "Settings", category: "bottom" },
     // { to: "/profile", icon: User, label: "Profile", category: "bottom" },
   ]
