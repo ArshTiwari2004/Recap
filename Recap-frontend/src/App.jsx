@@ -22,6 +22,9 @@ import OCRScanner from './pages/OCRscanner';
 import Error404 from './Error404';
 import PDFOCRScanner from './pages/Ocrpdf';
 import PYQPractice from './components/PYQpractice';
+import CommunityContent from './components/CommunityContent';
+
+
 
 const App = () => {
   return (
@@ -29,7 +32,8 @@ const App = () => {
     <Toaster />
     <Router>
       <FirebaseProvider>
-      <Routes>
+      
+        <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/premium" element={<Premium />} />
         <Route path="/sidebar" element={<Sidebar />} />
@@ -39,6 +43,7 @@ const App = () => {
         <Route path="/leaderboard" element={<UserLeaderBoard />} />
         
         <Route path="/collaboration" element={<CollaborativeNotes />} />
+        <Route path="/community" element={<CommunityContent />} />
      
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/ai-insights" element={<AIInsights />} />
@@ -50,8 +55,12 @@ const App = () => {
         <Route path="/pdf-ocr" element={<PDFOCRScanner />} />
         <Route path="/feedback" element={<FeedbackForm />} />
         <Route path="/pyq-practice" element={<PYQPractice />} />
+        
+
+      
 
         </Routes>
+       
         </FirebaseProvider>
     </Router>
     </>
