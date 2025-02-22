@@ -153,13 +153,13 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center space-y-8">
               <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white">
-                Transform Your Study Notes
+              Study Less, Score More
                 <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-                  Into Knowledge
+                —Powered by AI
                 </span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Your all-in-one AI-powered study companion—organize, revise, and master concepts effortlessly.
+              AI that knows your weak spots before you do.
               </p>
               <div className="flex justify-center">
               {user ? (<ButtonsCard 
