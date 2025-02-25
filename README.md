@@ -38,7 +38,36 @@ Recap is an innovative study companion designed to revolutionize how students or
 - **AI-Powered Insights**: Identify knowledge gaps and get personalized recommendations and resources
 - **Gamified Learning**: Stay motivated with study streaks and interactive quizzes
 
-## 🖼️ Screenshots
+
+## Integrating Groq for Advanced AI Capabilities  
+
+Groq is revolutionizing AI inference by providing ultra-fast, energy-efficient solutions tailored for deploying and running AI models. Founded in 2016, Groq anticipated the industry's shift towards AI inference and has developed the Groq Language Processing Unit (LPU) to meet these demands. Unlike traditional GPUs designed for graphics processing, the LPU is purpose-built for AI tasks, delivering unparalleled speed and efficiency.  
+
+
+## Leveraging Groq in Our Project  
+
+
+<p align="center">
+  <img src="groq.png" alt="Groq" width="200px">
+</p>
+
+
+In our project, Groq's technology is seamlessly integrated across multiple features to enhance performance and user experience:  
+
+
+### 🚀 AI-Powered Chatbot  
+Utilizing Groq's API, our chatbot offers real-time, accurate responses, effectively addressing user queries and providing instant assistance.  
+
+### 📚 Previous Year Question (PYQ) Generator and Analysis  
+Groq's API facilitates the generation of relevant questions and provides detailed analysis of student responses. This includes scoring, identifying mistakes, and directing students to pertinent resources, thereby enriching their learning journey.  
+
+### 📝 Smart Test Feature  
+Groq's capabilities enable the creation of customized tests based on user-defined parameters such as duration, subject, difficulty level, and class. The system generates questions, evaluates answers, ranks performance, and delivers precise results, all powered by Groq's advanced AI inference.  
+
+
+
+
+## 🖼️ Snippets 
 
 ![Landingpage](Landingpage.png)
 *Landing page of Recap*
@@ -82,8 +111,9 @@ Recap is an innovative study companion designed to revolutionize how students or
 
 - Node.js 18.0 or higher
 - npm or yarn
-- MongoDB account
+- Firebase account
 - AssemblyAI account for the API key
+- Groq API key
 
 ### Installation and Setup
 
@@ -111,9 +141,15 @@ cp .env.example .env.local
 ```
 Fill in your environment variables in `.env.local`:
 ```
-ASSEMBLY_API_KEY=your_api_key
-MONGODB_URI=your_mongodb_uri
-...
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_firebase_app_id
+VITE_ASSEMBLYAI_API_KEY=your_assemblyai_api_key
+VITE_GROQ_API_KEY=your_groq_api_key
+
 ```
 
 4. Run the development server
@@ -124,6 +160,32 @@ yarn dev
 ```
 
 5. Open [http://localhost:5173](http://localhost:5173) in your browser
+
+
+## Technical Implementation Details for Groq
+
+To integrate Groq's API into our project, follow these steps:  
+
+### 1️⃣ Obtain a Groq API Key  
+Sign up on the [Groq Developer Console](https://groq.com/) to receive your API key.  
+
+### 2️⃣ Set Up Environment Variables  
+In your `.env.local` file, include the following variables:  
+
+```env
+VITE_GROQ_API_KEY=your_groq_api_key
+```
+### 3️⃣ In your project directory, install the official Groq client:
+
+```env
+npm i groq-sdk
+```
+
+
+
+
+
+
 
 ## 📖 Documentation
 
