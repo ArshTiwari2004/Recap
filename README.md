@@ -5,7 +5,7 @@
 > AI-powered note organization that adapts to your learning style. Capture, connect, and master your study materials effortlessly.
 
 <p align="center">
-  <a href="https://recap-projectt.vercel.app/" target="_blank">
+  <a href="[https://recap-projectt.vercel.app/](https://recap-5ajg.vercel.app/)" target="_blank">
     <img src="https://img.shields.io/badge/Live%20Now-0066FF?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Now">
   </a>
 </p>
