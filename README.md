@@ -48,7 +48,7 @@ Groq is revolutionizing AI inference by providing ultra-fast, energy-efficient s
 
 
 <p align="center">
-  <img src="groq.png" alt="Groq" width="200px">
+  <img src="groq.jpg" alt="Groq" width="200px">
 </p>
 
 
