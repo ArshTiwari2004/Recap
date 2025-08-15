@@ -17,7 +17,7 @@ const TeamSection = () => {
     },
     {
       name: "Priyanshi Bothra",
-      role: "UI/UX Designer & Frontend Developer",
+      role: "Full Stack Developer",
       image: "/priyanshi.jpeg",
       links: {
         linkedin: "https://www.linkedin.com/in/priyanshi-bothra-339568219/",
