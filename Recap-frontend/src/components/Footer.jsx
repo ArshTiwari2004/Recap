@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Send, MapPin, Mail, Phone, Clock } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+
+  const handleSend = () => {
+    if (!email) {
+      toast.error("Please enter an email!");
+      return;
+    }
+    toast.success("Email registered successfully!");
+    setEmail('');
+  };
+
   return (
     <footer className="bg-gray-900 text-gray-300 py-8" id="contact">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
          
           <div className="space-y-3">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 font-md">Recap</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 font-md">Recap</span>
             <p className="text-gray-400 text-sm">AI-driven notes, quick revision. Flashcards, collaboration, knowledge gaps solved.</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -36,7 +48,6 @@ const Footer = () => {
               <li><a href="#features" className="hover:text-cyan-400 transition-colors text-sm "  >Features</a></li>
               <li><a href="#team" className="hover:text-cyan-400 transition-colors text-sm">Team</a></li>
               <li><a href= "#testimonials" className="hover:text-cyan-400 transition-colors text-sm">Testimonial</a></li>
-              
             </ul>
           </div>
 
@@ -48,9 +59,14 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 bg-gray-800 text-white px-3 py-2 rounded-l outline-none focus:ring-2 focus:ring-purple-400 text-sm"
               />
-              <button className="bg-gradient-to-r from-purple-400 to-pink-600 p-2 rounded-r hover:bg-cyan-600 transition-colors">
+              <button
+                onClick={handleSend}
+                className="bg-gradient-to-r from-purple-400 to-pink-600 p-2 rounded-r hover:bg-cyan-600 transition-colors"
+              >
                 <Send className="w-4 h-4 text-white" />
               </button>
             </div>
@@ -74,6 +90,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      <Toaster position="top-right" />
     </footer>
   );
 };

@@ -59,7 +59,7 @@ const ProfileDropdown = ({ email }) => {
           <span className="text-white text-sm">Account Settings</span>
         </Link>
 
-        <div
+        {/* <div
           onClick={handleThemeToggle}
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"
         >
@@ -74,7 +74,7 @@ const ProfileDropdown = ({ email }) => {
               <span className="text-white text-sm">Dark Mode</span>
             </>
           )}
-        </div>
+        </div> */}
 
      <Link
   to="/help"

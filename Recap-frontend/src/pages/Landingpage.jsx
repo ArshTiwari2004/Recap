@@ -14,6 +14,7 @@ import Features from './Features';
 import FAQ from './FAQ';
 import FeedbackDisplay from '@/components/FeedbackDisplay';
 import Numbersection from '@/components/Numbersection';
+import DemoModal from '../components/DemoModal';
 
 const LandingPage = () => {
 
@@ -21,6 +22,8 @@ const LandingPage = () => {
   const [isSignupOpen, setSignupOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDemoOpen, setDemoOpen] = useState(false);
+
   
   const navigate = useNavigate();
 
@@ -43,10 +46,6 @@ const LandingPage = () => {
     }
   };
 
-  const openDemoVideo = () => {
-    // Replace this URL with your actual demo video URL
-    window.open('https://yourdemovideo.com', '_blank');
-  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -82,16 +81,17 @@ const LandingPage = () => {
                 <Github className="h-5 w-5" />
               </a>
 
-              <button
-                onClick={openDemoVideo}
-                className="text-sm text-gray-400 hover:text-white flex items-center gap-1.5"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Get a Demo now!
-              </button>
+             <button
+  onClick={() => setDemoOpen(true)}
+  className="text-sm text-gray-400 hover:text-white flex items-center gap-1.5"
+>
+  <ExternalLink className="h-4 w-4" />
+  Get a Demo now!
+</button>
 
-              <button
-                onClick={() => {/* Add install logic */}}
+
+              {/* <button
+                onClick={() => {}}
                 className="text-sm text-gray-400 hover:text-white flex items-center gap-1.5"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -100,7 +100,7 @@ const LandingPage = () => {
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
                 Install App
-              </button>
+              </button> */}
 
               <a className="text-sm text-gray-400 hover:text-white" href="#features">Features</a>
               <a className="text-sm text-gray-400 hover:text-white" href="#team">Team</a>
@@ -174,10 +174,7 @@ const LandingPage = () => {
                 </a>
 
                 <button
-                  onClick={() => {
-                    openDemoVideo();
-                    setMobileMenuOpen(false);
-                  }}
+                 onClick={() => setDemoOpen(true)}
                   className="text-gray-400 hover:text-white block px-3 py-2 text-base font-medium w-full text-left"
                 >
                   <div className="flex items-center gap-2">
@@ -320,6 +317,9 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
+
+      <DemoModal isOpen={isDemoOpen} onClose={() => setDemoOpen(false)} />
+
 
       {/* Numbers section */}
       <Numbersection />
