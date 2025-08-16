@@ -4,14 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage, fireDB } from '../../config/Firebaseconfig';
-import Profile from '../Profile';
 import AudioTranscription from './Audio';
 import { Trash2, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ProgressBar from '@/components/ProgressBar';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import Notification from '@/components/Notifications';
-import ProfileDropdown from '../ProfileDropdown';
 import NavBar from '@/components/NavBar';
 import Chatbot from '../ChatBot';
 

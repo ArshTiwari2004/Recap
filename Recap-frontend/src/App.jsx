@@ -11,11 +11,8 @@ import Flashcards from './components/Flashcards/Flashcards';
 import CollaborativeNotes from './components/Collaboration/Collaborations';
 import Quizzes from './components/Quiz/Quiz';
 import AIInsights from './components/AISuggestions/AIinsights';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
 import FeedbackForm from './pages/Feedback';
 import UserLeaderBoard from './components/LeaderBoard';
-
 import Maindashboard from './pages/Maindashboard';
 import { FirebaseProvider } from './context/FirebaseContext';
 import OCRScanner from './pages/OCRscanner';
@@ -25,8 +22,7 @@ import PYQPractice from './components/PYQpractice';
 import CommunityContent from './components/CommunityContent';
 import HelpPage from './pages/Help';
 import DocsFinal from './pages/docs/DocsFinal';
-
-
+import ProfileAndSettings from './pages/ProfileandSettings/ProfileandSettings';
 import AIQuestionBank from './pages/AIQuestionBank';
 
 const App = () => {
@@ -50,8 +46,8 @@ const App = () => {
      
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/ai-insights" element={<AIInsights />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/profile" element={<Profile />} />
+   
+      
         <Route path="/main-dashboard" element={<Maindashboard />} />
         <Route path="/ocr" element={<OCRScanner />} />
         <Route path="*" element={<Error404 />} />
@@ -61,6 +57,7 @@ const App = () => {
         <Route path="/help" element={<HelpPage />} />
         <Route path="/aiquestionbank" element={<AIQuestionBank />} />
         <Route path="/docs" element={<DocsFinal />} />
+        <Route path="/profile-settings" element={<ProfileAndSettings />} />
         </Routes>
        
         </FirebaseProvider>

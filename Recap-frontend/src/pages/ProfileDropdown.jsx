@@ -44,20 +44,20 @@ const ProfileDropdown = ({ email }) => {
         </Link> */}
 
         <Link
-          to="/profile"
+          to="/profile-settings"
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 transition-colors"
         >
           <User className="w-5 h-5 text-purple-400" />
-          <span className="text-white text-sm">Profile</span>
+          <span className="text-white text-sm">Profile & Settings</span>
         </Link>
 
-        <Link
+        {/* <Link
           to="/settings"
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 transition-colors"
         >
           <Settings className="w-5 h-5 text-purple-400" />
           <span className="text-white text-sm">Account Settings</span>
-        </Link>
+        </Link> */}
 
         {/* <div
           onClick={handleThemeToggle}
