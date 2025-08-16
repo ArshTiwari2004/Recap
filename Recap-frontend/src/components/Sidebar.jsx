@@ -17,7 +17,7 @@ import {
   Book,
   Clipboard,
   GroupIcon,
-  
+  ChevronRight,
 } from "lucide-react"
 import { IconCards } from "@tabler/icons-react"
 import { signOut } from "firebase/auth"
@@ -59,10 +59,7 @@ const Sidebar = () => {
     { to: "/ai-insights", icon: Activity, label: "AI Insights", category: "main" },
     { to: "/leaderboard", icon: Book, label: "LeaderBoard", category: "main" },
     { to: "/premium", icon: BrainCog, label: "Premium", category: "main" },
-    { to: "/aiquestionbank", icon:Clipboard, label: "Learn With AI", category: "main" }
-    // { to: "/pwa", icon: BrainCog, label: "Install app", category: "main" },
-    // { to: "/settings", icon: Settings, label: "Settings", category: "bottom" },
-    // { to: "/profile", icon: User, label: "Profile", category: "bottom" },
+    { to: "/aiquestionbank", icon: Clipboard, label: "Learn With AI", category: "main" },
   ]
 
   return (
@@ -102,17 +99,23 @@ const Sidebar = () => {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className={`flex items-center space-x-3 p-2 rounded-md transition-all duration-200 group
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all duration-200 group transform 
                     ${
                       isActive
                         ? "bg-purple-900 text-white shadow-md"
                         : "text-gray-300 hover:bg-purple-800 hover:text-white"
-                    }`}
+                    }
+                    hover:scale-[1.02]`}
                   >
-                    <Icon
-                      className={`w-5 h-5 ${isActive ? "text-purple-400" : "text-current"} transition-transform group-hover:scale-110`}
-                    />
-                    {!isCollapsed && <span className="font-medium">{link.label}</span>}
+                    <div className="flex items-center space-x-3">
+                      <Icon
+                        className={`w-5 h-5 ${isActive ? "text-purple-400" : "text-current"} transition-transform group-hover:scale-110`}
+                      />
+                      {!isCollapsed && <span className="font-medium">{link.label}</span>}
+                    </div>
+                    {!isCollapsed && (
+                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-white transition-transform group-hover:translate-x-1" />
+                    )}
                   </Link>
                 </li>
               )
@@ -123,30 +126,18 @@ const Sidebar = () => {
       {/* Bottom Links */}
       <div className="mt-auto border-t border-gray-700 pt-4 px-2">
         <ul className="space-y-2">
-          {navigationLinks
-            .filter((link) => link.category === "bottom")
-            .map((link) => {
-              const Icon = link.icon
-              return (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className={`flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-purple-800 hover:text-white transition-all duration-200`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {!isCollapsed && <span className="font-medium">{link.label}</span>}
-                  </Link>
-                </li>
-              )
-            })}
           <li>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-3 p-2 w-full text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-md transition-all duration-200"
-            >
-              <LogOut className="w-5 h-5" />
-              {!isCollapsed && <span className="font-medium">Logout</span>}
-            </button>
+      <button
+  onClick={handleLogout}
+  className="flex items-center justify-between p-3 w-full text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-all duration-200 hover:scale-[1.02] -mt-2"
+>
+  <div className="flex items-center space-x-3">
+    <LogOut className="w-5 h-5" />
+    {!isCollapsed && <span className="font-medium">Logout</span>}
+  </div>
+  {!isCollapsed && <ChevronRight className="w-4 h-4 text-red-400 group-hover:text-red-300" />}
+</button>
+
           </li>
         </ul>
       </div>
@@ -155,4 +146,5 @@ const Sidebar = () => {
 }
 
 export default Sidebar
+
 

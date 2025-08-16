@@ -35,13 +35,13 @@ const ProfileDropdown = ({ email }) => {
 
       {/* Links */}
       <div className="p-2 space-y-1">
-        <Link 
+        {/* <Link 
           to="/main-dashboard"
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 transition-colors"
         >
           <BookOpen className="w-5 h-5 text-purple-400" />
           <span className="text-white text-sm">Dashboard</span>
-        </Link>
+        </Link> */}
 
         <Link
           to="/profile"
@@ -76,16 +76,21 @@ const ProfileDropdown = ({ email }) => {
           )}
         </div>
 
-        <div className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors">
-          <Lock className="w-5 h-5 text-purple-400" />
-          <span className="text-white text-sm">Privacy & Terms</span>
-        </div>
+     <Link
+  to="/help"
+  className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"
+>
+  <Lock className="w-5 h-5 text-purple-400" />
+  <span className="text-white text-sm">Privacy & Terms</span>
+</Link>
 
-        <div className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors">
-          <CircleHelp className="w-5 h-5 text-purple-400" />
-          <span className="text-white text-sm">FAQs</span>
-        </div>
-
+       <Link
+  to="/help"
+  className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"
+>
+  <CircleHelp className="w-5 h-5 text-purple-400" />
+  <span className="text-white text-sm">FAQs</span>
+</Link>
         <div
           onClick={handleLogout}
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"

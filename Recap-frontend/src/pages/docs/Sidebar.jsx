@@ -21,7 +21,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
     <aside className="w-64 bg-white border-r border-gray-200 p-6 hidden md:block fixed h-full overflow-y-auto">
       <h2 className="text-xl font-bold text-purple-600 mb-6 flex items-center">
         <BookOpen className="w-5 h-5 mr-2" />
-        Recap Documentation
+        Recap Docs
       </h2>
       <nav className="space-y-2">
         {sections.map((section) => (
