@@ -4,7 +4,11 @@ import { motion } from "framer-motion";
 import Groq from "groq-sdk";
 
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
-const groq = new Groq({ apiKey: GROQ_API_KEY, dangerouslyAllowBrowser: true });
+const groq = new Groq({ 
+  apiKey: import.meta.env.VITE_GROQ_API_KEY, 
+  dangerouslyAllowBrowser: true 
+});
+
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);

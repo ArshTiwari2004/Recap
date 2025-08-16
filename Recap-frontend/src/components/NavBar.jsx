@@ -29,6 +29,12 @@ const NavBar = ({ icon, header, button1, button2, button3, userProfile, panelTog
 //     toast.success('Docs button clicked!');
 //   };
 
+
+const handleHelpClick = () => {
+  navigate('/help');
+ 
+};
+
   return (
     <div className="h-16 bg-gray-800 border-b border-gray-700 px-6 flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -48,7 +54,7 @@ const NavBar = ({ icon, header, button1, button2, button3, userProfile, panelTog
       
         <button 
           className="text-gray-300 hover:text-white transition-colors"
-        //   onClick={handleDocsClick}
+         onClick={handleHelpClick}
         >
           {button2}
         </button>
@@ -65,15 +71,18 @@ const NavBar = ({ icon, header, button1, button2, button3, userProfile, panelTog
         <div className="relative">
           {userProfile || (
             <button
-              className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center cursor-pointer"
+              className="w-8 h-8  rounded-full flex items-center justify-center cursor-pointer"
               onClick={handleProfileDropdownToggle}
             >
               {user?.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt="User Avatar"
-                  className="w-full h-full rounded-full object-cover"
-                />
+               <div className="w-full h-full rounded-full border-2 border-purple-500 p-1">
+  <img
+    src={user.photoURL}
+    alt="User Avatar"
+    className="w-full h-full rounded-full object-cover"
+  />
+</div>
+
               ) : (
                 <span className="text-white text-sm font-medium">
                   {user?.displayName?.charAt(0).toUpperCase()}

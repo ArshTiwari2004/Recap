@@ -56,45 +56,55 @@ const FeedbackDisplay = () => {
     );
   }
 
-  return (
-    <section className="py-16 bg-gray-800" id="testimonials">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-4">What Our Users Say</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Discover how Recap is helping students transform their learning experience
-          </p>
-        </div>
+return (
+  <section className="py-16 bg-gray-800" id="testimonials">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-white mb-4">What Our Users Say</h2>
+        <p className="text-gray-400 max-w-2xl mx-auto">
+          Discover how Recap is helping students transform their learning experience
+        </p>
+      </div>
 
-        <div className="relative px-12"> {/* Added padding here to prevent overlap */}
-          {/* Scroll Buttons - Positioned further away from content */}
-          <button
-            onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          
-          <button
-            onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+      <div className="relative px-12"> {/* Added padding here to prevent overlap */}
+        {/* Scroll Buttons - Positioned further away from content */}
+        <button
+          onClick={() => scroll('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
+          aria-label="Scroll left"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        
+        <button
+          onClick={() => scroll('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition-colors"
+          aria-label="Scroll right"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
 
-          {/* Scrollable Container with proper spacing */}
-          <div 
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto hide-scrollbar gap-8 pb-4 px-2 snap-x snap-mandatory"
-            style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              WebkitOverflowScrolling: 'touch'
-            }}
-          >
-            {feedbacks.map((feedback) => (
+        {/* Scrollable Container with proper spacing */}
+        <div 
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto hide-scrollbar gap-8 pb-4 px-2 snap-x snap-mandatory"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
+          {feedbacks.length === 0 ? (
+            <div className="w-full flex flex-col items-center justify-center text-center py-12 text-gray-400">
+              <p className="text-lg font-medium text-white mb-2">
+                No reviews yet ✨
+              </p>
+              <p className="text-gray-400">
+                Login and be the first one to share your feedback 💜
+              </p>
+            </div>
+          ) : (
+            feedbacks.map((feedback) => (
               <div
                 key={feedback.id}
                 className="flex-none w-80 snap-center bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300 mx-2"
@@ -145,23 +155,25 @@ const FeedbackDisplay = () => {
                 {/* Feedback Text */}
                 <p className="text-gray-300 mb-4 line-clamp-4">{feedback.feedback}</p>
               </div>
-            ))}
-          </div>
+            ))
+          )}
         </div>
       </div>
+    </div>
 
-      {/* Custom Scrollbar Styles */}
-      <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
-    </section>
-  );
+    {/* Custom Scrollbar Styles */}
+    <style jsx>{`
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    `}</style>
+  </section>
+);
+
 };
 
 export default FeedbackDisplay;

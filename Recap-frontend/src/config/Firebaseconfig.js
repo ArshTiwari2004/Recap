@@ -13,7 +13,7 @@ const firebaseConfig = {
   // messagingSenderId: "343285138249",
   // appId: "1:343285138249:web:59e2c5fe00daa46b02d098",
   // measurementId: "G-3P95V9C8VL"
-  
+
   // apiKey: "AIzaSyAC1iIAlxZK9BQc0m0h9q0qZ3HthRUS-JA",
   // authDomain: "imagedb-d1403.firebaseapp.com",
   // projectId: "imagedb-d1403",

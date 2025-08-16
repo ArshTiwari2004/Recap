@@ -23,6 +23,7 @@ import Error404 from './Error404';
 import PDFOCRScanner from './pages/Ocrpdf';
 import PYQPractice from './components/PYQpractice';
 import CommunityContent from './components/CommunityContent';
+import HelpPage from './pages/Help';
 
 
 import AIQuestionBank from './pages/AIQuestionBank';
@@ -56,9 +57,7 @@ const App = () => {
         <Route path="/pdf-ocr" element={<PDFOCRScanner />} />
         <Route path="/feedback" element={<FeedbackForm />} />
         <Route path="/pyq-practice" element={<PYQPractice />} />
-        
-
-      
+        <Route path="/help" element={<HelpPage />} />
         <Route path="/aiquestionbank" element={<AIQuestionBank />} />
         </Routes>
        
