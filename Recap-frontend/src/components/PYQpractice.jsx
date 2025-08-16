@@ -482,7 +482,8 @@ const PYQPractice = () => {
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <NavBar />
+       <NavBar icon={<BookOpen className="w-6 h-6 text-purple-400" />} header={"PYQ Practice"} button1={"Feedback"} button2={"Help"} button3={"Docs"} />
+
         <div className="flex-1 overflow-auto p-6">
           <LastMinutePrep />
           
