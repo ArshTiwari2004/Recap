@@ -24,6 +24,7 @@ import PDFOCRScanner from './pages/Ocrpdf';
 import PYQPractice from './components/PYQpractice';
 import CommunityContent from './components/CommunityContent';
 import HelpPage from './pages/Help';
+import DocsPage from './pages/Docspage';
 
 
 import AIQuestionBank from './pages/AIQuestionBank';
@@ -59,6 +60,7 @@ const App = () => {
         <Route path="/pyq-practice" element={<PYQPractice />} />
         <Route path="/help" element={<HelpPage />} />
         <Route path="/aiquestionbank" element={<AIQuestionBank />} />
+        <Route path="/docs" element={<DocsPage />} />
         </Routes>
        
         </FirebaseProvider>
