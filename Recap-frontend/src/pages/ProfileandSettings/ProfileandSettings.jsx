@@ -6,12 +6,14 @@ import { fireDB, storage } from '../../config/Firebaseconfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import toast from 'react-hot-toast';
+import GlobalLogoutModal from '@/global/GlobalLogoutModal';
 
 const ProfileAndSettings = ({ activeTab = 'profile' }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
   const auth = getAuth();
   const currentUser = auth.currentUser;
   const inputFileRef = useRef(null);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   // Profile state
   const [profileData, setProfileData] = useState({
@@ -385,7 +387,7 @@ useEffect(() => {
             <div className="bg-gray-900 rounded-xl p-6">
               <h3 className="text-lg font-semibold mb-4">Account</h3>
               <button 
-                onClick={() => auth.signOut()}
+                onClick={() => setIsLogoutModalOpen(true)}
                 className="px-4 py-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors"
               >
                 Log Out
@@ -394,6 +396,11 @@ useEffect(() => {
           </div>
         )}
       </div>
+
+       <GlobalLogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+      />
     </div>
   );
 };

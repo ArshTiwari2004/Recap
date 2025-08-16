@@ -23,18 +23,8 @@ import { IconCards } from "@tabler/icons-react"
 import { signOut } from "firebase/auth"
 import { auth } from "../config/Firebaseconfig"
 import toast from "react-hot-toast"
+import GlobalLogoutModal from "@/global/GlobalLogoutModal"
 
-const handleLogout = async () => {
-  try {
-    await signOut(auth)
-    toast.success("You have been logged out!")
-    localStorage.removeItem("user")
-    window.location.href = "/"
-  } catch (error) {
-    console.error("Error logging out:", error.message)
-    toast.error("Failed to log out. Please try again.")
-  }
-}
 
 const Sidebar = () => {
   const location = useLocation()
@@ -42,6 +32,8 @@ const Sidebar = () => {
     const saved = localStorage.getItem("sidebarCollapsed")
     return saved ? JSON.parse(saved) : false
   })
+
+   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("sidebarCollapsed", JSON.stringify(isCollapsed))
@@ -128,7 +120,7 @@ const Sidebar = () => {
         <ul className="space-y-2">
           <li>
       <button
-  onClick={handleLogout}
+      onClick={() => setIsLogoutModalOpen(true)}
   className="flex items-center justify-between p-3 w-full text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-all duration-200 hover:scale-[1.02] -mt-2"
 >
   <div className="flex items-center space-x-3">
@@ -141,6 +133,11 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
+
+        <GlobalLogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+      />
     </div>
   )
 }

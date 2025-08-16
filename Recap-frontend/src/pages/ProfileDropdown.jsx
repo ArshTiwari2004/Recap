@@ -1,29 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { BookOpen, LogOut, Settings, Sun, Moon, Lock, CircleHelp, User } from 'lucide-react';
-import { auth } from '@/config/Firebaseconfig';
-import toast from 'react-hot-toast';
-import { signOut } from 'firebase/auth';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { LogOut, User, Lock, CircleHelp } from "lucide-react";
+import GlobalLogoutModal from "../global/GlobalLogoutModal";
 
 const ProfileDropdown = ({ email }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const navigate = useNavigate();
-
-  const handleThemeToggle = () => {
-    setIsDarkMode((prevState) => !prevState);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      toast.success("You have been logged out!");
-      localStorage.removeItem("user");
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Error logging out:", error.message);
-      toast.error("Failed to log out. Please try again.");
-    }
-  };
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   return (
     <div className="absolute right-4 top-16 w-72 bg-gray-800 rounded-xl shadow-xl border border-gray-700 z-50">
@@ -35,14 +16,6 @@ const ProfileDropdown = ({ email }) => {
 
       {/* Links */}
       <div className="p-2 space-y-1">
-        {/* <Link 
-          to="/main-dashboard"
-          className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 transition-colors"
-        >
-          <BookOpen className="w-5 h-5 text-purple-400" />
-          <span className="text-white text-sm">Dashboard</span>
-        </Link> */}
-
         <Link
           to="/profile-settings"
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 transition-colors"
@@ -51,48 +24,24 @@ const ProfileDropdown = ({ email }) => {
           <span className="text-white text-sm">Profile & Settings</span>
         </Link>
 
-        {/* <Link
-          to="/settings"
+        <Link
+          to="/help"
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 transition-colors"
         >
-          <Settings className="w-5 h-5 text-purple-400" />
-          <span className="text-white text-sm">Account Settings</span>
-        </Link> */}
+          <Lock className="w-5 h-5 text-purple-400" />
+          <span className="text-white text-sm">Privacy & Terms</span>
+        </Link>
 
-        {/* <div
-          onClick={handleThemeToggle}
-          className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"
+        <Link
+          to="/help"
+          className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 transition-colors"
         >
-          {isDarkMode ? (
-            <>
-              <Sun className="w-5 h-5 text-purple-400" />
-              <span className="text-white text-sm">Light Mode</span>
-            </>
-          ) : (
-            <>
-              <Moon className="w-5 h-5 text-purple-400" />
-              <span className="text-white text-sm">Dark Mode</span>
-            </>
-          )}
-        </div> */}
+          <CircleHelp className="w-5 h-5 text-purple-400" />
+          <span className="text-white text-sm">FAQs</span>
+        </Link>
 
-     <Link
-  to="/help"
-  className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"
->
-  <Lock className="w-5 h-5 text-purple-400" />
-  <span className="text-white text-sm">Privacy & Terms</span>
-</Link>
-
-       <Link
-  to="/help"
-  className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"
->
-  <CircleHelp className="w-5 h-5 text-purple-400" />
-  <span className="text-white text-sm">FAQs</span>
-</Link>
         <div
-          onClick={handleLogout}
+          onClick={() => setIsLogoutModalOpen(true)}
           className="flex items-center gap-3 hover:bg-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-colors"
         >
           <LogOut className="w-5 h-5 text-purple-400" />
@@ -108,6 +57,12 @@ const ProfileDropdown = ({ email }) => {
           </button>
         </Link>
       </div>
+
+      {/* Logout Modal */}
+      <GlobalLogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+      />
     </div>
   );
 };
