@@ -433,7 +433,7 @@ const QuizComponent = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400">Total Points</p>
-                        <p className="text-2xl font-semibold text-white">{user.dailyPoints || null}</p>
+                        <p className="text-2xl font-semibold text-white">{user?.dailyPoints || null || "0"}</p>
                       </div>
                       <Trophy className="w-8 h-8 text-purple-400" />
                     </div>
@@ -476,7 +476,7 @@ const QuizComponent = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400">Streaks</p>
-                        <p className="text-2xl font-semibold text-white">{user.streak}</p>
+                        <p className="text-2xl font-semibold text-white">{user?.streak || "0"}</p>
                       </div>
                       <Flame className="w-8 h-8 text-purple-400" />
                     </div>
