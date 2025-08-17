@@ -5,38 +5,38 @@ const TeamSection = () => {
   const team = [
     {
       name: "Arsh Tiwari",
-      role: "Full Stack Developer ",
+      role: "Software Engineer",
       image: "/arsh1.jpeg",
       links: {
         linkedin: "https://www.linkedin.com/in/arsh-tiwari-072609284/",
         github: "https://github.com/ArshTiwari2004",
         twitter: "https://x.com/ArshTiwari17",
         instagram: "https://www.instagram.com/_.arshtiwari",
-        bot : "https://arsh-tiwari-portfolio.vercel.app/"
+        bot : "https://arsh-portfolio-delta.vercel.app/"
       }
     },
     {
       name: "Priyanshi Bothra",
-      role: "Full Stack Developer",
+      role: "Software Engineer",
       image: "/priyanshi.jpeg",
       links: {
         linkedin: "https://www.linkedin.com/in/priyanshi-bothra-339568219/",
         github: "https://github.com/priyanshi0609",
         twitter: "https://x.com/PriyanshiB06",
         instagram: "https://www.instagram.com/_.priyanshi.01__",
-        bot :""
+        bot :"https://priyanshi-portfolio-iota.vercel.app/"
       }
     },
     {
       name: "Nibedan Pati",
-      role: "Full Stack Developer",
+      role: "Software Engineer",
       image: "/nibedan1.jpeg",
       links: {
         linkedin: "https://www.linkedin.com/in/nibedan-pati-2139b3277/",
         github: "https://github.com/Heisenberg300604",
         twitter: "https://x.com/NibedanPati",
         instagram: "https://www.instagram.com/nibedan_3006",
-        bot: ""
+        bot: "https://nibedan-portfolio.vercel.app/"
       }
     }
     
