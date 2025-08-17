@@ -16,6 +16,7 @@ import { fireDB } from '../config/Firebaseconfig';
 import TimeSpent from '@/components/TimeSpent';
 import { getWeekTimeData } from '../services/TimeSpentService';
 import { useNavigate } from 'react-router-dom';
+import {Link} from 'react-router-dom'; 
 
 const Maindashboard = () => {
   const navigate = useNavigate();
@@ -153,33 +154,40 @@ const Maindashboard = () => {
                 <TimeSpent />
               </CardContent>
             </Card>
+   <Card
+      onClick={() => navigate("/leaderboard")}
+      className="bg-gray-800 border-gray-700 cursor-pointer transition hover:scale-105"
+    >
+      <CardContent className="p-4">
+        <div className="flex items-center space-x-4">
+          <div className="p-3 bg-purple-500/20 rounded-lg">
+            <Target className="w-6 h-6 text-purple-400" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Your Learning Streak</p>
+            <p className="text-xl font-semibold text-white">
+              {streak} day{streak !== 1 ? "s" : ""}
+            </p>
+            <p className="text-xs text-purple-400 flex items-center gap-1">
+              {streak >= 7 ? (
+                <>
+                  <Zap className="w-4 h-4" /> Consistency pays off, keep pushing!
+                </>
+              ) : (
+                "You're building a powerful habit, keep going!"
+              )}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-purple-500/20 rounded-lg">
-                    <Target className="w-6 h-6 text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Your Learning Streak</p>
-                    <p className="text-xl font-semibold text-white">
-                      {streak} day{streak !== 1 ? "s" : ""}
-                    </p>
-                    <p className="text-xs text-purple-400 flex items-center gap-1">
-                      {streak >= 7 ? (
-                        <>
-                          <Zap className="w-4 h-4" /> Consistency pays off, keep pushing!
-                        </>
-                      ) : (
-                        "You're building a powerful habit, keep going!"
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gray-800 border-gray-700">
+            <Card 
+            
+              onClick={() => navigate("/flashcards")}
+      className="bg-gray-800 border-gray-700 cursor-pointer transition hover:scale-105"
+            
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-4">
                   <div className="p-3 bg-purple-500/20 rounded-lg">
@@ -198,7 +206,10 @@ const Maindashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
+            <Card    
+            onClick={() => navigate("/my-notes")}
+            className="bg-gray-800 border-gray-700 cursor-pointer transition hover:scale-105"
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-4">
                   <div className="p-3 bg-purple-500/20 rounded-lg">
