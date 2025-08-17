@@ -4,7 +4,7 @@ import {
 } from 'recharts';
 import { 
   BookOpen, Bell, Clock, Target, Brain, Trophy, Users, 
-  TrendingUp, Activity, Star, FileText, AlertCircle, Zap, Sparkles , ChevronRight, ChevronLeft , Atom
+  TrendingUp, Activity, Star, FileText, AlertCircle, Zap, Sparkles , ChevronRight, ChevronLeft , Atom 
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import Sidebar from '../components/Sidebar';
@@ -298,7 +298,7 @@ const Maindashboard = () => {
                 <CardTitle className="text-white flex items-center gap-2">
                   Weekly Activity of{" "}
                   {currentUser?.displayName?.split(" ")[0] || "User"}
-                  <Sparkles className="w-5 h-5 text-purple-400" />
+                  <TrendingUp className="w-5 h-5 text-purple-400" />
                 </CardTitle>
               </CardHeader>
               <CardContent>
