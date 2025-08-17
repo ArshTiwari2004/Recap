@@ -13,6 +13,8 @@ import Chatbot from './ChatBot';
 import { getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { fireDB } from '../config/Firebaseconfig';
+import TimeSpent from '@/components/TimeSpent';
+
 
 const Maindashboard = () => {
   // Sample data for charts
@@ -38,6 +40,10 @@ const [userStats, setUserStats] = useState({
   });
   const auth = getAuth();
   const currentUser = auth.currentUser;
+  const [streak, setStreak] = useState(0);
+
+
+  console.log("current user:", currentUser);
 
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -62,6 +68,26 @@ const [userStats, setUserStats] = useState({
   }, [currentUser]);
 
   console.log("User Stats:", userStats);
+
+  useEffect(() => {
+  const fetchUserStreak = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const userRef = doc(fireDB, "users", currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (userSnap.exists()) {
+        setStreak(userSnap.data().streak || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching streak:", error);
+    }
+  };
+
+  fetchUserStreak();
+}, [currentUser]);
+
   
   return (
     <div className="flex h-screen bg-gray-900">
@@ -77,20 +103,11 @@ const [userStats, setUserStats] = useState({
           <div className="max-w-7xl mx-auto">
             {/* Quick Stats */}
             <div className="grid grid-cols-4 gap-4 mb-6">
-              <Card className="bg-gray-800 border-gray-700">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-purple-500/20 rounded-lg">
-                      <Clock className="w-6 h-6 text-purple-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">Study Time</p>
-                      <p className="text-xl font-semibold text-white">12.5 hrs</p>
-                      <p className="text-xs text-green-400">+2.5 hrs this week</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+       <Card className="bg-gray-800 border-gray-700">
+  <CardContent>
+    <TimeSpent />
+  </CardContent>
+</Card>
 
               <Card className="bg-gray-800 border-gray-700">
                 <CardContent className="p-4">
@@ -100,8 +117,17 @@ const [userStats, setUserStats] = useState({
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Study Streak</p>
-                      <p className="text-xl font-semibold text-white">7 days</p>
-                      <p className="text-xs text-purple-400">Keep it up!</p>
+                      <p className="text-xl font-semibold text-white">{streak} day{streak !== 1 ? 's' : ''}</p>
+
+           <p className="text-xs text-purple-400 flex items-center gap-1">
+  {streak >= 7 ? (
+    <>
+      <Zap className="w-4 h-4" /> Amazing streak!
+    </>
+  ) : (
+    "Keep it up!"
+  )}
+</p>
                     </div>
                   </div>
                 </CardContent>
@@ -129,9 +155,9 @@ const [userStats, setUserStats] = useState({
                       <Trophy className="w-6 h-6 text-purple-400" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Quiz Score</p>
-                      <p className="text-xl font-semibold text-white">85%</p>
-                      <p className="text-xs text-green-400">+5% improvement</p>
+                      <p className="text-sm text-gray-400">Total Notes Uploaded</p>
+                      <p className="text-xl font-semibold text-white">5</p>
+                      <p className="text-xs text-green-400">+2 today</p>
                     </div>
                   </div>
                 </CardContent>
