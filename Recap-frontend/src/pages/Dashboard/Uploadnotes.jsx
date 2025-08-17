@@ -11,7 +11,7 @@ import ProgressBar from '@/components/ProgressBar';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import NavBar from '@/components/NavBar';
 import Chatbot from '../ChatBot';
-
+import { updateNoteStats } from '../../services/noteStats';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -122,83 +122,90 @@ const Dashboard = () => {
   };
 
   // Handle file upload
-  const handleUpload = async (fileType) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user?.uid;
+const handleUpload = async (fileType) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.uid;
 
-    if (!userId) {
-      console.error("User ID not found. Ensure the user is logged in.");
-      toast.error("Session expired. Please log in again.");
-      return;
+  if (!userId) {
+    console.error("User ID not found. Ensure the user is logged in.");
+    toast.error("Session expired. Please log in again.");
+    return;
+  }
+
+  if (!subjectName || !topicName) {
+    toast.error("Please enter both Subject Name and Topic Name before uploading.");
+    return;
+  }
+
+  const sanitizedSubjectName = subjectName.trim().toLowerCase();
+  const sanitizedTopicName = topicName.trim().toLowerCase();
+
+  try {
+    if (fileType === "audio") {
+      setIsModalOpen(false);
+      setActiveComponent("audio");
     }
-
-    if (!subjectName || !topicName) {
-      toast.error("Please enter both Subject Name and Topic Name before uploading.");
-      return;
-    }
-
-    const sanitizedSubjectName = subjectName.trim().toLowerCase();
-    const sanitizedTopicName = topicName.trim().toLowerCase();
-
-    try {
-      if (fileType === 'audio') {
-        setIsModalOpen(false);
-        setActiveComponent('audio');
-      }
-      if (fileType === "pdf") {
-        navigate("/pdf-ocr",{
-          state: {
-            subjectName: sanitizedSubjectName,
-            topicName: sanitizedTopicName,
-          },
-        });
-      }
-
-      if (fileType === "image") {
-        navigate("/ocr",{
-          state: {
-            subjectName: sanitizedSubjectName,
-            topicName: sanitizedTopicName,
-          },
-        });
-      }
-      const file = await selectFile(fileType);
-      if (!file) return;
-
-      const storageRef = ref(
-        storage,
-        `${userId}/${sanitizedSubjectName}/${sanitizedTopicName}/${file.name}`
-      );
-
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      setIsUploading(true);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% done`);
+    if (fileType === "pdf") {
+      navigate("/pdf-ocr", {
+        state: {
+          subjectName: sanitizedSubjectName,
+          topicName: sanitizedTopicName,
         },
-        (error) => {
-          console.error("Upload failed:", error);
-          alert("An error occurred during upload. Please try again.");
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log("File available at:", downloadURL);
-          setNotees((prevNotees) => [...prevNotees, downloadURL]);
-          setIsSuccessModalOpen(true);
-          // alert("File uploaded successfully!");
-        }
-      );
-      setSubjectName("");
-      setTopicName("");
-    } catch (error) {
-      console.error("Error during file selection or upload:", error);
-      // alert("Failed to upload the file. Please try again.");
+      });
     }
-  };
+
+    if (fileType === "image") {
+      navigate("/ocr", {
+        state: {
+          subjectName: sanitizedSubjectName,
+          topicName: sanitizedTopicName,
+        },
+      });
+    }
+
+    const file = await selectFile(fileType);
+    if (!file) return;
+
+    const storageRef = ref(
+      storage,
+      `${userId}/${sanitizedSubjectName}/${sanitizedTopicName}/${file.name}`
+    );
+
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    setIsUploading(true);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log(`Upload is ${progress}% done`);
+      },
+      (error) => {
+        console.error("Upload failed:", error);
+        alert("An error occurred during upload. Please try again.");
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        console.log("File available at:", downloadURL);
+
+        setNotees((prevNotees) => [...prevNotees, downloadURL]);
+        setIsSuccessModalOpen(true);
+
+        // ✅ Update user stats after successful upload
+        await updateNoteStats(userId);
+
+        // Clear fields
+        setSubjectName("");
+        setTopicName("");
+      }
+    );
+  } catch (error) {
+    console.error("Error during file selection or upload:", error);
+    // alert("Failed to upload the file. Please try again.");
+  }
+};
+
 
   const handleTranscriptionComplete = (transcriptionData) => {
     setTranscriptionResult(transcriptionData);
@@ -211,52 +218,55 @@ const Dashboard = () => {
     setShowTranscriptionReview(false);
   };
 
-  const handleSaveNote = async () => {
-    if (!noteTitle.trim() || !noteTopic.trim() || noteContent.trim().length < 20) {
-      toast.error('Please fill all fields and ensure the content is at least 20 characters.');
-      return;
+const handleSaveNote = async () => {
+  if (!noteTitle.trim() || !noteTopic.trim() || noteContent.trim().length < 20) {
+    toast.error('Please fill all fields and ensure the content is at least 20 characters.');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // Retrieve logged-in user's data
+    const user = JSON.parse(localStorage.getItem("user")); 
+    if (!user?.uid) {
+      throw new Error("User not logged in! Please log in to save your notes.");
     }
-  
-    setLoading(true);
-  
-    try {
-      // Retrieve logged-in user's data
-      const user = JSON.parse(localStorage.getItem("user")); 
-      if (!user?.uid) {
-        throw new Error("User not logged in! Please log in to save your notes.");
-      }
-  
-      // Create the note object
-      const noteData = {
-        subject: noteTitle.trim(),
-        topic: noteTopic.trim(),
-        content: noteContent.trim(),
-        uid: user.uid,
-        createdAt: serverTimestamp(),
-      };
-  
-      // Save note to Firestore
-      const docRef = await addDoc(collection(fireDB, 'notes'), noteData);
-  
-      // Notify the user
-      toast.success('Note saved successfully!');
-      console.log(`Note ID: ${docRef.id}`);
-  
-      // Clear input fields
-      setNoteTitle('');
-      setNoteTopic('');
-      setNoteContent('');
-    } catch (error) {
-      console.error('Error saving note:', error);
-      if (error.message.includes("User not logged in")) {
-        toast.error(error.message); // Specific error message
-      } else {
-        toast.error('Failed to save the note. Please try again later.');
-      }
-    } finally {
-      setLoading(false);
+
+    // Create the note object
+    const noteData = {
+      subject: noteTitle.trim(),
+      topic: noteTopic.trim(),
+      content: noteContent.trim(),
+      uid: user.uid,
+      createdAt: serverTimestamp(),
+    };
+
+    // Save note to Firestore
+    const docRef = await addDoc(collection(fireDB, 'notes'), noteData);
+
+    // Update note statistics
+    await updateNoteStats(user.uid);
+
+    // Notify the user
+    toast.success('Note saved successfully!');
+    console.log(`Note ID: ${docRef.id}`);
+
+    // Clear input fields
+    setNoteTitle('');
+    setNoteTopic('');
+    setNoteContent('');
+  } catch (error) {
+    console.error('Error saving note:', error);
+    if (error.message.includes("User not logged in")) {
+      toast.error(error.message); // Specific error message
+    } else {
+      toast.error('Failed to save the note. Please try again later.');
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   
@@ -266,32 +276,38 @@ const Dashboard = () => {
     setUser(storedUser);
   }, []);
 
-  const saveToFirestore = async () => {
-    if (!user?.uid) {
-      alert('User not logged in. Please log in to save data.');
-      return;
-    }
+ const saveToFirestore = async () => {
+  if (!user?.uid) {
+    alert('User not logged in. Please log in to save data.');
+    return;
+  }
 
-    const documentData = {
-      uid: user.uid,
-      content: transcriptionResult.content,
-      subject: subjectName.trim(),
+  const documentData = {
+    uid: user.uid,
+    content: transcriptionResult.content,
+    subject: subjectName.trim(),
     topic: topicName.trim(),
-      createdAt: serverTimestamp(),
-    };
-
-    try {
-      await addDoc(collection(fireDB, 'notes'), documentData);
-      // Create notification
-      await createNotification(user.uid, subjectName.trim());
-      
-      toast.success('Notes saved successfully!');
-      setIsSuccessModalOpen(true);
-    } catch (error) {
-      console.error('Error saving transcription to Firestore:', error);
-      toast.error('Failed to save transcription. Please try again.');
-    }
+    createdAt: serverTimestamp(),
   };
+
+  try {
+    // Save transcription to Firestore
+    await addDoc(collection(fireDB, 'notes'), documentData);
+
+    // Create notification
+    await createNotification(user.uid, subjectName.trim());
+
+    // ✅ Update stats only after everything else succeeded
+    await updateNoteStats(user.uid);
+
+    toast.success('Notes saved successfully!');
+    setIsSuccessModalOpen(true);
+  } catch (error) {
+    console.error('Error saving transcription to Firestore:', error);
+    toast.error('Failed to save transcription. Please try again.');
+  }
+};
+
 
   const createNotification = async (userId, subject) => {
     try {

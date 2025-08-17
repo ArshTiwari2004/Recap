@@ -58,17 +58,23 @@ const TimeSpent = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-800 rounded-lg flex items-center space-x-4">
-      <div className="p-3 bg-purple-500/20 rounded-lg">
-        <Clock className="w-6 h-6 text-purple-400" />
-      </div>
-      <div>
-        <p className="text-sm text-gray-400">Study Time</p>
-        <p className="text-xl font-semibold text-white">{formatTime(todayMinutes)}</p>
-        <p className="text-xs text-green-400">+{formatTime(weekMinutes)} this week</p>
-      </div>
+  <div className="p-3 bg-gray-800 rounded-lg flex items-center space-x-4">
+    <div className="p-3 bg-purple-500/20 rounded-lg">
+      <Clock className="w-6 h-6 text-purple-400" />
     </div>
-  );
+    <div>
+      <p className="text-sm text-gray-400">Focused Hours</p>
+      <p className="text-xl font-semibold text-white">
+        {formatTime(todayMinutes)}
+      </p>
+    <p className="text-xs text-green-400">
+  +{formatTime(weekMinutes)} this week, keep it up!
+</p>
+
+    </div>
+  </div>
+);
+
 };
 
 export default TimeSpent;
