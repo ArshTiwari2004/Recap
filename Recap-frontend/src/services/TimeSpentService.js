@@ -46,25 +46,31 @@ export const getWeekTimeData = async (userId) => {
     const today = new Date();
     const dayOfWeek = today.getDay(); // 0 (Sun) - 6 (Sat)
     const monday = new Date(today);
-    monday.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Monday of this week
+    monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7)); // Monday of this week
+    const mondayStr = monday.toISOString().split("T")[0];
 
     const timeSpentRef = collection(fireDB, "timeSpent");
     const q = query(timeSpentRef, where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
 
-    // Initialize an array with all days of the week
+    // Initialize Mon-Sun array
     const weekData = Array(7).fill().map((_, i) => ({
-        dayOfWeek: i,
+        dayOfWeek: i, // 0 = Monday, ..., 6 = Sunday
         minutes: 0
     }));
 
-    querySnapshot.forEach((doc) => {
-        const docDate = new Date(doc.data().date);
-        if (docDate >= monday) {
-            const docDay = docDate.getDay();
-            weekData[docDay].minutes = doc.data().timeSpent;
+    querySnapshot.forEach((docSnap) => {
+        const { date, timeSpent } = docSnap.data();
+
+        if (date >= mondayStr) {
+            const d = new Date(date);
+            let jsDay = d.getDay(); // 0=Sun … 6=Sat
+            let weekIndex = (jsDay + 6) % 7; // shift so Mon=0 … Sun=6
+            weekData[weekIndex].minutes = timeSpent;
         }
     });
 
     return weekData;
 };
+
+

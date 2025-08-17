@@ -117,14 +117,8 @@ const Maindashboard = () => {
             minutes: dayData ? dayData.minutes : 0
           };
         });
-        
-        // Rotate the array so Monday is first
-        const rotatedData = [
-          ...updatedActivityData.slice(1),
-          updatedActivityData[0]
-        ];
-        
-        setActivityData(rotatedData);
+
+        setActivityData(updatedActivityData);
       } catch (error) {
         console.error("Error fetching weekly activity:", error);
       }
@@ -132,6 +126,9 @@ const Maindashboard = () => {
 
     fetchWeeklyActivity();
   }, [currentUser]);
+
+  console.log("activityData:", activityData);
+
 
   return (
   <div className="flex h-screen bg-gray-900">
