@@ -3,15 +3,16 @@ import {
   BarChart, LineChart, PieChart, Bar, Line, Pie, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { 
- BookOpen, Bell, Clock, Target, Brain, Trophy, Users, 
+  BookOpen, Bell, Clock, Target, Brain, Trophy, Users, 
   TrendingUp, Activity, Star, FileText, AlertCircle, Zap
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import Notification from '@/components/Notifications';
 import Sidebar from '../components/Sidebar';
 import NavBar from '@/components/NavBar';
 import Chatbot from './ChatBot';
-
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { fireDB } from '../config/Firebaseconfig';
 
 const Maindashboard = () => {
   // Sample data for charts
@@ -31,15 +32,37 @@ const Maindashboard = () => {
     { day: 'Sat', minutes: 40 },
     { day: 'Sun', minutes: 100 }
   ];
-
-  const [user, setUser] = useState(null);
+const [userStats, setUserStats] = useState({
+    totalFlashcards: 0,
+    flashcardsToday: 0
+  });
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
   useEffect(() => {
-        // Retrieve user data from localStorage
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        setUser(storedUser);
-      }, []);
+    const fetchUserStats = async () => {
+      if (!currentUser) return;
+      
+      try {
+        const userStatsRef = doc(fireDB, "userStats", currentUser.uid);
+        const statsSnap = await getDoc(userStatsRef);
+        
+        if (statsSnap.exists()) {
+          setUserStats({
+            totalFlashcards: statsSnap.data().totalFlashcards || 0,
+            flashcardsToday: statsSnap.data().flashcardsToday || 0
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user stats:", error);
+      }
+    };
 
+    fetchUserStats();
+  }, [currentUser]);
+
+  console.log("User Stats:", userStats);
+  
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar />
@@ -92,8 +115,8 @@ const Maindashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Flashcards</p>
-                      <p className="text-xl font-semibold text-white">248</p>
-                      <p className="text-xs text-green-400">+12 new today</p>
+                      <p className="text-xl font-semibold text-white">{userStats?.totalFlashcards}</p>
+                      <p className="text-xs text-green-400">+{userStats?.flashcardsToday} new today</p>
                     </div>
                   </div>
                 </CardContent>

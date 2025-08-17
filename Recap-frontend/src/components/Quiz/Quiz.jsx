@@ -65,7 +65,7 @@ const QuizComponent = () => {
 
   const { user } = useUser();
 
-  console.log(user)
+  console.log("user from quizzes", user);
 
   // Fetch notes from Firebase
   useEffect(() => {

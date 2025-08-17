@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import {
   Search,
@@ -22,15 +23,19 @@ import {
 import {
   collection,
   query,
+  where,
   onSnapshot,
   updateDoc,
   deleteDoc,
   doc,
   addDoc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { fireDB } from "../../config/Firebaseconfig";
+import { getAuth } from "firebase/auth";
 import Sidebar from "../../components/Sidebar";
-import Notification from "../Notifications";
 import NavBar from "../NavBar";
 import Chatbot from "@/pages/ChatBot";
 
@@ -104,7 +109,7 @@ const Modal = ({
 const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
   return (
     <div
-      className={`fixed left-0 top-0 h-full bg-gray-800 border-r border-gray-700 transition-all duration-300 ${
+      className={`fixed left-0 top-0 h-full bg-gray-800 border-r border-gray-700 transition-all duration-300 z-40 ${
         isOpen ? "w-80" : "w-0"
       } overflow-hidden`}
     >
@@ -117,26 +122,35 @@ const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
         </div>
 
         <div className="space-y-3">
-          {notes.map((note) => (
-            <div
-              key={note.id}
-              className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                selectedNote?.id === note.id
-                  ? "bg-purple-500/20 border border-purple-500"
-                  : "bg-gray-700 hover:bg-gray-600"
-              }`}
-              onClick={() => onNoteSelect(note)}
-            >
-              <h3 className="text-white font-medium mb-1">{note.subject}</h3>
-              <p className="text-gray-400 text-sm line-clamp-2">
-                {note.content}
-              </p>
-              <div className="flex items-center space-x-2 mt-2 text-xs text-gray-400">
-                <Clock className="w-3 h-3" />
-                <span>{new Date(note.createdAt).toLocaleDateString()}</span>
+          {notes.length === 0 ? (
+            <p className="text-gray-400 text-sm">No notes found. Please add some notes first.</p>
+          ) : (
+            notes.map((note) => (
+              <div
+                key={note.id}
+                className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                  selectedNote?.id === note.id
+                    ? "bg-purple-500/20 border border-purple-500"
+                    : "bg-gray-700 hover:bg-gray-600"
+                }`}
+                onClick={() => onNoteSelect(note)}
+              >
+                <h3 className="text-white font-medium mb-1">{note.subject || note.title}</h3>
+                <p className="text-gray-400 text-sm line-clamp-2">
+                  {note.content}
+                </p>
+                <div className="flex items-center space-x-2 mt-2 text-xs text-gray-400">
+                  <Clock className="w-3 h-3" />
+                  <span>
+                    {note.createdAt?.toDate ? 
+                      note.createdAt.toDate().toLocaleDateString() : 
+                      new Date(note.createdAt).toLocaleDateString()
+                    }
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -146,6 +160,12 @@ const NotesPanel = ({ isOpen, onClose, notes, onNoteSelect, selectedNote }) => {
 // View Card Modal Component
 const ViewCardModal = ({ isOpen, onClose, card, onEdit, onDelete }) => {
   const [showAnswer, setShowAnswer] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShowAnswer(false);
+    }
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Flashcard" size="lg">
@@ -289,46 +309,130 @@ const Flashcards = () => {
   const [isNotesPanelOpen, setIsNotesPanelOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
-  // Fetch notes from Firebase
+  // Debug logs
+  console.log("Current user:", currentUser);
+  console.log("Flashcards count:", flashcards.length);
+  console.log("Notes count:", notes.length);
+  console.log("Selected note:", selectedNote);
+
+  // Fetch notes from Firebase (only user's notes)
   useEffect(() => {
-    const q = query(collection(fireDB, "notes"));
+    if (!currentUser) {
+      console.log("No current user, skipping notes fetch");
+      return;
+    }
+
+    console.log("Fetching notes for user:", currentUser.uid);
+    const q = query(collection(fireDB, "notes"), where("uid", "==", currentUser.uid));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const notesData = [];
       querySnapshot.forEach((doc) => {
         notesData.push({ id: doc.id, ...doc.data() });
       });
+      console.log("Notes fetched:", notesData);
       setNotes(notesData);
     });
-
     return () => unsubscribe();
-  }, []);
+  }, [currentUser]);
 
-  // Fetch flashcards from Firebase
+  // Fetch flashcards from Firebase (only user's flashcards)
   useEffect(() => {
-    const q = query(collection(fireDB, "flashcards"));
+    if (!currentUser) {
+      console.log("No current user, skipping flashcards fetch");
+      return;
+    }
+    
+    console.log("Fetching flashcards for user:", currentUser.uid);
+    
+    const q = query(
+      collection(fireDB, "flashcards"), 
+      where("uid", "==", currentUser.uid) // Fixed: was "userId", should be "uid"
+    );
+    
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      console.log("Received flashcards snapshot with", querySnapshot.size, "documents");
+      
       const cardsData = [];
       querySnapshot.forEach((doc) => {
-        cardsData.push({ id: doc.id, ...doc.data() });
+        const data = doc.data();
+        console.log("Flashcard document:", doc.id, data);
+        cardsData.push({ id: doc.id, ...data });
       });
+      
       setFlashcards(cardsData);
+      console.log("Flashcards state updated with", cardsData.length, "cards");
+    }, (error) => {
+      console.error("Error fetching flashcards:", error);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [currentUser]);
 
-  // Generate flashcards using Cohere
+  // Update user stats when flashcards change
+  useEffect(() => {
+    if (!currentUser || flashcards.length === 0) return;
+    
+    const updateUserStats = async () => {
+      try {
+        const today = new Date().toDateString();
+        const userStatsRef = doc(fireDB, "userStats", currentUser.uid);
+        const statsSnap = await getDoc(userStatsRef);
+        
+        let flashcardsToday = 0;
+        const todayCards = flashcards.filter(card => {
+          const cardDate = new Date(card.createdAt).toDateString();
+          return cardDate === today;
+        });
+        flashcardsToday = todayCards.length;
+
+        if (statsSnap.exists()) {
+          await updateDoc(userStatsRef, {
+            totalFlashcards: flashcards.length,
+            flashcardsToday,
+            lastUpdated: serverTimestamp()
+          });
+        } else {
+          await setDoc(userStatsRef, {
+            userId: currentUser.uid,
+            totalFlashcards: flashcards.length,
+            flashcardsToday,
+            lastUpdated: serverTimestamp(),
+            createdAt: serverTimestamp()
+          });
+        }
+      } catch (error) {
+        console.error("Error updating user stats:", error);
+      }
+    };
+
+    updateUserStats();
+  }, [flashcards, currentUser]);
+
+  const COHERE_API_KEY = import.meta.env.VITE_COHERE_API_KEY;
+
+  // Generate flashcards (Fixed to use correct field name)
   const generateFlashcards = async (noteContent) => {
+    if (!currentUser) {
+      console.error("No current user");
+      return [];
+    }
+
+    console.log("Starting flashcard generation for user:", currentUser.uid);
+    
     try {
       setIsGenerating(true);
 
-      const prompt = `Generate 1 flashcards from this content. For each flashcard, create a question and answer pair that tests understanding of key concepts. Format your response as a JSON array of objects, where each object has properties: "question", "answer", "difficulty" (easy/medium/hard). Make the questions challenging but clear. Content: ${noteContent}`;
+      const prompt = `Generate 3 flashcards from this content. For each flashcard, create a question and answer pair that tests understanding of key concepts. Format your response as a JSON array of objects, where each object has properties: "question", "answer", "difficulty" (easy/medium/hard). Make the questions challenging but clear. Content: ${noteContent}`;
+
+      console.log("Sending request to Cohere API...");
 
       const response = await fetch("https://api.cohere.ai/v1/generate", {
         method: "POST",
         headers: {
-          Authorization: "Bearer YFAX6MrxeFKRRZakECwf5M9p59Chg7OvYPpsUeDg",
+          Authorization: `Bearer ${COHERE_API_KEY}`,
           "Content-Type": "application/json",
           Accept: "application/json",
         },
@@ -348,8 +452,8 @@ const Flashcards = () => {
       }
 
       const data = await response.json();
+      console.log("Cohere API response:", data);
 
-      // Parse the generated text as JSON
       let generatedCards;
       try {
         const jsonMatch = data.generations[0].text.match(/\[.*\]/s);
@@ -369,23 +473,32 @@ const Flashcards = () => {
         ];
       }
 
-      // Save the generated flashcards
+      console.log("Generated cards:", generatedCards);
+
+      // Save the generated flashcards with CORRECT field name (uid not userId)
       for (const card of generatedCards) {
-        await addDoc(collection(fireDB, "flashcards"), {
+        const cardData = {
           ...card,
-          noteId: selectedNote.id,
-          subject: selectedNote.subject || "General",
+          uid: currentUser.uid, // Fixed: was "userId", should be "uid"
+          noteId: selectedNote?.id,
+          subject: selectedNote?.subject || "General",
           createdAt: new Date().toISOString(),
           favorite: false,
           mastered: false,
           timesReviewed: 0,
           lastReviewed: new Date().toISOString(),
-        });
+        };
+
+        console.log("Saving flashcard:", cardData);
+        
+        const docRef = await addDoc(collection(fireDB, "flashcards"), cardData);
+        console.log("Flashcard saved with ID:", docRef.id);
       }
 
       return generatedCards;
     } catch (error) {
       console.error("Error generating flashcards:", error);
+      // Fallback to local extraction
       return extractFlashcardsFromContent(noteContent);
     } finally {
       setIsGenerating(false);
@@ -393,7 +506,14 @@ const Flashcards = () => {
   };
 
   // Fallback local extraction function
-  const extractFlashcardsFromContent = (content) => {
+  const extractFlashcardsFromContent = async (content) => {
+    if (!currentUser) {
+      console.error("No current user for fallback generation");
+      return [];
+    }
+
+    console.log("Using fallback flashcard generation");
+    
     const sentences = content
       .split(/[.!?]+/)
       .filter((s) => s.trim().length > 0);
@@ -422,21 +542,50 @@ const Flashcards = () => {
       });
     }
 
+    // Save fallback flashcards
+    for (const card of flashcards) {
+      const cardData = {
+        ...card,
+        uid: currentUser.uid,
+        noteId: selectedNote?.id,
+        subject: selectedNote?.subject || "General",
+        createdAt: new Date().toISOString(),
+        favorite: false,
+        mastered: false,
+        timesReviewed: 0,
+        lastReviewed: new Date().toISOString(),
+      };
+
+      console.log("Saving fallback flashcard:", cardData);
+      await addDoc(collection(fireDB, "flashcards"), cardData);
+    }
+
     return flashcards;
   };
 
   const handleFlashcardGeneration = async () => {
     if (!selectedNote) {
-      console.log("Please select a note first");
+      console.log("No note selected");
+      alert("Please select a note first");
       return;
     }
+
+    if (!selectedNote.content || selectedNote.content.trim().length < 10) {
+      console.log("Note content too short");
+      alert("Selected note content is too short to generate flashcards");
+      return;
+    }
+
+    console.log("Generating flashcards from note:", selectedNote);
 
     setIsGenerating(true);
     try {
       const cards = await generateFlashcards(selectedNote.content);
       console.log(`Successfully generated ${cards.length} flashcards`);
+      alert(`Successfully generated ${cards.length} flashcards!`);
     } catch (error) {
       console.error("Failed to generate flashcards:", error);
+      alert("Failed to generate flashcards. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -583,7 +732,7 @@ const Flashcards = () => {
         selectedNote={selectedNote}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${isNotesPanelOpen ? 'ml-80' : 'ml-0'}`}>
         {/* Navbar */}
         <NavBar
           panelToggleButton={
@@ -613,6 +762,25 @@ const Flashcards = () => {
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
           <div className="max-w-7xl mx-auto">
+            {/* Status Messages */}
+            {!currentUser && (
+              <div className="bg-red-500/20 text-red-400 p-4 rounded-lg mb-6">
+                Please log in to view your flashcards
+              </div>
+            )}
+
+            {currentUser && notes.length === 0 && (
+              <div className="bg-yellow-500/20 text-yellow-400 p-4 rounded-lg mb-6">
+                No notes found. Please add some notes first to generate flashcards.
+              </div>
+            )}
+
+            {selectedNote && (
+              <div className="bg-green-500/20 text-green-400 p-4 rounded-lg mb-6">
+                Selected note: {selectedNote.subject} - Ready to generate flashcards!
+              </div>
+            )}
+
             {/* Categories and Generate Button */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-6">
@@ -625,7 +793,7 @@ const Flashcards = () => {
                   }`}
                 >
                   <Grid className="w-4 h-4" />
-                  <span>All Flashcards</span>
+                  <span>All Flashcards ({flashcards.length})</span>
                 </button>
                 <button
                   onClick={() => setSelectedCategory("subjects")}
@@ -652,10 +820,8 @@ const Flashcards = () => {
               </div>
               <button
                 className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={() =>
-                  selectedNote && generateFlashcards(selectedNote.content)
-                }
-                disabled={isGenerating || !selectedNote}
+                onClick={handleFlashcardGeneration}
+                disabled={isGenerating || !selectedNote || !currentUser}
               >
                 {isGenerating ? "Generating..." : "Generate Flashcards"}
               </button>
