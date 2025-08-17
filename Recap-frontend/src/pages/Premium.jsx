@@ -68,12 +68,12 @@ const Premium = () => {
 
     try {
       const options = {
-        key: "rzp_test_fRN4LCYqz2Cmxc",
+        key: "rzp_test_R6LEuwXNeExndG",
         amount: getPaymentAmount(),
         currency: "INR",
-        name: "Recap Learning",
+        name: "Recap",
         description: `${selectedPlan === 'monthly' ? 'Monthly' : 'Yearly'} Premium Subscription`,
-        image: "/path/to/your/logo.png",
+        image: "R.svg",
         handler: handlePaymentSuccess,
         prefill: {
           name: user?.displayName || "",
