@@ -71,38 +71,63 @@ Format each question strictly as follows:
 Return ONLY valid JSON without any additional text.`;
   };
 
-  const generateTest = async () => {
-    setIsGenerating(true);
-    try {
-      const groq = new Groq({
-        apiKey: import.meta.env.VITE_GROQ_API_KEY,
-        dangerouslyAllowBrowser: true 
-      });
-      
-      const completion = await groq.chat.completions.create({
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert test generator specialized in creating high-quality academic assessments. Create clear, accurate, and well-structured questions."
-          },
-          {
-            role: "user",
-            content: generatePrompt(testParams)
-          }
-        ],
-        model: "mixtral-8x7b-32768",
-        temperature: 0.7,
-        max_tokens: 4096
-      });
+const generateTest = async () => {
+  setIsGenerating(true);
+  try {
+    const groq = new Groq({
+      apiKey: import.meta.env.VITE_GROQ_API_KEY,
+      dangerouslyAllowBrowser: true
+    });
 
-      const generatedTest = JSON.parse(completion.choices[0].message.content);
-      setCurrentTest(generatedTest);
-      setIsGenerating(false);
-    } catch (error) {
-      console.error('Error generating test:', error);
-      setIsGenerating(false);
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an expert test generator specialized in creating high-quality academic assessments.
+ONLY respond in strict JSON format. DO NOT add explanations or extra text.
+Format:
+{
+  "questions": [
+    {
+      "question": "Question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answer": "Correct answer"
     }
-  };
+  ]
+}
+          `
+        },
+        {
+          role: "user",
+          content: generatePrompt(testParams)
+        }
+      ],
+      model: "qwen/qwen3-32b",
+      temperature: 0.7,
+      max_tokens: 4096
+    });
+
+    let content = completion.choices[0].message.content;
+
+    // Fallback: extract JSON if AI adds extra text
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const generatedTest = JSON.parse(jsonMatch[0]);
+      setCurrentTest(generatedTest);
+    } else {
+      console.error("No valid JSON found in AI response:", content);
+      setCurrentTest(null);
+    }
+
+    setIsGenerating(false);
+  } catch (error) {
+    console.error("Error generating test:", error);
+    setIsGenerating(false);
+  }
+};
+
+
 
   const startTest = () => {
     setTestInProgress(true);
