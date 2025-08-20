@@ -268,7 +268,7 @@ return (
                 <>
               <button
   onClick={() => setIsEditing(true)}
-  className="flex justify-center items-center bg-gradient-to-r from-blue-500 to-indigo-500 
+  className="flex justify-center items-center  
              hover:from-blue-600 hover:to-indigo-600 w-12 h-12 rounded-full 
              transition-all duration-300 shadow-lg hover:shadow-blue-500/25 hover:scale-105"
 >
@@ -277,7 +277,7 @@ return (
 
              <button
   onClick={() => setShowShareOptions(!showShareOptions)}
-  className="flex justify-center items-center bg-gradient-to-r from-purple-500 to-pink-500 
+  className="flex justify-center items-center  
              hover:from-purple-600 hover:to-pink-600 w-12 h-12 rounded-full 
              transition-all duration-300 shadow-lg hover:shadow-purple-500/25 hover:scale-105"
 >
@@ -286,7 +286,7 @@ return (
 
 <button
   onClick={() => setShowDeleteConfirm(true)}
-  className="flex justify-center items-center bg-gradient-to-r from-red-500 to-rose-500 
+  className="flex justify-center items-center 
              hover:from-red-600 hover:to-rose-600 w-12 h-12 rounded-full 
              transition-all duration-300 shadow-lg hover:shadow-red-500/25 hover:scale-105"
 >
@@ -344,7 +344,7 @@ return (
           </div>
         )}
         
-        {/* Group sharing modal with enhanced styling */}
+       
         {showGroupShare && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in duration-300">
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-2xl w-full max-w-md shadow-2xl animate-in slide-in-from-bottom duration-300">

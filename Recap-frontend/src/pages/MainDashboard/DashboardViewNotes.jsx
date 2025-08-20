@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { fireDB } from "../../config/Firebaseconfig";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowRight } from "lucide-react";
 
 const DashboardViewNotes = ({ uid }) => {
   const [notes, setNotes] = useState([]);
@@ -27,7 +27,11 @@ const DashboardViewNotes = ({ uid }) => {
 return (
 <div className="mt-8">
   <div className="flex items-center justify-between mb-4">
-    <h2 className="text-xl font-semibold text-white mb-2">View all your notes</h2>
+  <h2 className="text-xl font-semibold text-white mb-2 inline-flex items-center">
+  View all your notes
+  <ArrowRight className="w-5 h-5 ml-2" />
+</h2>
+ 
     <p
       onClick={() => navigate("/my-notes")}
       className="text-purple-400 cursor-pointer flex items-center gap-1 hover:underline"
