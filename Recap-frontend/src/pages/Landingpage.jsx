@@ -304,7 +304,7 @@ const LandingPage = () => {
                 ) : (
                   <ButtonsCard
                     onClick={() => setSignupOpen(true)}
-                    className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+                    className="group bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-xl flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 cursor-pointer"
                   >
                     <span className="flex items-center gap-2">
                       Get Started Free

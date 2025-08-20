@@ -24,6 +24,7 @@ import HelpPage from './pages/Help';
 import DocsFinal from './pages/docs/DocsFinal';
 import ProfileAndSettings from './pages/ProfileandSettings/ProfileandSettings';
 import AIQuestionBank from './pages/AIQuestionBank';
+import ViewMyNotes from './pages/ViewMyNotes';
 
 const App = () => {
   return (
@@ -58,6 +59,8 @@ const App = () => {
         <Route path="/aiquestionbank" element={<AIQuestionBank />} />
         <Route path="/docs" element={<DocsFinal />} />
         <Route path="/profile-settings" element={<ProfileAndSettings />} />
+        <Route path="/my-notes/:id" element={<ViewMyNotes />} />
+
         </Routes>
        
         </FirebaseProvider>

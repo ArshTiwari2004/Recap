@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X , Eye , EyeOff} from 'lucide-react';
 import { ButtonsCard } from '../components/ui/tailwindcss-buttons';
 import { signInWithEmailAndPassword, signInWithPopup, GithubAuthProvider, GoogleAuthProvider, signInWithRedirect, sendPasswordResetEmail } from "firebase/auth";
 import { auth, fireDB } from '../config/Firebaseconfig.js';
@@ -178,9 +178,9 @@ const LoginModal = ({ isOpen, onClose }) => {
               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
             >
               {showPassword ? (
-                <HiEyeOff size={22} className='mt-7' />
+                <EyeOff size={22} className='mt-7' />
               ) : (
-                <HiEye size={22} className='mt-7' />
+                <Eye size={22} className='mt-7' />
               )}
             </button>
           </div>

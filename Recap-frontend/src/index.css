@@ -5,39 +5,36 @@
 /* Import DM Sans font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
 
-/* Scrollbar styling */
-html {
-  scrollbar-width: none;
-  /* Options: auto, thin, none */
-  scrollbar-color: #888 transparent;
-  /* Thumb color and transparent track */
-}
+/* ================= Scrollbar Hide Globally ================= */
 
 /* Firefox */
-html {
+* {
   scrollbar-width: none;
-  scrollbar-color: #888 transparent;
+  /* Hide scrollbar */
+  -ms-overflow-style: none;
+  /* IE and Edge */
 }
 
-/* Chrome, Edge, Safari, Opera */
-::-webkit-scrollbar {
-  width: 10px;
-  /* Width of the scrollbar */
+/* Chrome, Safari, Opera */
+*::-webkit-scrollbar {
+  display: none;
+  /* Completely hide */
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-  /* Makes track (background line) invisible */
+/* Optional: if you want to keep scrollable overflow without showing scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
-::-webkit-scrollbar-thumb {
-  background: #888;
-  /* Scrollbar thumb color */
-  border-radius: 10px;
-  /* Makes the thumb rounded */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
-/* Theme variables and base styles */
+/* ================= Theme variables and base styles ================= */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -93,10 +90,8 @@ html {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
 
-/* Apply global styles and font */
-@layer base {
+  /* Apply global styles and font */
   * {
     @apply border-border outline-ring/50;
   }

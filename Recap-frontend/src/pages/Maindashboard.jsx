@@ -12,14 +12,21 @@ import NavBar from '@/components/NavBar';
 import Chatbot from './ChatBot';
 import { getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+import { 
+  collection, query, onSnapshot, where, 
+  addDoc, updateDoc, deleteDoc 
+} from 'firebase/firestore';
 import { fireDB } from '../config/Firebaseconfig';
 import TimeSpent from '@/components/TimeSpent';
 import { getWeekTimeData } from '../services/TimeSpentService';
 import { useNavigate } from 'react-router-dom';
 import {Link} from 'react-router-dom'; 
+import DashboardViewNotes from './MainDashboard/DashboardViewNotes';
 
 const Maindashboard = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const [notes, setNotes] = useState([]);
+    const [activeNote, setActiveNote] = useState(null);
 
   // Sample data for charts
   const studyProgress = [
@@ -129,6 +136,33 @@ const Maindashboard = () => {
 
   console.log("activityData:", activityData);
 
+    useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.uid;
+  
+    if (!userId) {
+      toast.error("Please log in to view your notes.");
+      return;
+    }
+  
+    // Load notes
+    const q = query(collection(fireDB, 'notes'), where('uid', '==', userId));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const notesData = [];
+      querySnapshot.forEach((doc) => {
+        notesData.push({ id: doc.id, ...doc.data() });
+      });
+      setNotes(notesData);
+  
+      if (notesData.length > 0 && !activeNote) {
+        setActiveNote(notesData[0]);
+      }
+    });
+  
+    return () => unsubscribe();
+  }, []);
+
+
 
   return (
   <div className="flex h-screen bg-gray-900">
@@ -215,7 +249,7 @@ const Maindashboard = () => {
                   <div>
                     <p className="text-sm text-gray-400">Total Notes Uploaded</p>
                     <p className="text-xl font-semibold text-white">
-                      {userStats.totalNotesUploaded}
+                      {notes.length}
                     </p>
                     <p className="text-xs text-green-400">
                       +{userStats.notesUploadedToday} today, your library is growing!
@@ -335,6 +369,15 @@ const Maindashboard = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* <DashboardViewNotes uid={currentUser?.uid} /> */}
+
+     <div className="grid grid-cols-3 gap-6 mb-16">
+  <div className="col-span-3">
+    <DashboardViewNotes uid={currentUser?.uid} />
+  </div>
+</div>
+
 
           <div className="grid grid-cols-3 gap-6">
             <Card className="bg-gray-800 border-gray-700">
