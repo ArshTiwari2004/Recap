@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import html2pdf from "html2pdf.js";
+import RecapSpinner from "@/components/RecapSpinner";
 
 const ViewMyNotes = () => {
   const { id } = useParams();
@@ -190,8 +191,8 @@ const ViewMyNotes = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-lg">Loading note...</div>
+      <div className="">
+        <RecapSpinner />
       </div>
     );
   }
